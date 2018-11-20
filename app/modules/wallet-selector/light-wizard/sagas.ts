@@ -20,11 +20,11 @@ import { IAppState } from "../../../store";
 import { invariant } from "../../../utils/invariant";
 import { connectLightWallet } from "../../access-wallet/sagas";
 import { actions, TAction } from "../../actions";
+import { obtainJWT } from '../../auth/jwt/sagas';
 import {
   createUser,
   loadUser,
   loadUserPromise,
-  obtainJWT,
   signInUser,
   updateUser,
   updateUserPromise,

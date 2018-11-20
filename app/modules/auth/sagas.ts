@@ -10,20 +10,15 @@ import {
   SignerUnknownError,
 } from "../../lib/web3/Web3Manager";
 import { IAppState } from "../../store";
-import { hasValidPermissions } from "../../utils/JWTUtils";
-import { accessWalletAndRunEffect } from "../access-wallet/sagas";
 import { actions, TAction } from "../actions";
 import { loadKycRequestData } from "../kyc/sagas";
 import { selectRedirectURLFromQueryString } from "../routing/selectors";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { selectUrlUserType } from "../wallet-selector/selectors";
 import { loadPreviousWallet } from "../web3/sagas";
-import {
-  selectActivationCodeFromQueryString,
-  selectEmailFromQueryString,
-  selectEthereumAddressWithChecksum,
-} from "../web3/selectors";
+import { selectActivationCodeFromQueryString, selectEmailFromQueryString } from "../web3/selectors";
 import { EWalletSubType, EWalletType } from "../web3/types";
+import { obtainJWT, watchRedirectChannel } from "./jwt/sagas";
 import { selectVerifiedUserEmail } from "./selectors";
 
 export function* loadJwt({ jwtStorage }: TGlobalDependencies): Iterator<Effect> {
@@ -122,6 +117,7 @@ export async function updateUserPromise(
 ): Promise<IUser> {
   return apiUserService.updateUser(user);
 }
+// TODO: Remove updateUserPromise
 
 export function* loadOrCreateUser(userType: EUserType): Iterator<any> {
   const user: IUser = yield neuCall(loadOrCreateUserPromise, userType);
@@ -262,78 +258,10 @@ function* verifyUserEmail(): Iterator<any> {
   yield effects.put(actions.routing.goToSettings());
 }
 
-/**
- * Saga & Promise to fetch a new jwt from the authentication server
- */
-export async function obtainJwtPromise(
-  { getState, web3Manager, signatureAuthApi, cryptoRandomString, logger }: TGlobalDependencies,
-  permissions: Array<string> = [],
-): Promise<string> {
-  const address = selectEthereumAddressWithChecksum(getState());
-
-  const salt = cryptoRandomString(64);
-
-  /* tslint:disable: no-useless-cast */
-  const signerType = web3Manager.personalWallet!.getSignerType();
-  /* tslint:enable: no-useless-cast */
-
-  logger.info("Obtaining auth challenge from api");
-  const {
-    body: { challenge },
-  } = await signatureAuthApi.challenge(address, salt, signerType, permissions);
-
-  logger.info("Signing challenge");
-  /* tslint:disable: no-useless-cast */
-  const signedChallenge = await web3Manager.personalWallet!.signMessage(challenge);
-  /* tslint:enable: no-useless-cast */
-
-  logger.info("Sending signed challenge back to api");
-  const {
-    body: { jwt },
-  } = await signatureAuthApi.createJwt(challenge, signedChallenge, signerType);
-
-  return jwt;
-}
-
-// see above
-export function* obtainJWT(
-  { jwtStorage }: TGlobalDependencies,
-  permissions: Array<string> = [],
-): Iterator<any> {
-  const jwt: string = yield neuCall(obtainJwtPromise, permissions);
-  yield effects.put(actions.auth.loadJWT(jwt));
-  jwtStorage.set(jwt);
-
-  return jwt;
-}
-
-/**
- * Saga to ensure all the needed permissions are present and still valid
- * on the current jwt
- */
-export function* ensurePermissionsArePresent(
-  { jwtStorage }: TGlobalDependencies,
-  permissions: Array<string> = [],
-  title: string = "",
-  message: string = "",
-): Iterator<any> {
-  // check wether all permissions are present and still valid
-  const jwt = jwtStorage.get();
-  if (jwt && hasValidPermissions(jwt, permissions)) {
-    return;
-  }
-  // obtain a freshly signed token with missing permissions
-  try {
-    const obtainJwtEffect = neuCall(obtainJWT, permissions);
-    yield call(accessWalletAndRunEffect, obtainJwtEffect, title, message);
-  } catch {
-    throw new Error("Message signing failed");
-  }
-}
-
 export const authSagas = function*(): Iterator<effects.Effect> {
   yield fork(neuTakeEvery, "AUTH_LOGOUT", logoutWatcher);
   yield fork(neuTakeEvery, "AUTH_SET_USER", setUser);
   yield fork(neuTakeEvery, "AUTH_VERIFY_EMAIL", verifyUserEmail);
   yield fork(neuTakeEvery, "WALLET_SELECTOR_CONNECTED", handleSignInUser);
+  yield fork(watchRedirectChannel);
 };

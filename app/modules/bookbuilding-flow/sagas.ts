@@ -6,7 +6,7 @@ import { IHttpResponse } from "../../lib/api/client/IHttpClient";
 import { EtoPledgeNotFound } from "../../lib/api/eto/EtoPledgeApi";
 import { IPledge } from "../../lib/api/eto/EtoPledgeApi.interfaces";
 import { actions, TAction } from "../actions";
-import { ensurePermissionsArePresent } from "../auth/sagas";
+import { ensurePermissionsArePresent } from "../auth/jwt/sagas";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { DELETE_PLEDGE, LOAD_BOOKBUILDING_FLOW_STATS, LOAD_PLEDGE, SAVE_PLEDGE } from "./actions";
 

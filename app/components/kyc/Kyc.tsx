@@ -194,7 +194,7 @@ export const Kyc = compose<React.SFC>(
       requestStatus: selectKycRequestStatus(state.kyc),
       redirectUrl: selectKycOutSourcedURL(state.kyc),
       pendingRequestType: selectPendingKycRequestType(state.kyc),
-      userType: selectUserType(state.auth)!,
+      userType: selectUserType(state)!,
     }),
     dispatchToProps: dispatch => ({
       reopenRequest: () => {},

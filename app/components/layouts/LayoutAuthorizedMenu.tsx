@@ -266,7 +266,7 @@ export const LayoutAuthorizedMenuComponent: React.SFC<
 export const LayoutAuthorizedMenu = compose<IStateProps & IDispatchProps & IWithProps, {}>(
   appConnect<IStateProps, {}>({
     stateToProps: state => ({
-      userType: selectUserType(state.auth),
+      userType: selectUserType(state),
       actionRequiredSettings: selectIsActionRequiredSettings(state),
       shouldEtoDataLoad: selectShouldEtoDataLoad(state),
       isIdentityModalOpened: selectGenericModalIsOpen(state.genericModal),

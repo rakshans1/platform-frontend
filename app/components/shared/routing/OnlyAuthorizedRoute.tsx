@@ -121,7 +121,7 @@ class OnlyAuthorizedRouteComponent extends React.Component<TProps, IState> {
 export const OnlyAuthorizedRoute = appConnect<IStateProps, {}, IOwnProps>({
   stateToProps: s => ({
     isAuthorized: selectIsAuthorized(s.auth),
-    userType: selectUserType(s.auth),
+    userType: selectUserType(s),
     walletType: selectWalletTypeFromQueryString(s.router),
     routerState: s.router,
   }),

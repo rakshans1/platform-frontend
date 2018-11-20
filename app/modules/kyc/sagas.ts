@@ -19,7 +19,7 @@ import { IUser } from "../../lib/api/users/interfaces";
 import { IdentityRegistry } from "../../lib/contracts/IdentityRegistry";
 import { IAppAction, IAppState } from "../../store";
 import { actions, TAction } from "../actions";
-import { ensurePermissionsArePresent } from "../auth/sagas";
+import { ensurePermissionsArePresent } from "../auth/jwt/sagas";
 import { selectUser } from "../auth/selectors";
 import { displayErrorModalSaga } from "../generic-modal/sagas";
 import { selectIsSmartContractInitDone } from "../init/selectors";
