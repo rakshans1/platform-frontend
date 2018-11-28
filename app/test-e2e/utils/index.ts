@@ -47,8 +47,8 @@ export const goToDashboard = () => {
   cy.visit("/dashboard");
 };
 
-export const goToSettings = () => {
-  cy.visit("/settings");
+export const goToProfile = () => {
+  cy.visit("/profile");
 };
 
 export const clearEmailServer = () => {
@@ -76,29 +76,29 @@ export const assertWaitForLatestEmailSentWithSalt = (
 };
 
 export const assertVerifyEmailWidgetIsInUnverifiedEmailState = (shouldNotExist?: boolean) => {
-  cy.get(tid("settings.verify-email-widget.unverified-email-state")).should(
+  cy.get(tid("profile.verify-email-widget.unverified-email-state")).should(
     shouldNotExist ? "not.exist" : "exist",
   );
 };
 
 export const assertVerifyEmailWidgetIsInNoEmailState = (shouldNotExist?: boolean) => {
-  cy.get(tid("settings.verify-email-widget.no-email-state")).should(
+  cy.get(tid("profile.verify-email-widget.no-email-state")).should(
     shouldNotExist ? "not.exist" : "exist",
   );
 };
 
 export const assertVerifyEmailWidgetIsInVerfiedEmailState = (shouldNotExist?: boolean) => {
-  cy.get(tid("settings.verify-email-widget.verified-email-state")).should(
+  cy.get(tid("profile.verify-email-widget.verified-email-state")).should(
     shouldNotExist ? "not.exist" : "exist",
   );
 };
 
 export const assertEmailActivationWidgetVisible = (shouldNotExist?: boolean) => {
-  cy.get(tid("settings.verify-email-widget")).should(shouldNotExist ? "not.exist" : "exist");
+  cy.get(tid("profile.verify-email-widget")).should(shouldNotExist ? "not.exist" : "exist");
 };
 
 export const assertBackupSeedWidgetVisible = (shouldNotExist?: boolean) => {
-  cy.get(tid("settings.backup-seed-widget")).should(shouldNotExist ? "not.exist" : "exist");
+  cy.get(tid("profile.backup-seed-widget")).should(shouldNotExist ? "not.exist" : "exist");
 };
 
 export const assertErrorModal = () => {
@@ -117,10 +117,15 @@ export const typeEmailPassword = (email: string, password: string) => {
   cy.get(tid("wallet-selector-register-button")).awaitedClick();
 };
 
-export const registerWithLightWalletETO = (email: string, password: string) => {
+export const registerWithLightWalletETO = (
+  email: string,
+  password: string,
+  acceptTos: boolean = true,
+) => {
   cy.visit("eto/register/light");
 
   typeEmailPassword(email, password);
+  if (acceptTos) acceptTOS();
 };
 
 export const typeLightwalletRecoveryPhrase = (words: string[]) => {
@@ -142,6 +147,14 @@ export const typeLightwalletRecoveryPhrase = (words: string[]) => {
 export const confirmAccessModal = (password: string = DEFAULT_PASSWORD) => {
   cy.get(tid("access-light-wallet-password-input")).type(password);
   cy.get(tid("access-light-wallet-confirm")).awaitedClick(1500);
+};
+
+export const confirmAccessModalNoPW = () => {
+  cy.get(tid("access-light-wallet-prompt-accept-button")).awaitedClick(1500);
+};
+
+export const closeModal = () => {
+  cy.get(tid("modal-close-button")).click();
 };
 
 // todo: extract it to separate file
@@ -187,6 +200,11 @@ export const registerWithLightWallet = (
   cy.get(tid("wallet-selector-register-button")).awaitedClick();
   cy.get(tid("wallet-selector-register-button")).should("be.disabled");
   assertUserInDashboard();
+  acceptTOS();
+};
+
+export const acceptTOS = () => {
+  cy.get(tid("modals.accept-tos.accept-button-hidden")).awaitedClick();
 };
 
 export const logoutViaTopRightButton = () => {

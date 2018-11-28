@@ -1,6 +1,8 @@
 import { effects } from "redux-saga";
 import { call, Effect, fork, select } from "redux-saga/effects";
 
+import { externalRoutes } from "../../components/externalRoutes";
+import { SIGN_TOS } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { EUserType, IUser, IUserInput, IVerifyEmailUser } from "../../lib/api/users/interfaces";
 import { EmailAlreadyExists, UserNotExisting } from "../../lib/api/users/UsersApi";
@@ -11,15 +13,18 @@ import {
 } from "../../lib/web3/Web3Manager";
 import { IAppState } from "../../store";
 import { actions, TAction } from "../actions";
+import { selectIsSmartContractInitDone } from "../init/selectors";
 import { loadKycRequestData } from "../kyc/sagas";
 import { selectRedirectURLFromQueryString } from "../routing/selectors";
-import { neuCall, neuTakeEvery } from "../sagasUtils";
+import { neuCall, neuTakeEvery, neuTakeOnly } from "../sagasUtils";
 import { selectUrlUserType } from "../wallet-selector/selectors";
 import { loadPreviousWallet } from "../web3/sagas";
-import { selectActivationCodeFromQueryString, selectEmailFromQueryString } from "../web3/selectors";
+import { selectActivationCodeFromQueryString, selectEmailFromQueryString, selectEthereumAddressWithChecksum } from '../web3/selectors';
 import { EWalletSubType, EWalletType } from "../web3/types";
-import { obtainJWT, watchRedirectChannel } from "./jwt/sagas";
-import { selectVerifiedUserEmail } from "./selectors";
+import { MessageSignCancelledError } from "./errors";
+import { selectCurrentAgreementHash, selectUserType, selectVerifiedUserEmail } from "./selectors";
+import { hasValidPermissions } from "../../utils/JWTUtils";
+import { accessWalletAndRunEffect } from '../access-wallet/sagas';
 
 export function* loadJwt({ jwtStorage }: TGlobalDependencies): Iterator<Effect> {
   const jwt = jwtStorage.get();
@@ -173,8 +178,8 @@ function* logoutWatcher(
 
   jwtStorage.clear();
   yield web3Manager.unplugPersonalWallet();
-
-  if (action.payload.userType === EUserType.INVESTOR) {
+  const userType: EUserType | undefined = yield select(selectUserType);
+  if (userType === EUserType.INVESTOR || !userType) {
     yield effects.put(actions.routing.goHome());
   } else {
     yield effects.put(actions.routing.goEtoHome());
@@ -191,7 +196,7 @@ export function* signInUser({ walletStorage, web3Manager }: TGlobalDependencies)
     const probableUserType: EUserType = yield select((s: IAppState) => selectUrlUserType(s.router));
     yield effects.put(actions.walletSelector.messageSigning());
 
-    yield neuCall(obtainJWT);
+    yield neuCall(obtainJWT, [SIGN_TOS]); // by default we have the sign-tos permission, as this is the first thing a user will have to do after signup
     yield call(loadOrCreateUser, probableUserType);
     // tslint:disable-next-line
     walletStorage.set(web3Manager.personalWallet!.getMetadata());
@@ -215,7 +220,7 @@ export function* signInUser({ walletStorage, web3Manager }: TGlobalDependencies)
 
 function* handleSignInUser({
   intlWrapper: {
-    intl: { formatIntlMessage },
+    intl: { formatIntlMessage, formatHTMLMessage },
   },
   logger,
 }: TGlobalDependencies): Iterator<any> {
@@ -239,13 +244,57 @@ function* handleSignInUser({
     } else {
       yield effects.put(
         actions.walletSelector.messageSigningError(
-          formatIntlMessage(
-            "modules.auth.sagas.sign-in-user.error-our-servers-are-having-problems",
+          formatHTMLMessage(
+            { id: "modules.auth.sagas.sign-in-user.error-our-servers-are-having-problems" },
+            { url: `${externalRoutes.neufundSupport}/home` },
           ),
         ),
       );
     }
   }
+}
+
+function* handleAcceptCurrentAgreement({
+  apiUserService,
+  logger,
+  notificationCenter,
+  intlWrapper: {
+    intl: { formatIntlMessage },
+  },
+}: TGlobalDependencies): Iterator<any> {
+  const currentAgreementHash: string = yield select(selectCurrentAgreementHash);
+  yield neuCall(
+    ensurePermissionsArePresent,
+    [SIGN_TOS],
+    formatIntlMessage("settings.modal.accept-tos.permission.title"),
+    formatIntlMessage("settings.modal.accept-tos.permission.text"),
+  );
+  try {
+    const user: IUser = yield apiUserService.setLatestAcceptedTos(currentAgreementHash);
+    yield effects.put(actions.auth.setUser(user));
+  } catch (e) {
+    notificationCenter.error("There was a problem with accepting Terms and Conditions");
+    logger.error("Could not accept Terms and Conditions", e);
+  }
+}
+
+function* handleDownloadCurrentAgreement({
+  intlWrapper: {
+    intl: { formatIntlMessage },
+  },
+}: TGlobalDependencies): Iterator<any> {
+  const currentAgreementHash: string = yield select(selectCurrentAgreementHash);
+  const fileName = formatIntlMessage("settings.modal.accept-tos.filename");
+  yield effects.put(
+    actions.immutableStorage.downloadImmutableFile(
+      {
+        ipfsHash: currentAgreementHash,
+        mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        asPdf: true,
+      },
+      fileName,
+    ),
+  );
 }
 
 function* verifyUserEmail(): Iterator<any> {
@@ -255,7 +304,105 @@ function* verifyUserEmail(): Iterator<any> {
   const verifiedEmail = yield select((s: IAppState) => selectVerifiedUserEmail(s.auth));
   yield neuCall(verifyUserEmailPromise, userCode, urlEmail, verifiedEmail);
   yield loadUser();
-  yield effects.put(actions.routing.goToSettings());
+  yield effects.put(actions.routing.goToProfile());
+}
+
+/**
+ * Saga & Promise to fetch a new jwt from the authentication server
+ */
+export async function obtainJwtPromise(
+  { getState, web3Manager, signatureAuthApi, cryptoRandomString, logger }: TGlobalDependencies,
+  permissions: Array<string> = [],
+): Promise<string> {
+  const address = selectEthereumAddressWithChecksum(getState());
+
+  const salt = cryptoRandomString(64);
+
+  /* tslint:disable: no-useless-cast */
+  const signerType = web3Manager.personalWallet!.getSignerType();
+  /* tslint:enable: no-useless-cast */
+
+  logger.info("Obtaining auth challenge from api");
+  const {
+    body: { challenge },
+  } = await signatureAuthApi.challenge(address, salt, signerType, permissions);
+
+  logger.info("Signing challenge");
+  /* tslint:disable: no-useless-cast */
+  const signedChallenge = await web3Manager.personalWallet!.signMessage(challenge);
+  /* tslint:enable: no-useless-cast */
+
+  logger.info("Sending signed challenge back to api");
+  const {
+    body: { jwt },
+  } = await signatureAuthApi.createJwt(challenge, signedChallenge, signerType);
+
+  return jwt;
+}
+
+// see above
+export function* obtainJWT(
+  { jwtStorage }: TGlobalDependencies,
+  permissions: Array<string> = [],
+): Iterator<any> {
+  const jwt: string = yield neuCall(obtainJwtPromise, permissions);
+  yield effects.put(actions.auth.loadJWT(jwt));
+  jwtStorage.set(jwt);
+
+  return jwt;
+}
+
+/**
+ * Saga to ensure all the needed permissions are present and still valid
+ * on the current jwt
+ */
+export function* ensurePermissionsArePresent(
+  { jwtStorage, logger }: TGlobalDependencies,
+  permissions: Array<string> = [],
+  title: string,
+  message: string,
+): Iterator<any> {
+  // check wether all permissions are present and still valid
+  const jwt = jwtStorage.get();
+  if (jwt && hasValidPermissions(jwt, permissions)) {
+    return;
+  }
+  // obtain a freshly signed token with missing permissions
+  try {
+    const obtainJwtEffect = neuCall(obtainJWT, permissions);
+    yield call(accessWalletAndRunEffect, obtainJwtEffect, title, message);
+  } catch (error) {
+    if (error instanceof MessageSignCancelledError) {
+      logger.info("Signing Cancelled");
+    } else {
+      throw new Error("Message signing failed");
+    }
+  }
+}
+
+/**
+ * Handle ToS / agreement
+ */
+export function* loadCurrentAgreement({
+  contractsService,
+  logger,
+}: TGlobalDependencies): Iterator<any> {
+  logger.info("Loading current agreement hash");
+
+  const isSmartContractsInitialized = yield select(selectIsSmartContractInitDone);
+
+  if (!isSmartContractsInitialized) {
+    yield neuTakeOnly("INIT_DONE", { initType: "smartcontractsInit" });
+  }
+
+  try {
+    const result = yield contractsService.universeContract.currentAgreement();
+    let currentAgreementHash = result[2] as string;
+    currentAgreementHash = currentAgreementHash.replace("ipfs:", "");
+    yield effects.put(actions.auth.setCurrentAgreementHash(currentAgreementHash));
+  } catch (e) {
+    logger.error("Could not load current agreement", e);
+  }
 }
 
 export const authSagas = function*(): Iterator<effects.Effect> {
@@ -263,5 +410,7 @@ export const authSagas = function*(): Iterator<effects.Effect> {
   yield fork(neuTakeEvery, "AUTH_SET_USER", setUser);
   yield fork(neuTakeEvery, "AUTH_VERIFY_EMAIL", verifyUserEmail);
   yield fork(neuTakeEvery, "WALLET_SELECTOR_CONNECTED", handleSignInUser);
-  yield fork(watchRedirectChannel);
+  yield fork(neuTakeEvery, "ACCEPT_CURRENT_AGREEMENT", handleAcceptCurrentAgreement);
+  yield fork(neuTakeEvery, "DOWNLOAD_CURRENT_AGREEMENT", handleDownloadCurrentAgreement);
+  yield fork(neuTakeEvery, "AUTH_SET_USER", loadCurrentAgreement);
 };

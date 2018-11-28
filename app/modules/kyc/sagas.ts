@@ -222,15 +222,24 @@ function* submitIndividualRequest(
 ): Iterator<any> {
   if (action.type !== "KYC_SUBMIT_INDIVIDUAL_REQUEST") return;
   try {
-    // TODO: Add to translations
     yield neuCall(
       ensurePermissionsArePresent,
       [SUBMIT_KYC_PERMISSION],
+      formatIntlMessage("kyc.modal.submit-title"),
       formatIntlMessage("kyc.modal.submit-description"),
     );
     yield put(actions.kyc.kycUpdateIndividualRequestState(true));
     const result: IHttpResponse<IKycRequestState> = yield apiKycService.submitIndividualRequest();
     yield put(actions.kyc.kycUpdateIndividualRequestState(false, result.body));
+    yield put(
+      actions.genericModal.showGenericModal(
+        formatIntlMessage("kyc.modal.verification.title"),
+        formatIntlMessage("kyc.modal.verification.description"),
+        undefined,
+        formatIntlMessage("kyc.modal.verification.settings-button"),
+        actions.routing.goToProfile(),
+      ),
+    );
   } catch {
     yield put(actions.kyc.kycUpdateIndividualRequestState(false));
     notificationCenter.error(formatIntlMessage("module.kyc.sagas.problem.submitting"));
@@ -591,7 +600,7 @@ function* submitBusinessRequest(
 ): Iterator<any> {
   if (action.type !== "KYC_SUBMIT_BUSINESS_REQUEST") return;
   try {
-    // check wether combined value of beneficial owners percentages is less or equal 100%
+    // check whether combined value of beneficial owners percentages is less or equal 100%
     const ownerShip = yield select((s: IAppState) => selectCombinedBeneficialOwnerOwnership(s.kyc));
     if (ownerShip > 100) {
       yield neuCall(
@@ -601,14 +610,26 @@ function* submitBusinessRequest(
       );
       return;
     }
+
     yield neuCall(
       ensurePermissionsArePresent,
       [SUBMIT_KYC_PERMISSION],
-      "Confirm your Verification",
+      formatIntlMessage("kyc.modal.submit-title"),
+      formatIntlMessage("kyc.modal.submit-description"),
     );
+
     yield put(actions.kyc.kycUpdateBusinessRequestState(true));
     const result: IHttpResponse<IKycRequestState> = yield apiKycService.submitBusinessRequest();
     yield put(actions.kyc.kycUpdateBusinessRequestState(false, result.body));
+    yield put(
+      actions.genericModal.showGenericModal(
+        formatIntlMessage("kyc.modal.verification.title"),
+        formatIntlMessage("kyc.modal.verification.description"),
+        undefined,
+        formatIntlMessage("kyc.modal.verification.settings-button"),
+        actions.routing.goToProfile(),
+      ),
+    );
   } catch {
     yield put(actions.kyc.kycUpdateBusinessRequestState(false));
     notificationCenter.error(formatIntlMessage("module.kyc.sagas.problem.submitting"));

@@ -25,6 +25,7 @@ import { WalletSelectionData } from "./InvestmentTypeSelector";
 import * as ethIcon from "../../../../assets/img/eth_icon2.svg";
 import * as euroIcon from "../../../../assets/img/euro_icon.svg";
 import * as neuroIcon from "../../../../assets/img/neuro_icon.svg";
+import { divideBigNumbers } from "../../../../utils/BigNumberUtils";
 
 export function createWallets(state: IAppState): WalletSelectionData[] {
   const w = state.wallet;
@@ -41,7 +42,7 @@ export function createWallets(state: IAppState): WalletSelectionData[] {
     },
     [EInvestmentType.BankTransfer]: {
       type: EInvestmentType.BankTransfer,
-      name: "Direct Bank Transfer",
+      name: "Direct Bank Transfer (EUR)",
       icon: euroIcon,
     },
     [EInvestmentType.ICBMnEuro]: {
@@ -101,7 +102,13 @@ export function getInputErrorMessage(
 export function getInvestmentTypeMessages(type?: EInvestmentType): React.ReactNode {
   switch (type) {
     case EInvestmentType.BankTransfer:
-      return <FormattedHTMLMessage id="investment-flow.bank-transfer-info-message" tagName="p" />;
+      return (
+        <FormattedHTMLMessage
+          id="investment-flow.bank-transfer-info-message"
+          tagName="p"
+          values={{ href: "https://support.neufund.org/support/home" }}
+        />
+      );
   }
 }
 
@@ -124,3 +131,19 @@ export function formatEthTsd(val?: string | BigNumber): string | undefined {
 export function formatVaryingDecimals(val?: string | BigNumber): string | undefined {
   return val && formatMoney(val, MONEY_DECIMALS);
 }
+
+export function getActualTokenPriceEur(
+  investmentEurUlps: string,
+  equityTokenCount: string | number,
+): string {
+  return formatMoney(divideBigNumbers(investmentEurUlps, equityTokenCount), MONEY_DECIMALS, 8);
+}
+
+export const formatSummaryTokenPrice = (fullTokenPrice: number, actualTokenPrice: number) => {
+  const discount = Math.round((1 - actualTokenPrice / fullTokenPrice) * 100);
+  let priceString = formatThousands(actualTokenPrice.toString());
+  if (discount >= 1) {
+    priceString += ` (-${discount}%)`;
+  }
+  return priceString;
+};

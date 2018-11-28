@@ -93,8 +93,7 @@ export function* watchRedirectChannel(): any {
   yield startRedirectChannel();
   while (true) {
     yield take(redirectChannel);
-    const userType = yield select(selectUserType);
-    yield put(actions.auth.logout(userType));
+    yield put(actions.auth.logout());
     delay(5000);
   }
 }

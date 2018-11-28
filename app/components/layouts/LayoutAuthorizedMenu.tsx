@@ -28,7 +28,6 @@ import * as iconEto from "../../assets/img/inline_icons/icon-menu-eto.svg";
 import * as iconFingerprint from "../../assets/img/inline_icons/icon-menu-fingerprint.svg";
 import * as iconHelp from "../../assets/img/inline_icons/icon-menu-help.svg";
 import * as iconPortfolio from "../../assets/img/inline_icons/icon-menu-portfolio.svg";
-import * as iconSettings from "../../assets/img/inline_icons/icon-menu-settings.svg";
 import * as iconWallet from "../../assets/img/inline_icons/icon-menu-wallet.svg";
 
 import * as styles from "./LayoutAuthorizedMenu.module.scss";
@@ -186,21 +185,23 @@ const InvestorMenu: React.SFC<IStateProps & IDispatchProps & IWithProps> = ({
         isActive={isLinkActive}
       />
       <MenuEntryLink
-        svgString={iconSettings}
-        to={appRoutes.settings}
+        svgString={iconFingerprint}
+        to={appRoutes.profile}
         menuName={<FormattedMessage id="menu.settings" />}
         actionRequired={actionRequiredSettings}
-        data-test-id="authorized-layout-settings-button"
+        data-test-id="authorized-layout-profile-button"
         isActive={isLinkActive}
       />
-      <MenuEntryButton
-        disabled={!isClaimsVerified}
-        svgString={iconFingerprint}
-        onClick={openIdentityModal}
-        menuName={<FormattedMessage id="menu.identity" />}
-        data-test-id="authorized-layout-identity-button"
-        isActive={isIdentityModalOpened}
-      />
+      {process.env.NF_SHOW_INVESTOR_IDENTITY && (
+        <MenuEntryButton
+          disabled={!isClaimsVerified}
+          svgString={iconFingerprint}
+          onClick={openIdentityModal}
+          menuName={<FormattedMessage id="menu.identity" />}
+          data-test-id="authorized-layout-identity-button"
+          isActive={isIdentityModalOpened}
+        />
+      )}
     </div>
   </div>
 );
@@ -240,19 +241,20 @@ const IssuerMenu: React.SFC<{ actionRequiredSettings: boolean; shouldEtoDataLoad
         menuName={<FormattedMessage id="menu.help" />}
       />
       <MenuEntryLink
-        svgString={iconSettings}
-        to={appRoutes.settings}
+        svgString={iconFingerprint}
+        to={appRoutes.profile}
         menuName={<FormattedMessage id="menu.settings" />}
         actionRequired={actionRequiredSettings}
-        data-test-id="authorized-layout-settings-button"
+        data-test-id="authorized-layout-profile-button"
       />
     </div>
   </div>
 );
 
-export const LayoutAuthorizedMenuComponent: React.SFC<
-  IStateProps & IDispatchProps & IWithProps
-> = ({ userType, ...props }) => {
+const LayoutAuthorizedMenuComponent: React.SFC<IStateProps & IDispatchProps & IWithProps> = ({
+  userType,
+  ...props
+}) => {
   switch (userType) {
     case EUserType.INVESTOR:
       return <InvestorMenu data-test-id="investor-menu" {...props} />;
@@ -263,7 +265,7 @@ export const LayoutAuthorizedMenuComponent: React.SFC<
   }
 };
 
-export const LayoutAuthorizedMenu = compose<IStateProps & IDispatchProps & IWithProps, {}>(
+const LayoutAuthorizedMenu = compose<IStateProps & IDispatchProps & IWithProps, {}>(
   appConnect<IStateProps, {}>({
     stateToProps: state => ({
       userType: selectUserType(state),
@@ -280,3 +282,5 @@ export const LayoutAuthorizedMenu = compose<IStateProps & IDispatchProps & IWith
     isLinkActive: props => match => match && !props.isIdentityModalOpened,
   }),
 )(LayoutAuthorizedMenuComponent);
+
+export { InvestorMenu, IssuerMenu, LayoutAuthorizedMenu, LayoutAuthorizedMenuComponent };

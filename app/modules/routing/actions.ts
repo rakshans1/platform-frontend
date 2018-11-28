@@ -1,3 +1,4 @@
+import { LocationDescriptor } from "history";
 import { push } from "react-router-redux";
 
 import { appRoutes } from "../../components/appRoutes";
@@ -6,16 +7,16 @@ import { recoverRoutes } from "../../components/wallet-selector/wallet-recover/r
 import { walletRoutes } from "../../components/wallet/routes";
 import { createAction } from "../actionsUtils";
 
-const createRoutingAction = (path: string) => push(path);
+const createRoutingAction = (location: LocationDescriptor) => push(location);
 
 export const routingActions = {
   // navigation primitives
   goBack: () => createAction("GO_BACK", {}),
-  goTo: (absolutePath: string) => createRoutingAction(absolutePath),
+  goTo: (location: LocationDescriptor) => createRoutingAction(location),
 
   // default routes
-  goHome: () => createRoutingAction("/"),
-  goEtoHome: () => createRoutingAction("/eto-landing"),
+  goHome: () => createRoutingAction(appRoutes.root),
+  goEtoHome: () => createRoutingAction(appRoutes.etoLanding),
 
   //kyc routes
   goToKYCHome: () => createRoutingAction(kycRoutes.start),
@@ -24,14 +25,13 @@ export const routingActions = {
     createRoutingAction(kycRoutes.individualDocumentVerification),
   goToKYCIndividualUpload: () => createRoutingAction(kycRoutes.individualUpload),
 
-  goToKYCBusinessStart: () => createRoutingAction(kycRoutes.businessStart),
   goToKYCLegalRepresentative: () => createRoutingAction(kycRoutes.legalRepresentative),
   goToKYCBusinessData: () => createRoutingAction(kycRoutes.businessData),
   goToKYCBeneficialOwners: () => createRoutingAction(kycRoutes.beneficialOwners),
 
   // dashboard
   goToDashboard: () => createRoutingAction(appRoutes.dashboard),
-  goToSettings: () => createRoutingAction(appRoutes.settings),
+  goToProfile: () => createRoutingAction(appRoutes.profile),
 
   // registration
   goToRegister: () => createRoutingAction(appRoutes.register),
@@ -49,6 +49,10 @@ export const routingActions = {
   // deposit founds
   goToDepositEuroToken: () => createRoutingAction(walletRoutes.euroToken),
   goToDepositEth: () => createRoutingAction(walletRoutes.eth),
+
+  // external paths
+  openInNewWindow: (path: string, target: string = "_blank") =>
+    createAction("@@router/OPEN_IN_NEW_WINDOW", { path, target }),
 
   // other...
 };

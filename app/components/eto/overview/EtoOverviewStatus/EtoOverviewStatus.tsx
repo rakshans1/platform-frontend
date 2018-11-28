@@ -3,30 +3,36 @@ import { keyBy } from "lodash";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Link } from "react-router-dom";
+import { push } from "react-router-redux";
 import { compose } from "recompose";
 
 import { CounterWidget, TagsWidget } from ".";
 import { EEtoDocumentType } from "../../../../lib/api/eto/EtoFileApi.interfaces";
 import { getShareAndTokenPrice } from "../../../../lib/api/eto/EtoUtils";
 import { selectIsAuthorized } from "../../../../modules/auth/selectors";
-import { selectIsEligibleToPreEto } from "../../../../modules/investor-tickets/selectors";
+import {
+  selectInitialMaxCapExceeded,
+  selectIsEligibleToPreEto,
+} from "../../../../modules/investor-tickets/selectors";
 import { selectEtoOnChainStateById } from "../../../../modules/public-etos/selectors";
 import {
   EETOStateOnChain,
   TEtoWithCompanyAndContract,
 } from "../../../../modules/public-etos/types";
+import { routingActions } from "../../../../modules/routing/actions";
 import { appConnect } from "../../../../store";
 import { CommonHtmlProps } from "../../../../types";
+import { formatFlexiPrecision } from "../../../../utils/Number.utils";
 import { withParams } from "../../../../utils/withParams";
 import { appRoutes } from "../../../appRoutes";
 import { ETOState } from "../../../shared/ETOState";
 import { ECurrencySymbol, EMoneyFormat, Money } from "../../../shared/Money";
 import { NumberFormat } from "../../../shared/NumberFormat";
-import { Percentage } from "../../../shared/Percentage";
 import { EtoWidgetContext } from "../../EtoWidgetView";
 import { InvestmentAmount } from "../../shared/InvestmentAmount";
 import { CampaigningActivatedWidget } from "./CampaigningWidget";
 import { ClaimWidget, RefundWidget } from "./ClaimRefundWidget";
+import { EtoMaxCapExceededWidget } from "./EtoMaxCapExceeded";
 import { InvestmentWidget } from "./InvestmentWidget";
 import { RegisterNowWidget } from "./RegisterNowWidget";
 import { TokenSymbolWidget } from "./TokenSymbolWidget";
@@ -35,16 +41,23 @@ import * as styles from "./EtoOverviewStatus.module.scss";
 
 interface IExternalProps {
   eto: TEtoWithCompanyAndContract;
+  publicView?: boolean;
 }
 
 interface IStatusOfEto {
   previewCode: string;
 }
 
+interface IDispatchProps {
+  navigateToEto: () => void;
+  openInNewWindow: () => void;
+}
+
 interface IStateProps {
   isAuthorized: boolean;
   isEligibleToPreEto: boolean;
   isPreEto?: boolean;
+  maxCapExceeded: boolean;
 }
 
 const StatusOfEto: React.SFC<IStatusOfEto> = ({ previewCode }) => {
@@ -73,9 +86,17 @@ const EtoStatusManager = ({
   eto,
   isAuthorized,
   isEligibleToPreEto,
+  maxCapExceeded,
 }: IExternalProps & IStateProps) => {
   // It's possible for contract to be undefined if eto is not on chain yet
   const timedState = eto.contract ? eto.contract.timedState : EETOStateOnChain.Setup;
+  const isEtoActive =
+    (isEligibleToPreEto && timedState === EETOStateOnChain.Whitelist) ||
+    timedState === EETOStateOnChain.Public;
+
+  if (maxCapExceeded && isEtoActive) {
+    return <EtoMaxCapExceededWidget eto={eto} />;
+  }
 
   switch (timedState) {
     case EETOStateOnChain.Setup: {
@@ -143,12 +164,33 @@ function applyDiscountToPrice(price: number, discountFraction: number): number {
   return price * (1 - discountFraction);
 }
 
-const EtoOverviewStatusLayout: React.SFC<IExternalProps & CommonHtmlProps & IStateProps> = ({
+function onEtoNavigationClick(
+  navigate: () => void,
+  openInNewWindow: (() => void) | undefined,
+): (event: React.MouseEvent<HTMLDivElement>) => void {
+  return function({ target, currentTarget }: React.MouseEvent<HTMLDivElement>): void {
+    if (target === currentTarget) {
+      if (openInNewWindow) {
+        openInNewWindow();
+        return;
+      }
+      navigate();
+    }
+  };
+}
+
+const EtoOverviewStatusLayout: React.SFC<
+  IExternalProps & CommonHtmlProps & IStateProps & IDispatchProps
+> = ({
   eto,
   className,
   isAuthorized,
   isEligibleToPreEto,
   isPreEto,
+  maxCapExceeded,
+  navigateToEto,
+  publicView,
+  openInNewWindow,
 }) => {
   const smartContractOnChain = !!eto.contract;
 
@@ -174,13 +216,23 @@ const EtoOverviewStatusLayout: React.SFC<IExternalProps & CommonHtmlProps & ISta
           data-test-id={`eto-overview-${eto.etoId}`}
         >
           <StatusOfEto previewCode={eto.previewCode} />
-          <div className={styles.overviewWrapper}>
-            <div className={styles.statusWrapper}>
+          <div
+            className={styles.overviewWrapper}
+            onClick={onEtoNavigationClick(navigateToEto, previewCode ? openInNewWindow : undefined)}
+          >
+            <div
+              className={styles.statusWrapper}
+              onClick={onEtoNavigationClick(
+                navigateToEto,
+                previewCode ? openInNewWindow : undefined,
+              )}
+            >
               <Link
                 to={withParams(appRoutes.etoPublicView, { previewCode: eto.previewCode })}
                 target={previewCode ? "_blank" : ""}
               >
                 <TokenSymbolWidget
+                  brandName={eto.company.brandName}
                   tokenImage={{
                     alt: eto.equityTokenName || "",
                     srcSet: { "1x": eto.equityTokenImage || "" },
@@ -218,6 +270,12 @@ const EtoOverviewStatusLayout: React.SFC<IExternalProps & CommonHtmlProps & ISta
             <div className={cn(styles.groupWrapper, styles.breakSm)}>
               <div className={styles.group}>
                 <span className={styles.label}>
+                  <FormattedMessage id="shared-component.eto-overview-status.key-investment-terms" />
+                  {":"}
+                </span>
+              </div>
+              <div className={styles.group}>
+                <span className={styles.label}>
                   <FormattedMessage id="shared-component.eto-overview-status.pre-money-valuation" />
                 </span>
                 <span className={styles.value}>
@@ -251,25 +309,28 @@ const EtoOverviewStatusLayout: React.SFC<IExternalProps & CommonHtmlProps & ISta
                 </span>
                 <span className={styles.value}>
                   <Money
-                    value={tokenPrice.toLocaleString(undefined, {
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 8,
-                    })}
+                    value={formatFlexiPrecision(tokenPrice, 8)}
                     currency="eur"
                     format={EMoneyFormat.FLOAT}
                     currencySymbol={ECurrencySymbol.SYMBOL}
                   />
                   {showWhitelistDiscount && (
                     <>
-                      {" (-"}
-                      <Percentage>{eto.whitelistDiscountFraction!}</Percentage>
+                      {" ("}
+                      <FormattedMessage
+                        id="shared-component.eto-overview-status.included-discount-percentage"
+                        values={{ percentage: eto.whitelistDiscountFraction! * 100 }}
+                      />
                       {")"}
                     </>
                   )}
                   {showPublicDiscount && (
                     <>
-                      {" (-"}
-                      <Percentage>{eto.publicDiscountFraction!}</Percentage>
+                      {" ("}
+                      <FormattedMessage
+                        id="shared-component.eto-overview-status.included-discount-percentage"
+                        values={{ percentage: eto.publicDiscountFraction! * 100 }}
+                      />
                       {")"}
                     </>
                   )}
@@ -284,10 +345,17 @@ const EtoOverviewStatusLayout: React.SFC<IExternalProps & CommonHtmlProps & ISta
                 eto={eto}
                 isAuthorized={isAuthorized}
                 isEligibleToPreEto={isEligibleToPreEto}
+                maxCapExceeded={maxCapExceeded}
               />
             </div>
           </div>
-          <PoweredByNeufund />
+          {previewCode ? (
+            <PoweredByNeufund />
+          ) : !publicView ? (
+            <Link to={withParams(appRoutes.etoPublicView, { previewCode: eto.previewCode })}>
+              <FormattedMessage id="shared-component.eto-overview.more-details" />
+            </Link>
+          ) : null}
         </div>
       )}
     </EtoWidgetContext.Consumer>
@@ -295,14 +363,25 @@ const EtoOverviewStatusLayout: React.SFC<IExternalProps & CommonHtmlProps & ISta
 };
 
 const EtoOverviewStatus = compose<
-  IExternalProps & CommonHtmlProps & IStateProps,
+  IExternalProps & CommonHtmlProps & IStateProps & IDispatchProps,
   IExternalProps & CommonHtmlProps
 >(
-  appConnect<IStateProps, {}, IExternalProps>({
+  appConnect<IStateProps, IDispatchProps, IExternalProps>({
     stateToProps: (state, props) => ({
       isAuthorized: selectIsAuthorized(state.auth),
       isEligibleToPreEto: selectIsEligibleToPreEto(props.eto.etoId, state),
       isPreEto: selectEtoOnChainStateById(state, props.eto.etoId) === EETOStateOnChain.Whitelist,
+      maxCapExceeded: selectInitialMaxCapExceeded(props.eto.etoId, state),
+    }),
+    dispatchToProps: (dispatch, { eto }) => ({
+      navigateToEto: () =>
+        dispatch(push(withParams(appRoutes.etoPublicView, { previewCode: eto.previewCode }))),
+      openInNewWindow: () =>
+        dispatch(
+          routingActions.openInNewWindow(
+            withParams(appRoutes.etoPublicView, { previewCode: eto.previewCode }),
+          ),
+        ),
     }),
   }),
 )(EtoOverviewStatusLayout);

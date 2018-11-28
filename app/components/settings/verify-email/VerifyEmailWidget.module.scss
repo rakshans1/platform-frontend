@@ -1,14 +1,12 @@
-.content {
-  min-height: px-to-rem(178px);
-  max-height: px-to-rem(178px);
+.section {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: space-between;
 }
 
-.custom-padding-top {
+.no-email-user {
   padding-top: px-to-rem(12px);
-}
-
-.buttons {
-  padding-top: px-to-rem(35px);
 }
 
 .icon {
@@ -18,5 +16,4 @@
 
 .text {
   min-height: px-to-rem(68px);
-  max-height: px-to-rem(68px);
 }

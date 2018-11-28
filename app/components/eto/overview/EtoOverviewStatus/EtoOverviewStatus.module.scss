@@ -90,26 +90,8 @@ $divider-margin: 3%;
 }
 
 .group-wrapper {
-  @include media-breakpoint-up(md) {
-    margin-top: px-to-rem(12px);
-    margin-bottom: px-to-rem(12px);
-  }
-
   display: table;
-
-  &.campaign-wrapper {
-    @include media-breakpoint-only(md) {
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      flex-grow: 1;
-      flex-direction: row-reverse;
-    }
-  }
-
-  .rows-group {
-    display: table-row-group;
-  }
+  align-self: center;
 
   .group {
     display: table-row;
@@ -124,6 +106,7 @@ $divider-margin: 3%;
       @include media-breakpoint-down(md) {
         @include font-label;
       }
+
       @include media-breakpoint-up(md) {
         @include font-label-small;
       }
@@ -225,7 +208,9 @@ $divider-margin: 3%;
   margin: px-to-rem(20px) 0;
 }
 
-@each $breakpoint, $val in $grid-breakpoints {
+@each $breakpoint,
+// sass-lint:disable brace-style
+$val in $grid-breakpoints {
   .break-#{$breakpoint} {
     @include media-breakpoint-down($breakpoint) {
       flex-basis: 100%;

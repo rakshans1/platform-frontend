@@ -4,20 +4,23 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { Modal } from "reactstrap";
 
 import { actions } from "../../../modules/actions";
-import { selectIsLightWallet, selectIsUnlocked } from "../../../modules/web3/selectors";
+import { selectIsUnlocked, selectWalletType } from "../../../modules/web3/selectors";
+import { EWalletType } from "../../../modules/web3/types";
 import { appConnect } from "../../../store";
-import { Button } from "../../shared/buttons";
+import { TTranslatedString } from "../../../types";
+import { HiResImage } from "../../shared/HiResImage";
 import { ModalComponentBody } from "../ModalComponentBody";
 import { AccessLightWalletPrompt } from "./AccessLightWalletPrompt";
 
+import * as ledgerConfirm from "../../../assets/img/wallet_selector/ledger_confirm.svg";
 import * as lockIcon from "../../../assets/img/wallet_selector/lock_icon.svg";
 import * as styles from "./AccessWalletModal.module.scss";
 
 interface IStateProps {
-  errorMsg?: string | React.ReactNode;
-  title?: string | React.ReactNode;
-  message?: string | React.ReactNode;
-  isLightWallet: boolean;
+  errorMsg?: TTranslatedString;
+  title?: TTranslatedString;
+  message?: TTranslatedString;
+  walletType: EWalletType | undefined;
   isUnlocked: boolean;
 }
 
@@ -25,43 +28,60 @@ interface IDispatchProps {
   onAccept: (password?: string) => void;
 }
 
-interface IOwnProps {
-  onCancel?: () => void;
+interface IExternalProps {
+  title?: TTranslatedString;
+  message?: TTranslatedString;
 }
 
-const GenericSignPrompt = ({ onCancel }: { onCancel?: () => void }) => (
-  <div className="text-md-center">
-    {onCancel && (
-      <Button onClick={onCancel}>
-        <FormattedMessage id="form.button.cancel" />
-      </Button>
-    )}
-  </div>
-);
-
-export const AccessWalletContainerComponent: React.SFC<
-  IStateProps & IDispatchProps & IOwnProps
-> = props => (
+export const AccessWalletContainerComponent: React.SFC<IStateProps & IDispatchProps> = ({
+  title,
+  message,
+  errorMsg,
+  isUnlocked,
+  onAccept,
+  walletType,
+}) => (
   <div className="text-center">
-    {props.title && <h1>{props.title}</h1>}
-    {props.message && <p>{props.message}</p>}
-    <img src={lockIcon} className="mb-3" />
-    {props.isLightWallet ? (
-      <AccessLightWalletPrompt {...props} />
-    ) : (
-      <GenericSignPrompt onCancel={props.onCancel} />
+    {title && <h1>{title}</h1>}
+    {message && <p>{message}</p>}
+    {walletType === EWalletType.LIGHT && (
+      <div>
+        <img src={lockIcon} className="mt-3 mb-3" />
+        <AccessLightWalletPrompt onAccept={onAccept} isUnlocked={isUnlocked} />
+      </div>
     )}
-    {props.errorMsg && <p className={cn("mt-3", styles.error)}>{props.errorMsg}</p>}
+    {walletType === EWalletType.LEDGER && (
+      <div>
+        <img src={ledgerConfirm} className="mt-1 mb-3" />
+        <div className={cn("mt-2", styles.info)}>
+          <FormattedMessage id="modal.access-wallet.ledger-info" />
+        </div>
+      </div>
+    )}
+    {walletType === EWalletType.BROWSER && (
+      <div>
+        <HiResImage
+          partialPath="wallet_selector/logo_metamask"
+          alt="Parity"
+          title="Parity"
+          className="mt-3 mb-3"
+        />
+        <div className={cn("mt-2", styles.info)}>
+          <FormattedMessage id="modal.access-wallet.metamask-info" />
+        </div>
+      </div>
+    )}
+    {errorMsg && <p className={cn("mt-3", styles.error)}>{errorMsg}</p>}
   </div>
 );
 
-export const AccessWalletContainer = appConnect<IStateProps, IDispatchProps, IOwnProps>({
-  stateToProps: s => ({
+export const AccessWalletContainer = appConnect<IStateProps, IDispatchProps, IExternalProps>({
+  stateToProps: (s, external) => ({
     isOpen: s.accessWallet.isModalOpen,
     errorMsg: s.accessWallet.modalErrorMsg,
-    title: s.accessWallet.modalTitle,
-    message: s.accessWallet.modalMessage,
-    isLightWallet: selectIsLightWallet(s.web3),
+    title: external.title ? external.title : s.accessWallet.modalTitle,
+    message: external.message ? external.message : s.accessWallet.modalMessage,
+    walletType: selectWalletType(s.web3),
     isUnlocked: selectIsUnlocked(s.web3),
   }),
   dispatchToProps: dispatch => ({
@@ -80,7 +100,7 @@ interface IModalDispatchProps {
 const AccessWalletModalComponent: React.SFC<IModalStateProps & IModalDispatchProps> = props => (
   <Modal isOpen={props.isOpen} toggle={props.onCancel} centered>
     <ModalComponentBody onClose={props.onCancel}>
-      <AccessWalletContainer onCancel={props.onCancel} />
+      <AccessWalletContainer />
     </ModalComponentBody>
   </Modal>
 );
