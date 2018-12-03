@@ -1,5 +1,5 @@
-import { channel, delay } from "redux-saga";
-import { call, put, select, take } from "redux-saga/effects";
+import { channel, delay, eventChannel } from "redux-saga";
+import { call, Effect, put, take } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../../di/setupBindings";
 import { STORAGE_JWT_KEY } from "../../../lib/persistence/JwtObjectStorage";
@@ -8,10 +8,20 @@ import { accessWalletAndRunEffect } from "../../access-wallet/sagas";
 import { actions } from "../../actions";
 import { neuCall } from "../../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../../web3/selectors";
-import { selectUserType } from "../selectors";
+import { TEventEmitterChannelEvents } from "../../tx/monitor/sagas";
+
 /**
  * Saga & Promise to fetch a new jwt from the authentication server
  */
+
+export function* loadJwt({ jwtStorage }: TGlobalDependencies): Iterator<Effect> {
+  const jwt = jwtStorage.get();
+  if (jwt) {
+    yield put(actions.auth.loadJWT(jwt));
+    return jwt;
+  }
+}
+
 export async function obtainJwtPromise(
   { getState, web3Manager, signatureAuthApi, cryptoRandomString, logger }: TGlobalDependencies,
   permissions: Array<string> = [],
@@ -82,10 +92,13 @@ const redirectChannel = channel();
 
 export function* startRedirectChannel(): any {
   window.addEventListener("storage", (evt: StorageEvent) => {
-    if (evt.key === STORAGE_JWT_KEY && !evt.newValue)
+    if (evt.key === STORAGE_JWT_KEY && !evt.newValue) {
+      console.log("LOG OUT");
       redirectChannel.put({
         type: actions.auth.logout,
       });
+      redirectChannel.close();
+    }
   });
 }
 
@@ -94,6 +107,6 @@ export function* watchRedirectChannel(): any {
   while (true) {
     yield take(redirectChannel);
     yield put(actions.auth.logout());
-    delay(5000);
+    yield delay(5000);
   }
 }

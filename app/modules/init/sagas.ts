@@ -5,8 +5,9 @@ import { TGlobalDependencies } from "../../di/setupBindings";
 import { IAppState } from "../../store";
 import { isJwtExpiringLateEnough } from "../../utils/JWTUtils";
 import { actions, TAction } from "../actions";
-import { loadJwt, loadUser } from "../auth/sagas";
+import { loadJwt, watchRedirectChannel } from "../auth/jwt/sagas";
 import { selectUserType } from "../auth/selectors";
+import { loadUser } from "../auth/user/sagas";
 import { initializeContracts } from "../contracts/sagas";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { detectUserAgent } from "../user-agent/sagas";
@@ -28,7 +29,9 @@ function* initSmartcontracts({ web3Manager, logger }: TGlobalDependencies): any 
 
 function* initApp({ logger }: TGlobalDependencies): any {
   try {
+    console.log("App init:")
     yield neuCall(detectUserAgent);
+    yield fork(watchRedirectChannel);
 
     const jwt = yield neuCall(loadJwt);
     const userType = yield select(selectUserType);

@@ -4,11 +4,11 @@ import { Modal } from "reactstrap";
 
 import { EUserType } from "../../../lib/api/users/interfaces";
 import { actions } from "../../../modules/actions";
+import { selectUserType } from "../../../modules/auth/selectors";
 import {
   selectIsLatestAgreementAccepted,
   selectIsLatestAgreementLoaded,
-  selectUserType,
-} from "../../../modules/auth/selectors";
+} from "../../../modules/terms-of-service-modal/selectos";
 import { appConnect } from "../../../store";
 import { Button, EButtonLayout } from "../../shared/buttons";
 import { ModalComponentBody } from "../ModalComponentBody";
@@ -100,8 +100,8 @@ export const AcceptTosModal = appConnect<IStateProps, IDispatchProps>({
     userType: selectUserType(s),
   }),
   dispatchToProps: dispatch => ({
-    onDownloadTos: () => dispatch(actions.auth.downloadCurrentAgreement()),
-    onAccept: () => dispatch(actions.auth.acceptCurrentAgreement()),
+    onDownloadTos: () => dispatch(actions.tosModal.downloadCurrentAgreement()),
+    onAccept: () => dispatch(actions.tosModal.acceptCurrentAgreement()),
     onLogout: (userType?: EUserType) => dispatch(actions.auth.logout(userType)),
   }),
 })(AcceptTosModalComponent);

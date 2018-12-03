@@ -27,7 +27,7 @@ import { IAppState } from "../../../store";
 import { invariant } from "../../../utils/invariant";
 import { connectLightWallet } from "../../access-wallet/sagas";
 import { actions, TAction } from "../../actions";
-import { obtainJWT } from '../../auth/jwt/sagas';
+import { obtainJWT } from "../../auth/jwt/sagas";
 import {
   createUser,
   loadUser,
@@ -35,7 +35,7 @@ import {
   signInUser,
   updateUser,
   updateUserPromise,
-} from "../../auth/sagas";
+} from "../../auth/user/sagas";
 import { displayInfoModalSaga } from "../../generic-modal/sagas";
 import { neuCall, neuTakeEvery } from "../../sagasUtils";
 import {
