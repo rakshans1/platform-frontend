@@ -97,7 +97,7 @@ const redirectChannel = channel();
 
 export function* startRedirectChannel(): any {
   window.addEventListener("storage", (evt: StorageEvent) => {
-    if (evt.key === STORAGE_JWT_KEY && !evt.newValue) {
+    if (evt.key === STORAGE_JWT_KEY && evt.oldValue && !evt.newValue) {
       redirectChannel.put({
         type: EUserAuthType.LOGOUT,
       });

@@ -172,7 +172,13 @@ export const verifyLatestUserEmail = () => {
 };
 
 export const assertUserInDashboard = () => {
-  return cy.url().should("contain", appRoutes.dashboard);
+  cy.url().should("contain", appRoutes.dashboard);
+  cy.get(tid("dashboard-application"));
+};
+
+export const assertUserInLanding = () => {
+  cy.url().should("contain", appRoutes.root);
+  cy.get(tid("landing-page"));
 };
 
 export const convertToUniqueEmail = (email: string) => {
