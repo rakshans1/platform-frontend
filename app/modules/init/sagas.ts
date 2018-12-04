@@ -11,6 +11,7 @@ import { loadUser } from "../auth/user/sagas";
 import { initializeContracts } from "../contracts/sagas";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { detectUserAgent } from "../user-agent/sagas";
+import { EInitType } from "./reducer";
 
 function* initSmartcontracts({ web3Manager, logger }: TGlobalDependencies): any {
   try {
@@ -18,10 +19,13 @@ function* initSmartcontracts({ web3Manager, logger }: TGlobalDependencies): any 
 
     yield neuCall(initializeContracts);
 
-    yield put(actions.init.done("smartcontractsInit"));
+    yield put(actions.init.done(EInitType.smartcontractsInit));
   } catch (e) {
     yield put(
-      actions.init.error("smartcontractsInit", "Error while connecting with Ethereum blockchain"),
+      actions.init.error(
+        EInitType.smartcontractsInit,
+        "Error while connecting with Ethereum blockchain",
+      ),
     );
     logger.error("Smart Contract Init Error", e);
   }
@@ -29,9 +33,7 @@ function* initSmartcontracts({ web3Manager, logger }: TGlobalDependencies): any 
 
 function* initApp({ logger }: TGlobalDependencies): any {
   try {
-    console.log("App init:")
     yield neuCall(detectUserAgent);
-    yield fork(watchRedirectChannel);
 
     const jwt = yield neuCall(loadJwt);
     const userType = yield select(selectUserType);
@@ -56,9 +58,9 @@ function* initApp({ logger }: TGlobalDependencies): any {
       }
     }
 
-    yield put(actions.init.done("appInit"));
+    yield put(actions.init.done(EInitType.appInit));
   } catch (e) {
-    yield put(actions.init.error("appInit", e.message || "Unknown error"));
+    yield put(actions.init.error(EInitType.appInit, e.message || "Unknown error"));
     logger.error("App init error", e);
   }
 }
@@ -92,11 +94,12 @@ export function* initSmartcontractsOnce(): any {
     return;
   }
 
-  yield put(actions.init.start("smartcontractsInit"));
+  yield put(actions.init.start(EInitType.smartcontractsInit));
 }
 
 export const initSagas = function*(): Iterator<effects.Effect> {
   yield fork(neuTakeEvery, "INIT_START", initStartSaga);
   // Smart Contracts are only initialized once during the whole life cycle of the app
   yield fork(initSmartcontractsOnce);
+  yield fork(watchRedirectChannel);
 };

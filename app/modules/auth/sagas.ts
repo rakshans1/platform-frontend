@@ -56,9 +56,6 @@ function* logoutWatcher(
   } else {
     yield put(actions.routing.goEtoHome());
   }
-
-  // yield put(actions.init.start("appInit"));
-
   logger.setUser(null);
 }
 

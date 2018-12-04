@@ -1,4 +1,4 @@
-import { channel, delay, eventChannel } from "redux-saga";
+import { channel, delay } from "redux-saga";
 import { call, Effect, put, take } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../../di/setupBindings";
@@ -6,9 +6,14 @@ import { STORAGE_JWT_KEY } from "../../../lib/persistence/JwtObjectStorage";
 import { hasValidPermissions } from "../../../utils/JWTUtils";
 import { accessWalletAndRunEffect } from "../../access-wallet/sagas";
 import { actions } from "../../actions";
+import { EInitType } from "../../init/reducer";
 import { neuCall } from "../../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../../web3/selectors";
-import { TEventEmitterChannelEvents } from "../../tx/monitor/sagas";
+
+enum EUserAuthType {
+  LOGOUT = "LOGOUT",
+  LOGIN = "LOGIN",
+}
 
 /**
  * Saga & Promise to fetch a new jwt from the authentication server
@@ -93,11 +98,14 @@ const redirectChannel = channel();
 export function* startRedirectChannel(): any {
   window.addEventListener("storage", (evt: StorageEvent) => {
     if (evt.key === STORAGE_JWT_KEY && !evt.newValue) {
-      console.log("LOG OUT");
       redirectChannel.put({
-        type: actions.auth.logout,
+        type: EUserAuthType.LOGOUT,
       });
-      redirectChannel.close();
+    }
+    if (evt.key === STORAGE_JWT_KEY && !evt.oldValue && evt.newValue) {
+      redirectChannel.put({
+        type: EUserAuthType.LOGIN,
+      });
     }
   });
 }
@@ -105,8 +113,15 @@ export function* startRedirectChannel(): any {
 export function* watchRedirectChannel(): any {
   yield startRedirectChannel();
   while (true) {
-    yield take(redirectChannel);
-    yield put(actions.auth.logout());
+    const userAction = yield take(redirectChannel);
+    switch (userAction.type) {
+      case EUserAuthType.LOGOUT:
+        yield put(actions.auth.logout());
+        break;
+      case EUserAuthType.LOGIN:
+        yield put(actions.init.start(EInitType.appInit));
+        break;
+    }
     yield delay(5000);
   }
 }
