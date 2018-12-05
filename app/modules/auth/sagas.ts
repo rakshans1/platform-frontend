@@ -12,6 +12,7 @@ import { selectActivationCodeFromQueryString, selectEmailFromQueryString } from 
 import { verifyUserEmailPromise } from "./email/sagas";
 import { selectVerifiedUserEmail } from "./selectors";
 import { loadUser, signInUser } from "./user/sagas";
+import { EInitType } from "../init/reducer";
 
 /**
  * User Sign-in flow
@@ -21,6 +22,7 @@ function* handleSignInUser({ logger }: TGlobalDependencies): Iterator<any> {
     yield neuCall(signInUser);
   } catch (e) {
     logger.error("User Sign in error", e);
+    yield put(actions.auth.logout());
     if (e instanceof SignerRejectConfirmationError) {
       yield put(
         actions.walletSelector.messageSigningError(
@@ -56,6 +58,7 @@ function* logoutWatcher(
   } else {
     yield put(actions.routing.goEtoHome());
   }
+  yield put(actions.init.start(EInitType.appInit));
   logger.setUser(null);
 }
 

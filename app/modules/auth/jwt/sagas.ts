@@ -118,9 +118,9 @@ export function* watchRedirectChannel(): any {
       case EUserAuthType.LOGOUT:
         yield put(actions.auth.logout());
         break;
-      case EUserAuthType.LOGIN:
+     /*  case EUserAuthType.LOGIN:
         yield put(actions.init.start(EInitType.appInit));
-        break;
+        break; */
     }
     yield delay(5000);
   }

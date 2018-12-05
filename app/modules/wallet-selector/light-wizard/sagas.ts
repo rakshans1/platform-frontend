@@ -136,9 +136,9 @@ export function* lightWalletRegisterWatch(
   action: TAction,
 ): Iterator<any> {
   try {
-    if (action.type !== "LIGHT_WALLET_REGISTER") {
-      return;
-    }
+    if (action.type !== "LIGHT_WALLET_REGISTER") return;
+
+    debugger;
     const { password, email } = action.payload;
     const isEmailAvailable = yield neuCall(checkEmailPromise, email);
 
@@ -161,7 +161,7 @@ export function* lightWalletRegisterWatch(
         createMessage(SignInUserErrorMessage.MESSAGE_SIGNING_SERVER_CONNECTION_FAILURE),
       );
     }
-
+    yield put(actions.auth.logout());
     yield put(actions.genericModal.showErrorModal("Error", error)); //TODO refactor errorModal to accept TMessage
   }
 }

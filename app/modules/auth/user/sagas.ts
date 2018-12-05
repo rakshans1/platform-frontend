@@ -63,6 +63,7 @@ export async function createUserPromise(
 }
 
 export function* createUser(newUser: IUserInput): Iterator<any> {
+  debugger;
   const user: IUser = yield neuCall(createUserPromise, newUser);
   yield put(actions.auth.setUser(user));
 
@@ -94,6 +95,8 @@ export async function loadOrCreateUserPromise(
   userType: EUserType,
 ): Promise<IUser> {
   // tslint:disable-next-line
+  debugger;
+
   const walletMetadata = web3Manager.personalWallet!.getMetadata();
   try {
     const user = await apiUserService.me();
