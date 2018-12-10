@@ -4,6 +4,7 @@ import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 import { compose } from "redux";
 
+import { externalRoutes } from "../../../config/externalRoutes";
 import { TRequestOutsourcedStatus, TRequestStatus } from "../../../lib/api/KycApi.interfaces";
 import { EUserType } from "../../../lib/api/users/interfaces";
 import { actions } from "../../../modules/actions";
@@ -19,11 +20,9 @@ import {
   selectWidgetError,
   selectWidgetLoading,
 } from "../../../modules/kyc/selectors";
-import { selectIsLightWallet } from "../../../modules/web3/selectors";
 import { appConnect } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { onLeaveAction } from "../../../utils/OnLeaveAction";
-import { externalRoutes } from "../../externalRoutes";
 import { Button, EButtonLayout } from "../../shared/buttons";
 import { LoadingIndicator } from "../../shared/loading-indicator";
 import { Panel } from "../../shared/Panel";
@@ -264,15 +263,15 @@ export const KycStatusWidgetComponent: React.SFC<IKycStatusWidgetProps> = props 
 
 export const KycStatusWidget = compose<React.ComponentClass<IOwnProps>>(
   appConnect<IStateProps, IDispatchProps, IOwnProps>({
-    stateToProps: s => ({
-      isUserEmailVerified: selectIsUserEmailVerified(s.auth),
-      userType: selectUserType(s)!,
-      backupCodesVerified: selectBackupCodesVerified(s.auth) || !selectIsLightWallet(s.web3),
-      requestStatus: selectKycRequestStatus(s.kyc),
-      requestOutsourcedStatus: selectKycRequestOutsourcedStatus(s.kyc),
-      externalKycUrl: selectExternalKycUrl(s.kyc),
-      isLoading: selectWidgetLoading(s.kyc),
-      error: selectWidgetError(s.kyc),
+    stateToProps: state => ({
+      isUserEmailVerified: selectIsUserEmailVerified(state.auth),
+      userType: selectUserType(state)!,
+      backupCodesVerified: selectBackupCodesVerified(state),
+      requestStatus: selectKycRequestStatus(state),
+      requestOutsourcedStatus: selectKycRequestOutsourcedStatus(state.kyc),
+      externalKycUrl: selectExternalKycUrl(state.kyc),
+      isLoading: selectWidgetLoading(state.kyc),
+      error: selectWidgetError(state.kyc),
     }),
     dispatchToProps: dispatch => ({
       onGoToKycHome: () => dispatch(actions.routing.goToKYCHome()),

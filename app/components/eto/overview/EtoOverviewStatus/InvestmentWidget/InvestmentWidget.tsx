@@ -57,12 +57,14 @@ const InvestmentWidgetLayout: React.SFC<TInvestWidgetProps> = ({
               className={styles.amount}
             />
           </div>
-          <div>
-            <FormattedMessage
-              id="shared-component.eto-overview.investors"
-              values={{ totalInvestors }}
-            />
-          </div>
+          {process.env.NF_MAY_SHOW_INVESTOR_STATS === "1" && (
+            <div>
+              <FormattedMessage
+                id="shared-component.eto-overview.investors"
+                values={{ totalInvestors }}
+              />
+            </div>
+          )}
         </div>
         <InvestmentProgress eto={eto} />
       </div>
@@ -74,6 +76,7 @@ const InvestmentWidgetLayout: React.SFC<TInvestWidgetProps> = ({
                 <ButtonLink
                   to={withParams(appRoutes.etoPublicView, { previewCode })}
                   target="_blank"
+                  data-test-id="eto-widget-invest-now-button"
                 >
                   <FormattedMessage id="shared-component.eto-overview.invest-now" />
                 </ButtonLink>

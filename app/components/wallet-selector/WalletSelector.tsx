@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Col, Row } from "reactstrap";
 import { compose } from "redux";
 
+import { externalRoutes } from "../../config/externalRoutes";
 import { actions } from "../../modules/actions";
 import {
   selectIsLoginRoute,
@@ -19,6 +20,8 @@ import { appRoutes } from "../appRoutes";
 import { LayoutRegisterLogin } from "../layouts/LayoutRegisterLogin";
 import { LayoutUnauthorized } from "../layouts/LayoutUnauthorized";
 import { Button, ButtonLink, EButtonLayout } from "../shared/buttons";
+import { createErrorBoundary } from "../shared/errorBoundary/ErrorBoundary";
+import { ErrorBoundaryLayoutUnauthorized } from "../shared/errorBoundary/ErrorBoundaryLayoutUnauthorized";
 import { ICBMWalletHelpTextModal } from "./ICBMWalletHelpTextModal";
 import { WalletMessageSigner } from "./WalletMessageSigner";
 import { WalletRouter } from "./WalletRouter";
@@ -129,7 +132,7 @@ export const WalletSelectorComponent: React.SFC<IStateProps & IDispatchProps> = 
               ) : (
                 <>
                   <FormattedMessage id="wallet-selector.register.help-link" />{" "}
-                  <a href="https://support.neufund.org/support/home" target="_blank">
+                  <a href={`${externalRoutes.neufundSupport}/home`} target="_blank">
                     <strong>
                       <FormattedMessage id="wallet-selector.help-link.register.label" />
                     </strong>
@@ -161,6 +164,7 @@ export const WalletSelectorComponent: React.SFC<IStateProps & IDispatchProps> = 
 };
 
 export const WalletSelector = compose<React.SFC>(
+  createErrorBoundary(ErrorBoundaryLayoutUnauthorized),
   onEnterAction({
     actionCreator: dispatch => dispatch(actions.walletSelector.reset()),
   }),

@@ -18,6 +18,8 @@ import { onLeaveAction } from "../../../../utils/OnLeaveAction";
 import { ButtonArrowRight } from "../../../shared/buttons";
 import { Document } from "../../../shared/Document";
 import { DocumentTemplateButton } from "../../../shared/DocumentLink";
+import { createErrorBoundary } from "../../../shared/errorBoundary/ErrorBoundary";
+import { ErrorBoundaryPanel } from "../../../shared/errorBoundary/ErrorBoundaryPanel";
 import { LoadingIndicator } from "../../../shared/loading-indicator";
 import { ECurrencySymbol, EMoneyFormat, Money } from "../../../shared/Money";
 import { Panel } from "../../../shared/Panel";
@@ -136,7 +138,7 @@ export const BookBuildingWidgetComponent: React.SFC<IProps> = ({
   } else if (!bookBuildingEnabled && bookBuildingStats.investorsCount) {
     return (
       <BookBuildingWidgetLayout
-        headerText={<FormattedMessage id="settings.book-building-widget.book-building-diabled" />}
+        headerText={<FormattedMessage id="settings.book-building-widget.book-building-disabled" />}
         text={<FormattedMessage id="settings.book-building-widget.book-building-disabled-text" />}
         buttonText={
           <FormattedMessage id="settings.book-building-widget.reactivate-book-building" />
@@ -169,6 +171,7 @@ export const BookBuildingWidgetComponent: React.SFC<IProps> = ({
 };
 
 export const BookBuildingWidget = compose<React.SFC>(
+  createErrorBoundary(ErrorBoundaryPanel),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: state => ({
       bookBuildingEnabled: selectIsBookBuilding(state),

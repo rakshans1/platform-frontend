@@ -246,3 +246,5 @@ export const etoFixtureAddressByName = (name: string) => {
   )! as EthereumAddress;
   return makeEthereumAddressChecksummed(address);
 };
+
+export const stubWindow = (hookName: string) => (window.open = cy.stub().as(hookName) as any);
