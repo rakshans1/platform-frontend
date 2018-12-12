@@ -8,7 +8,7 @@ import { actions, TAction } from "../actions";
 import { loadJwt, watchRedirectChannel } from "../auth/jwt/sagas";
 import { selectUserType } from "../auth/selectors";
 import { loadUser } from "../auth/user/sagas";
-import { initializeContracts } from "../contracts/sagas";
+import { initializeContracts, populatePlatformTermsConstants } from "../contracts/sagas";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { detectUserAgent } from "../user-agent/sagas";
 import { EInitType } from "./reducer";
@@ -18,6 +18,7 @@ function* initSmartcontracts({ web3Manager, logger }: TGlobalDependencies): any 
     yield web3Manager.initialize();
 
     yield neuCall(initializeContracts);
+    yield neuCall(populatePlatformTermsConstants);
 
     yield put(actions.init.done(EInitType.smartcontractsInit));
   } catch (e) {

@@ -17,6 +17,7 @@ import { appConnect } from "../store";
 import { IInversifyProviderContext } from "../utils/InversifyProvider";
 import { onEnterAction } from "../utils/OnEnterAction";
 import { ScrollToTop } from "../utils/ScrollToTop";
+import { withRootMetaTag } from "../utils/withMetaTags";
 import { AppRouter } from "./AppRouter";
 import { CriticalError } from "./layouts/CriticalError";
 import { GenericModal } from "./modals/GenericModal";
@@ -84,6 +85,7 @@ class AppComponent extends React.Component<IStateProps, IState> {
 }
 
 export const App = compose<React.ComponentClass>(
+  withRootMetaTag(),
   onEnterAction({
     actionCreator: d => d(actions.init.start(EInitType.appInit)),
   }),
