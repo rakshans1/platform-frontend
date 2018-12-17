@@ -11,6 +11,7 @@ import { EInitType } from "../init/reducer";
 import { neuCall, neuTakeEvery, neuTakeLatest } from "../sagasUtils";
 import { selectActivationCodeFromQueryString, selectEmailFromQueryString } from "../web3/selectors";
 import { verifyUserEmailPromise } from "./email/sagas";
+import { watchRedirectChannel } from "./jwt/sagas";
 import { selectVerifiedUserEmail } from "./selectors";
 import { loadUser, signInUser } from "./user/sagas";
 
@@ -83,6 +84,7 @@ function* verifyUserEmail(): Iterator<any> {
 }
 
 export const authSagas = function*(): Iterator<Effect> {
+  yield fork(watchRedirectChannel);
   yield fork(neuTakeLatest, "AUTH_LOGOUT", logoutWatcher);
   yield fork(neuTakeEvery, "AUTH_SET_USER", setUser);
   yield fork(neuTakeEvery, "AUTH_VERIFY_EMAIL", verifyUserEmail);

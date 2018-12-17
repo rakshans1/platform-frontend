@@ -32,7 +32,9 @@ export function* signInUser({
     //For platform open in other windows
     yield userStorage.set(REGISTRATION_DONE);
 
+    /* tslint:disable: no-useless-cast */
     walletStorage.set(web3Manager.personalWallet!.getMetadata());
+    /* tslint:enable: no-useless-cast */
 
     const redirectionUrl = yield select((state: IAppState) =>
       selectRedirectURLFromQueryString(state.router),

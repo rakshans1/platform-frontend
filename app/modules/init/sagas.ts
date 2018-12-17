@@ -5,7 +5,7 @@ import { TGlobalDependencies } from "../../di/setupBindings";
 import { IAppState } from "../../store";
 import { isJwtExpiringLateEnough } from "../../utils/JWTUtils";
 import { actions, TAction } from "../actions";
-import { loadJwt, watchRedirectChannel } from "../auth/jwt/sagas";
+import { loadJwt } from "../auth/jwt/sagas";
 import { selectUserType } from "../auth/selectors";
 import { loadUser } from "../auth/user/sagas";
 import { initializeContracts, populatePlatformTermsConstants } from "../contracts/sagas";
@@ -102,5 +102,4 @@ export const initSagas = function*(): Iterator<effects.Effect> {
   yield fork(neuTakeEvery, "INIT_START", initStartSaga);
   // Smart Contracts are only initialized once during the whole life cycle of the app
   yield fork(initSmartcontractsOnce);
-  yield fork(watchRedirectChannel);
 };
