@@ -453,6 +453,8 @@ export const etoCompaniesCards: Array<EtoData> = [
         alt: "",
         height: 270,
         width: 530,
+        preserveOriginalRatio: true,
+        forceBg: "black",
       },
       to: "http://curf.surf",
     },
@@ -474,7 +476,7 @@ export const etoCompaniesCards: Array<EtoData> = [
       ],
       name: "AGORA TRADE",
       description:
-        "Agora Trade is the first ever cross-chain, non-custodial, cryptocurrency exchange based on multisignature timelocked contracts and hashed timelocked contracts, that allows for free make orders.",
+        "Agora.Trade sets a new security and usability standard for cryptocurrency exchanges. Its decentralized nature gives control over assets back to users. The goal is to establish Agora.Trade as the highest exchange volume.",
       quote: {
         text: "",
         credits: "",

@@ -6,7 +6,6 @@ import { STORAGE_JWT_KEY } from "../../../lib/persistence/JwtObjectStorage";
 import { hasValidPermissions } from "../../../utils/JWTUtils";
 import { accessWalletAndRunEffect } from "../../access-wallet/sagas";
 import { actions } from "../../actions";
-import { EInitType } from "../../init/reducer";
 import { neuCall } from "../../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../../web3/selectors";
 
@@ -118,7 +117,7 @@ export function* watchRedirectChannel(): any {
       case EUserAuthType.LOGOUT:
         yield put(actions.auth.logout());
         break;
-     /*  case EUserAuthType.LOGIN:
+      /*  case EUserAuthType.LOGIN:
         yield put(actions.init.start(EInitType.appInit));
         break; */
     }

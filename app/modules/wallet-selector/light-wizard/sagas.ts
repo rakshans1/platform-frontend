@@ -138,7 +138,6 @@ export function* lightWalletRegisterWatch(
   try {
     if (action.type !== "LIGHT_WALLET_REGISTER") return;
 
-    debugger;
     const { password, email } = action.payload;
     const isEmailAvailable = yield neuCall(checkEmailPromise, email);
 
