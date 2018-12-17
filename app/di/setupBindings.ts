@@ -22,6 +22,7 @@ import {
   AsyncIntervalSchedulerFactory,
   AsyncIntervalSchedulerFactoryType,
 } from "../utils/AsyncIntervalScheduler";
+import { USER_JWT_KEY } from "./../lib/persistence/UserStorage";
 
 import { AuthorizedJsonHttpClient } from "../lib/api/client/AuthJsonHttpClient";
 import { EtoApi } from "../lib/api/eto/EtoApi";
@@ -184,6 +185,18 @@ export function setupBindings(config: IConfig): Container {
     )
     .inSingletonScope();
 
+  container
+    .bind<ObjectStorage<string>>(symbols.userStorage)
+    .toDynamicValue(
+      ctx =>
+        new ObjectStorage<string>(
+          ctx.container.get(symbols.storage),
+          ctx.container.get(symbols.logger),
+          USER_JWT_KEY,
+        ),
+    )
+    .inSingletonScope();
+
   container.bind(symbols.intlWrapper).toConstantValue(new IntlWrapper());
 
   return container;
@@ -216,12 +229,15 @@ export const createGlobalDependencies = (container: Container) => ({
   // blockchain & wallets
   contractsService: container.get<ContractsService>(symbols.contractsService),
   web3Manager: container.get<Web3Manager>(symbols.web3Manager),
-  walletStorage: container.get<WalletStorage<TWalletMetadata>>(symbols.walletStorage),
   lightWalletConnector: container.get<LightWalletConnector>(symbols.lightWalletConnector),
-  jwtStorage: container.get<ObjectStorage<string>>(symbols.jwtStorage),
   lightWalletUtil: container.get<LightWalletUtil>(symbols.lightWalletUtil),
   browserWalletConnector: container.get<BrowserWalletConnector>(symbols.browserWalletConnector),
   ledgerWalletConnector: container.get<LedgerWalletConnector>(symbols.ledgerWalletConnector),
+
+  // storage
+  jwtStorage: container.get<ObjectStorage<string>>(symbols.jwtStorage),
+  walletStorage: container.get<WalletStorage<TWalletMetadata>>(symbols.walletStorage),
+  userStorage: container.get<ObjectStorage<string>>(symbols.userStorage),
 
   // network layer
   binaryHttpClient: container.get<BinaryHttpClient>(symbols.binaryHttpClient),
