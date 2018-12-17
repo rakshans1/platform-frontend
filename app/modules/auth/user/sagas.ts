@@ -13,9 +13,14 @@ import { loadPreviousWallet } from "../../web3/sagas";
 import { EWalletSubType, EWalletType } from "../../web3/types";
 import { obtainJWT } from "../jwt/sagas";
 import { SIGN_TOS } from "./../../../config/constants";
+import { REGISTRATION_DONE } from "./../../../lib/persistence/UserStorage";
 import { SignerTimeoutError, SignerUnknownError } from "./../../../lib/web3/Web3Manager";
 
-export function* signInUser({ walletStorage, web3Manager }: TGlobalDependencies): Iterator<any> {
+export function* signInUser({
+  walletStorage,
+  web3Manager,
+  userStorage,
+}: TGlobalDependencies): Iterator<any> {
   try {
     // we will try to create with user type from URL but it could happen that account already exists and has different user type
     const probableUserType: EUserType = yield select((s: IAppState) => selectUrlUserType(s.router));
@@ -23,7 +28,10 @@ export function* signInUser({ walletStorage, web3Manager }: TGlobalDependencies)
 
     yield neuCall(obtainJWT, [SIGN_TOS]); // by default we have the sign-tos permission, as this is the first thing a user will have to do after signup
     yield call(loadOrCreateUser, probableUserType);
-    // tslint:disable-next-line
+
+    //For platform open in other windows
+    yield userStorage.set(REGISTRATION_DONE);
+
     walletStorage.set(web3Manager.personalWallet!.getMetadata());
 
     const redirectionUrl = yield select((state: IAppState) =>

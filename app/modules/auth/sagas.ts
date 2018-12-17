@@ -23,11 +23,13 @@ function* setUser({ logger }: TGlobalDependencies, action: TAction): Iterator<an
 }
 
 function* logoutWatcher(
-  { web3Manager, jwtStorage, logger }: TGlobalDependencies,
+  { web3Manager, jwtStorage, logger, userStorage }: TGlobalDependencies,
   action: TAction,
 ): Iterator<any> {
   if (action.type !== "AUTH_LOGOUT") return;
   const { userType } = action.payload;
+
+  userStorage.clear();
   jwtStorage.clear();
   yield web3Manager.unplugPersonalWallet();
   if (userType === EUserType.INVESTOR || !userType) {

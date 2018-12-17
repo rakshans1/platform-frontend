@@ -1,11 +1,13 @@
 import { channel, delay } from "redux-saga";
 import { call, Effect, put, take } from "redux-saga/effects";
+import { USER_JWT_KEY } from "./../../../lib/persistence/UserStorage";
 
 import { TGlobalDependencies } from "../../../di/setupBindings";
 import { STORAGE_JWT_KEY } from "../../../lib/persistence/JwtObjectStorage";
 import { hasValidPermissions } from "../../../utils/JWTUtils";
 import { accessWalletAndRunEffect } from "../../access-wallet/sagas";
 import { actions } from "../../actions";
+import { EInitType } from "../../init/reducer";
 import { neuCall } from "../../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../../web3/selectors";
 
@@ -101,7 +103,7 @@ export function* startRedirectChannel(): any {
         type: EUserAuthType.LOGOUT,
       });
     }
-    if (evt.key === STORAGE_JWT_KEY && !evt.oldValue && evt.newValue) {
+    if (evt.key === USER_JWT_KEY && !evt.oldValue && evt.newValue) {
       redirectChannel.put({
         type: EUserAuthType.LOGIN,
       });
@@ -117,9 +119,9 @@ export function* watchRedirectChannel(): any {
       case EUserAuthType.LOGOUT:
         yield put(actions.auth.logout());
         break;
-      /*  case EUserAuthType.LOGIN:
+      case EUserAuthType.LOGIN:
         yield put(actions.init.start(EInitType.appInit));
-        break; */
+        break;
     }
     yield delay(5000);
   }
