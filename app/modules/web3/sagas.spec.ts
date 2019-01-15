@@ -61,9 +61,7 @@ describe("Web3 sagas", () => {
         intlWrapper: { intl: dummyIntl },
       })
         .withState(state)
-        .put(actions.walletSelector.reset())
-        .put(actions.walletSelector.ledgerReset())
-        .put(actions.web3.personalWalletDisconnected())
+        .put(actions.auth.logout())
         .run();
 
       expect(dummyNotificationCenter.error).to.be.calledOnce;
@@ -86,6 +84,7 @@ describe("Web3 sagas", () => {
         intlWrapper: { intl: dummyIntl },
       })
         .withState(state)
+        .put(actions.auth.logout())
         .run();
 
       expect(dummyNotificationCenter.error).to.be.calledOnce;
@@ -107,6 +106,7 @@ describe("Web3 sagas", () => {
         intlWrapper: { intl: dummyIntl },
       })
         .withState(state)
+        .put(actions.auth.logout())
         .run();
 
       expect(dummyNotificationCenter.error).not.to.be.called;

@@ -53,7 +53,7 @@ class AppComponent extends React.Component<IStateProps, IState> {
     this.logger.fatal("Fatal app error", error, errorInfo);
   }
 
-  render(): React.ReactNode {
+  renderContent(): React.ReactNode {
     if (this.props.error) {
       return <CriticalError message={this.props.error} />;
     }
@@ -72,9 +72,17 @@ class AppComponent extends React.Component<IStateProps, IState> {
           <AppRouter />
         </ScrollToTop>
         <AccessWalletModal />
-        <ToastContainer />
         <GenericModal />
         <VideoModal />
+      </>
+    )
+  }
+
+  render(): React.ReactNode {
+    return (
+      <>
+        {this.renderContent()}
+        <ToastContainer />
       </>
     );
   }

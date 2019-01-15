@@ -101,8 +101,6 @@ export const ledgerWizardReducer: AppReducer<ILedgerWizardState> = (
         isLoadingAddresses: true,
         advanced: !state.advanced,
       };
-    case "LEDGER_WIZARD_RESET":
-      return ledgerWizardInitialState;
   }
 
   return state;

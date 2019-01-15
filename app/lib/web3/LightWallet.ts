@@ -12,12 +12,13 @@ import * as Web3ProviderEngine from "web3-provider-engine";
 import * as HookedWalletSubprovider from "web3-provider-engine/subproviders/hooked-wallet";
 // tslint:disable-next-line
 import * as RpcSubprovider from "web3-provider-engine/subproviders/rpc";
-import { IPersonalWallet, SignerType } from "./PersonalWeb3";
+
+import { IPersonalWallet, SignerType } from "./IPersonalWeb3";
 import { IEthereumNetworkConfig, IRawTxData } from "./types";
 
 import { symbols } from "../../di/symbols";
 import { EWalletSubType, EWalletType } from "../../modules/web3/types";
-import { EthereumAddress } from "../../types";
+import { EthereumAddress, EthereumNetworkId } from "../../types";
 import { ILightWalletMetadata } from "../persistence/WalletMetadataObjectStorage";
 import { Web3Adapter } from "./Web3Adapter";
 
@@ -208,12 +209,11 @@ export class LightWallet implements IPersonalWallet {
     return SignerType.ETH_SIGN;
   }
 
-  public async testConnection(networkId: string): Promise<boolean> {
+  public async testConnection(networkId: EthereumNetworkId): Promise<boolean> {
     const currentNetworkId = await this.web3Adapter.getNetworkId();
-    if (currentNetworkId !== networkId) {
-      return false;
-    }
-    return !!(await this.web3Adapter.getAccountAddress());
+    const currentAccountAddress = await this.web3Adapter.getAccountAddress();
+
+    return !(currentNetworkId !== networkId || currentAccountAddress !== this.ethereumAddress);
   }
 
   public async signMessage(data: string): Promise<string> {

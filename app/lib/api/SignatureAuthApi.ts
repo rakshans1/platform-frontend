@@ -3,7 +3,7 @@ import * as Yup from "yup";
 
 import { symbols } from "../../di/symbols";
 import { EthereumAddressWithChecksum } from "../../types";
-import { SignerType } from "../web3/PersonalWeb3";
+import { SignerType } from "../web3/IPersonalWeb3";
 import { IHttpClient, IHttpResponse } from "./client/IHttpClient";
 
 export interface IChallengeEndpointResponse {

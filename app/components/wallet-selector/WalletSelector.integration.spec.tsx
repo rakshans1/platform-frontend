@@ -30,7 +30,7 @@ import {
 } from "../../lib/web3/BrowserWallet";
 import { ContractsService } from "../../lib/web3/ContractsService";
 import { LedgerWallet, LedgerWalletConnector } from "../../lib/web3/LedgerWallet";
-import { SignerType } from "../../lib/web3/PersonalWeb3";
+import { SignerType } from "../../lib/web3/IPersonalWeb3";
 import { Web3Adapter } from "../../lib/web3/Web3Adapter";
 import { Web3ManagerMock } from "../../lib/web3/Web3Manager.mock";
 import { actions } from "../../modules/actions";

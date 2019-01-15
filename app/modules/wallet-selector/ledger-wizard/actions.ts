@@ -45,6 +45,4 @@ export const ledgerWizardActions = {
 
   setLedgerAccounts: (accounts: ILedgerAccount[], derivationPathPrefix: string) =>
     createAction("SET_LEDGER_WIZARD_ACCOUNTS", { accounts, derivationPathPrefix }),
-
-  ledgerReset: () => createSimpleAction("LEDGER_WIZARD_RESET"),
 };

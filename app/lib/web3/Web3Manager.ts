@@ -5,15 +5,15 @@ import * as Web3 from "web3";
 import { EventEmitter } from "events";
 import { symbols } from "../../di/symbols";
 import { calculateGasLimitWithOverhead, encodeTransaction } from "../../modules/tx/utils";
-import { EthereumNetworkId } from "../../types";
+import { EthereumAddress, EthereumNetworkId } from "../../types";
 import {
   AsyncIntervalScheduler,
   AsyncIntervalSchedulerFactoryType,
 } from "../../utils/AsyncIntervalScheduler";
 import { promiseTimeout } from "../../utils/promiseTimeout";
 import { ILogger } from "../dependencies/Logger";
+import { IPersonalWallet } from "./IPersonalWeb3";
 import { LightWallet } from "./LightWallet";
-import { IPersonalWallet } from "./PersonalWeb3";
 import { IEthereumNetworkConfig } from "./types";
 import { Web3Adapter } from "./Web3Adapter";
 
@@ -28,6 +28,7 @@ export class SignerTimeoutError extends SignerError {}
 export class SignerUnknownError extends SignerError {}
 
 export const WEB3_MANAGER_CONNECTION_WATCHER_INTERVAL = 5000;
+export const WEB3_MANAGER_CONNECTION_WATCHER_TIMEOUT = 30000;
 
 export enum EWeb3ManagerEvents {
   NEW_PERSONAL_WALLET_PLUGGED = "web3_manager_new_personal_wallet_plugged",
@@ -137,7 +138,7 @@ export class Web3Manager extends EventEmitter {
     const isConnectionWorking = await promiseTimeout({
       promise: this.personalWallet.testConnection(this.networkId),
       defaultValue: false,
-      timeout: WEB3_MANAGER_CONNECTION_WATCHER_INTERVAL,
+      timeout: WEB3_MANAGER_CONNECTION_WATCHER_TIMEOUT,
     });
 
     if (!isConnectionWorking) {

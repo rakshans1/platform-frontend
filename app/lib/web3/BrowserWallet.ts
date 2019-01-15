@@ -6,7 +6,7 @@ import * as Web3 from "web3";
 import { EWalletSubType, EWalletType } from "../../modules/web3/types";
 import { EthereumAddress, EthereumNetworkId } from "../../types";
 import { IBrowserWalletMetadata } from "../persistence/WalletMetadataObjectStorage";
-import { IPersonalWallet, SignerType } from "./PersonalWeb3";
+import { IPersonalWallet, SignerType } from "./IPersonalWeb3";
 import { Web3Adapter } from "./Web3Adapter";
 import { SignerRejectConfirmationError } from "./Web3Manager";
 
@@ -43,13 +43,11 @@ export class BrowserWallet implements IPersonalWallet {
     }
   }
 
-  public async testConnection(networkId: string): Promise<boolean> {
+  public async testConnection(networkId: EthereumNetworkId): Promise<boolean> {
     const currentNetworkId = await this.web3Adapter.getNetworkId();
-    if (currentNetworkId !== networkId) {
-      return false;
-    }
+    const currentAccountAddress = await this.web3Adapter.getAccountAddress();
 
-    return !!(await this.web3Adapter.getAccountAddress());
+    return !(currentNetworkId !== networkId || currentAccountAddress !== this.ethereumAddress);
   }
 
   public async signMessage(data: string): Promise<string> {
@@ -95,11 +93,7 @@ export class BrowserWallet implements IPersonalWallet {
 
 @injectable()
 export class BrowserWalletConnector {
-  dataApprovalPending: boolean;
-
-  constructor() {
-    this.dataApprovalPending = false;
-  }
+  dataApprovalPending: boolean = false;
 
   public async connect(networkId: EthereumNetworkId): Promise<BrowserWallet> {
     let newMetamask = true;

@@ -73,6 +73,7 @@ export function* loadPreviousWallet(
   //forcedUserType can still pass as undefined
   const userType: EUserType = yield select(selectUserType);
   const storageData = walletStorage.get(forcedUserType || userType);
+
   if (storageData) {
     yield put(actions.web3.loadPreviousWallet(storageData));
   }
@@ -82,10 +83,6 @@ export function* personalWalletConnectionLost({
   notificationCenter,
   intlWrapper,
 }: TGlobalDependencies): any {
-  yield put(actions.walletSelector.reset());
-  yield put(actions.walletSelector.ledgerReset());
-  yield put(actions.web3.personalWalletDisconnected());
-
   const state: IAppState = yield select();
 
   const disconnectedWalletErrorMessage = () => {
@@ -104,6 +101,8 @@ export function* personalWalletConnectionLost({
   if (message) {
     notificationCenter.error(message);
   }
+
+  yield put(actions.auth.logout());
 }
 
 interface IChannelTypes {

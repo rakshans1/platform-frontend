@@ -1,17 +1,17 @@
+import { inject, injectable } from "inversify";
 import ledgerWalletProvider from "ledger-wallet-provider";
+import { delay } from "redux-saga";
 import * as semver from "semver";
 import * as Web3 from "web3";
 import * as Web3ProviderEngine from "web3-provider-engine";
 // tslint:disable-next-line
 import * as RpcSubprovider from "web3-provider-engine/subproviders/rpc";
 
-import { inject, injectable } from "inversify";
-import { delay } from "redux-saga";
 import { symbols } from "../../di/symbols";
 import { EWalletSubType, EWalletType } from "../../modules/web3/types";
 import { EthereumAddress, EthereumNetworkId } from "../../types";
 import { ILedgerWalletMetadata } from "../persistence/WalletMetadataObjectStorage";
-import { IPersonalWallet, SignerType } from "./PersonalWeb3";
+import { IPersonalWallet, SignerType } from "./IPersonalWeb3";
 import { IEthereumNetworkConfig } from "./types";
 import { Web3Adapter } from "./Web3Adapter";
 import { SignerRejectConfirmationError, SignerTimeoutError } from "./Web3Manager";
@@ -188,7 +188,8 @@ export class LedgerWalletConnector {
 
 async function testConnection(ledgerInstance: any): Promise<boolean> {
   try {
-    // this check will successfully detect if ledger is locked or disconnected
+    // this will reject promise when ledger is disconnected
+    // but will resolve even when ledger is locked
     await getLedgerConfig(ledgerInstance);
     return true;
   } catch {

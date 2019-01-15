@@ -14,7 +14,7 @@ import {
 } from "../../lib/web3/Web3Manager";
 import { IAppState } from "../../store";
 import { hasValidPermissions } from "../../utils/JWTUtils";
-import { accessWalletAndRunEffect } from "../access-wallet/sagas";
+import { accessWalletAndRunEffect, ensureWalletConnection } from "../access-wallet/sagas";
 import { actions, TAction } from "../actions";
 import { selectIsSmartContractInitDone } from "../init/selectors";
 import { loadKycRequestData } from "../kyc/sagas";
@@ -144,6 +144,7 @@ export async function createUserPromise(
 
 export function* createUser(newUser: IUserInput): Iterator<any> {
   const user: IUser = yield neuCall(createUserPromise, newUser);
+
   yield effects.put(actions.auth.setUser(user));
 
   yield neuCall(loadKycRequestData);
@@ -151,10 +152,14 @@ export function* createUser(newUser: IUserInput): Iterator<any> {
 
 export function* loadUser(): Iterator<any> {
   const user: IUser = yield neuCall(loadUserPromise);
-  yield neuCall(loadPreviousWallet, user.type);
+
   yield effects.put(actions.auth.setUser(user));
 
+  yield neuCall(loadPreviousWallet, user.type);
+
   yield neuCall(loadKycRequestData);
+
+  yield neuCall(ensureWalletConnection);
 }
 
 export async function loadUserPromise({ apiUserService }: TGlobalDependencies): Promise<IUser> {
@@ -183,6 +188,7 @@ function* logoutWatcher(
   jwtStorage.clear();
   yield web3Manager.unplugPersonalWallet();
   yield effects.put(actions.web3.personalWalletDisconnected());
+
   if (userType === EUserType.INVESTOR || !userType) {
     yield effects.put(actions.routing.goHome());
   } else {

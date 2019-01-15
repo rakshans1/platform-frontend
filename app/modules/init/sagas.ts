@@ -46,9 +46,7 @@ function* initApp({ logger }: TGlobalDependencies): any {
           yield loadUser();
         } catch (e) {
           yield put(actions.auth.logout(userType));
-          logger.error(
-            "Cannot retrieve account. This could happen b/c account was deleted on backend",
-          );
+          logger.error("Cannot retrieve account.", e);
         }
       } else {
         yield put(actions.auth.logout(userType));
