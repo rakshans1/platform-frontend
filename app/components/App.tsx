@@ -1,9 +1,8 @@
-import * as PropTypes from "prop-types";
+import { Container } from "inversify";
 import * as React from "react";
-import { ToastContainer } from "react-toastify";
+import { hot } from "react-hot-loader/root";
 import { compose } from "redux";
 
-import { TOAST_COMPONENT_DELAY } from "../config/constants";
 import { symbols } from "../di/symbols";
 import { ILogger } from "../lib/dependencies/Logger";
 import { actions } from "../modules/actions";
@@ -14,7 +13,7 @@ import {
   selectIsInitInProgress,
 } from "../modules/init/selectors";
 import { appConnect } from "../store";
-import { IInversifyProviderContext } from "../utils/InversifyProvider";
+import { ContainerContext } from "../utils/InversifyProvider";
 import { onEnterAction } from "../utils/OnEnterAction";
 import { ScrollToTop } from "../utils/ScrollToTop";
 import { withRootMetaTag } from "../utils/withMetaTags";
@@ -24,6 +23,7 @@ import { GenericModal } from "./modals/GenericModal";
 import { VideoModal } from "./modals/VideoModal";
 import { AccessWalletModal } from "./modals/walletAccess/AccessWalletModal";
 import { LoadingIndicator } from "./shared/loading-indicator";
+import { ToastContainer } from "./shared/Toast";
 
 interface IState {
   renderingError: Error | null;
@@ -36,18 +36,16 @@ interface IStateProps {
 }
 
 class AppComponent extends React.Component<IStateProps, IState> {
-  static contextTypes = {
-    container: PropTypes.object,
-  };
+  static contextType = ContainerContext;
 
   logger: ILogger;
 
-  constructor(props: any, context: IInversifyProviderContext) {
+  constructor(props: any, container: Container) {
     super(props);
 
     this.state = { renderingError: null };
 
-    this.logger = context.container.get<ILogger>(symbols.logger);
+    this.logger = container.get<ILogger>(symbols.logger);
   }
 
   componentDidCatch(error: Error, errorInfo: object): void {
@@ -74,9 +72,8 @@ class AppComponent extends React.Component<IStateProps, IState> {
         <ScrollToTop>
           <AppRouter />
         </ScrollToTop>
-
         <AccessWalletModal />
-        <ToastContainer autoClose={TOAST_COMPONENT_DELAY} />
+        <ToastContainer />
         <GenericModal />
         <VideoModal />
       </>
@@ -84,7 +81,7 @@ class AppComponent extends React.Component<IStateProps, IState> {
   }
 }
 
-export const App = compose<React.ComponentClass>(
+const App = compose<React.ComponentClass>(
   withRootMetaTag(),
   onEnterAction({
     actionCreator: d => d(actions.init.start(EInitType.appInit)),
@@ -98,3 +95,7 @@ export const App = compose<React.ComponentClass>(
     options: { pure: false }, // we need this because of:https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/guides/blocked-updates.md
   }),
 )(AppComponent);
+
+const AppHot = hot(App);
+
+export { AppHot as App };

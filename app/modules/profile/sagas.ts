@@ -107,7 +107,7 @@ export function* loadSeedOrReturnToSettings({
 }: TGlobalDependencies): Iterator<any> {
   // unlock wallet
   try {
-    const signEffect = put(actions.web3.fetchSeedFromWallet());
+    const signEffect = put(actions.web3.fetchWalletPrivateDataFromWallet());
     return yield call(
       accessWalletAndRunEffect,
       signEffect,
@@ -128,8 +128,8 @@ export function* loadSeedOrReturnToSettings({
   }
 }
 
-export const profileSagas = function*(): Iterator<effects.Effect> {
+export function* profileSagas(): any {
   yield fork(neuTakeEvery, "PROFILE_ADD_NEW_EMAIL", addNewEmail);
   yield fork(neuTakeEvery, "PROFILE_RESEND_EMAIL", resendEmail);
   yield fork(neuTakeEvery, "LOAD_SEED_OR_RETURN_TO_PROFILE", loadSeedOrReturnToSettings);
-};
+}
