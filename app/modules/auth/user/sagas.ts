@@ -2,6 +2,7 @@ import { call, put, select } from "redux-saga/effects";
 import { TGlobalDependencies } from "../../../di/setupBindings";
 import { EUserType, IUser, IUserInput } from "../../../lib/api/users/interfaces";
 import { UserNotExisting } from "../../../lib/api/users/UsersApi";
+import { REGISTRATION_LOGIN_DONE } from "../../../lib/persistence/UserStorage";
 import { SignerRejectConfirmationError } from "../../../lib/web3/Web3Manager";
 import { IAppState } from "../../../store";
 import { actions } from "../../actions";
@@ -16,7 +17,11 @@ import { selectUserType } from "../selectors";
 import { SIGN_TOS } from "./../../../config/constants";
 import { SignerTimeoutError, SignerUnknownError } from "./../../../lib/web3/Web3Manager";
 
-export function* signInUser({ walletStorage, web3Manager }: TGlobalDependencies): Iterator<any> {
+export function* signInUser({
+  walletStorage,
+  web3Manager,
+  userStorage,
+}: TGlobalDependencies): Iterator<any> {
   try {
     // we will try to create with user type from URL but it could happen that account already exists and has different user type
     const probableUserType: EUserType = yield select((s: IAppState) => selectUrlUserType(s.router));
@@ -32,6 +37,10 @@ export function* signInUser({ walletStorage, web3Manager }: TGlobalDependencies)
     const redirectionUrl = yield select((state: IAppState) =>
       selectRedirectURLFromQueryString(state.router),
     );
+
+    // For other open browser pages
+    yield userStorage.set(REGISTRATION_LOGIN_DONE);
+
     if (redirectionUrl) {
       yield put(actions.routing.goTo(redirectionUrl));
     } else {
@@ -50,7 +59,6 @@ export function* loadUser(): Iterator<any> {
   const user: IUser = yield neuCall(loadUserPromise);
   yield neuCall(loadPreviousWallet, user.type);
   yield put(actions.auth.setUser(user));
-
   yield neuCall(loadKycRequestData);
 }
 

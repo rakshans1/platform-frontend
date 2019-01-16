@@ -106,7 +106,16 @@ export function* ensurePermissionsArePresent(
   }
 }
 
+/**
+ * Multi browser logout/login feature
+ */
+
 const redirectChannel = channel();
+
+/**
+ * Saga that starts an Event Channel Emitter that listens to storage
+ * events from the browser
+ */
 
 export function* startRedirectChannel(): any {
   window.addEventListener("storage", (evt: StorageEvent) => {
@@ -123,6 +132,10 @@ export function* startRedirectChannel(): any {
   });
 }
 
+/**
+ * Saga that watches events coming from redirectChannel and
+ * dispatches login/logout actions
+ */
 export function* watchRedirectChannel(): any {
   yield startRedirectChannel();
   while (true) {
