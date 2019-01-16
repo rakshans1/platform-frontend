@@ -1,15 +1,17 @@
 import { channel, delay } from "redux-saga";
-import { call, Effect, put, take } from "redux-saga/effects";
+import { call, Effect, put, select, take } from 'redux-saga/effects';
 import { USER_JWT_KEY } from "./../../../lib/persistence/UserStorage";
 
 import { TGlobalDependencies } from "../../../di/setupBindings";
 import { STORAGE_JWT_KEY } from "../../../lib/persistence/JwtObjectStorage";
+import { IAppState } from '../../../store';
 import { hasValidPermissions } from "../../../utils/JWTUtils";
 import { accessWalletAndRunEffect } from "../../access-wallet/sagas";
 import { actions } from "../../actions";
 import { EInitType } from "../../init/reducer";
 import { neuCall } from "../../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../../web3/selectors";
+import { MessageSignCancelledError } from '../errors';
 
 enum EUserAuthType {
   LOGOUT = "LOGOUT",
@@ -28,11 +30,15 @@ export function* loadJwt({ jwtStorage }: TGlobalDependencies): Iterator<Effect> 
   }
 }
 
+/**
+ * Saga & Promise to fetch a new jwt from the authentication server
+ */
 export async function obtainJwtPromise(
-  { getState, web3Manager, signatureAuthApi, cryptoRandomString, logger }: TGlobalDependencies,
+  { web3Manager, signatureAuthApi, cryptoRandomString, logger }: TGlobalDependencies,
+  state: IAppState,
   permissions: Array<string> = [],
 ): Promise<string> {
-  const address = selectEthereumAddressWithChecksum(getState());
+  const address = selectEthereumAddressWithChecksum(state);
 
   const salt = cryptoRandomString(64);
 
@@ -63,9 +69,10 @@ export function* obtainJWT(
   { jwtStorage }: TGlobalDependencies,
   permissions: Array<string> = [],
 ): Iterator<any> {
-  const jwt: string = yield neuCall(obtainJwtPromise, permissions);
+  const state: IAppState = yield select();
+  const jwt: string = yield neuCall(obtainJwtPromise, state, permissions);
   yield put(actions.auth.loadJWT(jwt));
-  yield jwtStorage.set(jwt);
+  jwtStorage.set(jwt);
 
   return jwt;
 }
@@ -75,10 +82,10 @@ export function* obtainJWT(
  * on the current jwt
  */
 export function* ensurePermissionsArePresent(
-  { jwtStorage }: TGlobalDependencies,
+  { jwtStorage, logger }: TGlobalDependencies,
   permissions: Array<string> = [],
-  title: string = "",
-  message: string = "",
+  title: string,
+  message: string,
 ): Iterator<any> {
   // check wether all permissions are present and still valid
   const jwt = jwtStorage.get();
@@ -89,8 +96,12 @@ export function* ensurePermissionsArePresent(
   try {
     const obtainJwtEffect = neuCall(obtainJWT, permissions);
     yield call(accessWalletAndRunEffect, obtainJwtEffect, title, message);
-  } catch {
-    throw new Error("Message signing failed");
+  } catch (error) {
+    if (error instanceof MessageSignCancelledError) {
+      logger.info("Signing Cancelled");
+    } else {
+      throw new Error("Message signing failed");
+    }
   }
 }
 

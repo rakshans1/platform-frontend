@@ -1,13 +1,14 @@
 import { Effect, fork, put, select } from "redux-saga/effects";
+import { EInitType } from "./../init/reducer";
 
 import { SIGN_TOS } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { IUser } from "../../lib/api/users/interfaces";
 import { actions } from "../actions";
 import { ensurePermissionsArePresent } from "../auth/jwt/sagas";
+import { selectCurrentAgreementHash } from '../auth/selectors';
 import { selectIsSmartContractInitDone } from "../init/selectors";
 import { neuCall, neuTakeEvery, neuTakeOnly } from "../sagasUtils";
-import { selectCurrentAgreementHash } from "./selectos";
 
 /**
  * Handle ToS / agreement
@@ -21,7 +22,7 @@ export function* loadCurrentAgreement({
   const isSmartContractsInitialized = yield select(selectIsSmartContractInitDone);
 
   if (!isSmartContractsInitialized) {
-    yield neuTakeOnly("INIT_DONE", { initType: "smartcontractsInit" });
+    yield neuTakeOnly("INIT_DONE", { initType: EInitType.smartcontractsInit });
   }
 
   try {

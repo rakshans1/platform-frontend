@@ -4,12 +4,12 @@ import { Modal } from "reactstrap";
 
 import { EUserType } from "../../../lib/api/users/interfaces";
 import { actions } from "../../../modules/actions";
-import { selectUserType } from "../../../modules/auth/selectors";
 import {
   selectIsAgreementAccepted,
   selectIsLatestAgreementAccepted,
   selectIsLatestAgreementLoaded,
-} from "../../../modules/terms-of-service-modal/selectos";
+  selectUserType,
+} from "../../../modules/auth/selectors";
 import { appConnect } from "../../../store";
 import { Button, EButtonLayout } from "../../shared/buttons";
 import { ModalComponentBody } from "../ModalComponentBody";
