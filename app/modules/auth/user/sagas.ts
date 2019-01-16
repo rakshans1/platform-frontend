@@ -12,7 +12,7 @@ import { selectUrlUserType } from "../../wallet-selector/selectors";
 import { loadPreviousWallet } from "../../web3/sagas";
 import { EWalletSubType, EWalletType } from "../../web3/types";
 import { obtainJWT } from "../jwt/sagas";
-import { selectUserType } from '../selectors';
+import { selectUserType } from "../selectors";
 import { SIGN_TOS } from "./../../../config/constants";
 import { SignerTimeoutError, SignerUnknownError } from "./../../../lib/web3/Web3Manager";
 

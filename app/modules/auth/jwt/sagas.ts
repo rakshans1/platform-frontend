@@ -1,17 +1,18 @@
 import { channel, delay } from "redux-saga";
-import { call, Effect, put, select, take } from 'redux-saga/effects';
+import { call, Effect, put, select, take } from "redux-saga/effects";
 import { USER_JWT_KEY } from "./../../../lib/persistence/UserStorage";
 
+import { TMessage } from "../../../components/translatedMessages/utils";
 import { TGlobalDependencies } from "../../../di/setupBindings";
 import { STORAGE_JWT_KEY } from "../../../lib/persistence/JwtObjectStorage";
-import { IAppState } from '../../../store';
+import { IAppState } from "../../../store";
 import { hasValidPermissions } from "../../../utils/JWTUtils";
 import { accessWalletAndRunEffect } from "../../access-wallet/sagas";
 import { actions } from "../../actions";
 import { EInitType } from "../../init/reducer";
 import { neuCall } from "../../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../../web3/selectors";
-import { MessageSignCancelledError } from '../errors';
+import { MessageSignCancelledError } from "../errors";
 
 enum EUserAuthType {
   LOGOUT = "LOGOUT",
@@ -84,8 +85,8 @@ export function* obtainJWT(
 export function* ensurePermissionsArePresent(
   { jwtStorage, logger }: TGlobalDependencies,
   permissions: Array<string> = [],
-  title: string,
-  message: string,
+  title: TMessage,
+  message: TMessage,
 ): Iterator<any> {
   // check wether all permissions are present and still valid
   const jwt = jwtStorage.get();

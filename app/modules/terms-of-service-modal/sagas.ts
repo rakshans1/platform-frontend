@@ -1,14 +1,17 @@
 import { Effect, fork, put, select } from "redux-saga/effects";
-import { EInitType } from "./../init/reducer";
+import { AuthMessage } from "./../../components/translatedMessages/messages";
 
+import { ToSMessage } from "../../components/translatedMessages/messages";
+import { createMessage } from "../../components/translatedMessages/utils";
 import { SIGN_TOS } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { IUser } from "../../lib/api/users/interfaces";
 import { actions } from "../actions";
 import { ensurePermissionsArePresent } from "../auth/jwt/sagas";
-import { selectCurrentAgreementHash } from '../auth/selectors';
+import { selectCurrentAgreementHash } from "../auth/selectors";
 import { selectIsSmartContractInitDone } from "../init/selectors";
 import { neuCall, neuTakeEvery, neuTakeOnly } from "../sagasUtils";
+import { EInitType } from "./../init/reducer";
 
 /**
  * Handle ToS / agreement
@@ -35,13 +38,30 @@ export function* loadCurrentAgreement({
   }
 }
 
-function* handleDownloadCurrentAgreement({
-  intlWrapper: {
-    intl: { formatIntlMessage },
-  },
+function* handleAcceptCurrentAgreement({
+  apiUserService,
+  logger,
+  notificationCenter,
 }: TGlobalDependencies): Iterator<any> {
   const currentAgreementHash: string = yield select(selectCurrentAgreementHash);
-  const fileName = formatIntlMessage("settings.modal.accept-tos.filename");
+  yield neuCall(
+    ensurePermissionsArePresent,
+    [SIGN_TOS],
+    createMessage(ToSMessage.TOS_ACCEPT_PERMISSION_TITLE),
+    createMessage(ToSMessage.TOS_ACCEPT_PERMISSION_TEXT),
+  );
+  try {
+    const user: IUser = yield apiUserService.setLatestAcceptedTos(currentAgreementHash);
+    yield put(actions.auth.setUser(user));
+  } catch (e) {
+    notificationCenter.error(createMessage(AuthMessage.AUTH_TOC_ACCEPT_ERROR));
+    logger.error("Could not accept Terms and Conditions", e);
+  }
+}
+
+function* handleDownloadCurrentAgreement(_: TGlobalDependencies): Iterator<any> {
+  const currentAgreementHash: string = yield select(selectCurrentAgreementHash);
+  const fileName = createMessage(AuthMessage.AUTH_TOC_FILENAME);
   yield put(
     actions.immutableStorage.downloadImmutableFile(
       {
@@ -52,30 +72,6 @@ function* handleDownloadCurrentAgreement({
       fileName,
     ),
   );
-}
-
-function* handleAcceptCurrentAgreement({
-  apiUserService,
-  logger,
-  notificationCenter,
-  intlWrapper: {
-    intl: { formatIntlMessage },
-  },
-}: TGlobalDependencies): Iterator<any> {
-  const currentAgreementHash: string = yield select(selectCurrentAgreementHash);
-  yield neuCall(
-    ensurePermissionsArePresent,
-    [SIGN_TOS],
-    formatIntlMessage("settings.modal.accept-tos.permission.title"),
-    formatIntlMessage("settings.modal.accept-tos.permission.text"),
-  );
-  try {
-    const user: IUser = yield apiUserService.setLatestAcceptedTos(currentAgreementHash);
-    yield put(actions.auth.setUser(user));
-  } catch (e) {
-    notificationCenter.error("There was a problem with accepting Terms and Conditions");
-    logger.error("Could not accept Terms and Conditions", e);
-  }
 }
 
 export const termsOfServiceSagas = function*(): Iterator<Effect> {
