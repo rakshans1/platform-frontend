@@ -1,5 +1,5 @@
-import { createAndLoginNewUser, JWT_KEY, INVESTOR_WALLET_KEY } from "../utils/userHelpers";
-import { goToDashboard, assertUserInDashboard, assertUserInLanding } from "../utils/index";
+import { assertUserInDashboard, assertUserInLanding, goToDashboard } from "../utils/index";
+import { createAndLoginNewUser, INVESTOR_WALLET_KEY, JWT_KEY } from "../utils/userHelpers";
 
 describe("auto-logout/auto-login", () => {
   it("should logout automatically when a user logs out from another tab", () => {
