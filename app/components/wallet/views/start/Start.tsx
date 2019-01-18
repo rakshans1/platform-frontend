@@ -1,5 +1,4 @@
 import * as React from "react";
-import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 import { branch, renderComponent } from "recompose";
 import { compose } from "redux";
@@ -62,7 +61,6 @@ export const WalletStartComponent: React.SFC<TProps> = ({
   liquidWalletData,
   lockedWalletData,
   icbmWalletData,
-  isLoading,
   depositEthUnlockedWallet,
   withdrawEthUnlockedWallet,
   upgradeWalletEuroToken,
@@ -87,18 +85,14 @@ export const WalletStartComponent: React.SFC<TProps> = ({
           className="h-100"
           neuroAmount={liquidWalletData.neuroAmount}
           neuroEuroAmount={liquidWalletData.neuroEuroAmount}
-          deposit={depositEthUnlockedWallet}
-          withdraw={withdrawEthUnlockedWallet}
+          onTopUP={() => {}}
+          onRedeem={() => {}}
         />
       </Col>
 
       {lockedWalletData.hasFunds && (
         <Col lg={6} xs={12}>
-          <LockedWallet
-            className="h-100"
-            headerText={<FormattedMessage id="components.wallet.start.locked-wallet" />}
-            data={lockedWalletData}
-          />
+          <LockedWallet className="h-100" data={lockedWalletData} />
         </Col>
       )}
 
@@ -106,7 +100,6 @@ export const WalletStartComponent: React.SFC<TProps> = ({
         <Col lg={6} xs={12}>
           <IcbmWallet
             className="h-100"
-            headerText={<FormattedMessage id="components.wallet.start.icbm-wallet" />}
             onUpgradeEuroClick={upgradeWalletEuroToken}
             onUpgradeEtherClick={upgradeWalletEtherToken}
             data={icbmWalletData}

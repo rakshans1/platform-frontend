@@ -26,16 +26,16 @@ export const UnlockedETHWallet: React.SFC<IUnlockedETHWallet & CommonHtmlProps> 
   className,
   ethAmount,
   ethEuroAmount,
-  totalEuroAmount,
 }) => {
   return (
     <WalletBalanceContainer
       className={className}
       headerText={<FormattedMessage id="components.wallet.start.my-wallet" />}
     >
-      <section className={styles.message}>
+      <p className={styles.message}>
         <FormattedMessage id={"shared-component.wallet-balance.explanation"} />
-      </section>
+      </p>
+
       <section>
         <h4 className={styles.title}>
           <FormattedMessage id="shared-component.wallet-balance.title.account-address" />
@@ -54,11 +54,20 @@ export const UnlockedETHWallet: React.SFC<IUnlockedETHWallet & CommonHtmlProps> 
           currencyTotal={ECurrency.EUR}
           largeNumber={ethAmount}
           value={ethEuroAmount}
-          onWithdrawClick={withdrawEth}
-          dataTestId="wallet-balance.ether"
-          onDepositClick={depositEth}
-          withdrawDisabled={process.env.NF_WITHDRAW_ENABLED !== "1" || parseFloat(ethAmount) === 0}
-          transferDisabled={process.env.NF_WITHDRAW_ENABLED !== "1"}
+          actions={[
+            {
+              name: <FormattedMessage id="shared-component.account-balance.withdraw" />,
+              onClick: withdrawEth,
+              disabled: process.env.NF_WITHDRAW_ENABLED !== "1" || parseFloat(ethAmount) === 0,
+              "data-test-id": "wallet.eth.withdraw.button",
+            },
+            {
+              name: <FormattedMessage id="shared-component.account-balance.deposit" />,
+              onClick: depositEth,
+              disabled: process.env.NF_WITHDRAW_ENABLED !== "1",
+              "data-test-id": "wallet.eth.transfer.button",
+            },
+          ]}
         />
       </section>
     </WalletBalanceContainer>

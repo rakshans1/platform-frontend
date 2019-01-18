@@ -1,35 +1,30 @@
 import * as React from "react";
-import { FormattedMessage } from "react-intl-phraseapp";
 
+import { TDataTestId, TTranslatedString } from "../../types";
 import { Button, EButtonLayout } from "./buttons";
 import { IMoneySuiteWidgetProps, MoneySuiteWidget } from "./MoneySuiteWidget";
 
 import * as arrowRightIcon from "../../assets/img/inline_icons/arrow_right.svg";
 import * as styles from "./AccountBalance.module.scss";
 
-interface IProps {
-  onWithdrawClick?: () => void;
-  onDepositClick?: () => void;
-  onUpgradeClick?: () => void;
-  dataTestId?: string;
+type TAction = {
+  name: TTranslatedString;
+  onClick: () => void;
   disabled?: boolean;
-  withdrawDisabled?: boolean;
-  transferDisabled?: boolean;
+} & TDataTestId;
+
+interface IProps {
+  actions?: TAction[];
 }
 
-export const AccountBalance: React.SFC<IProps & IMoneySuiteWidgetProps> = ({
+export const AccountBalance: React.SFC<IProps & IMoneySuiteWidgetProps & TDataTestId> = ({
   icon,
   currency,
   currencyTotal,
   largeNumber,
-  disabled,
   value,
-  onWithdrawClick,
-  onDepositClick,
-  onUpgradeClick,
-  dataTestId,
-  withdrawDisabled,
-  transferDisabled,
+  actions,
+  "data-test-id": dataTestId,
 }) => {
   return (
     <div className={styles.accountBalance}>
@@ -42,47 +37,21 @@ export const AccountBalance: React.SFC<IProps & IMoneySuiteWidgetProps> = ({
         data-test-id={dataTestId && dataTestId + ".balance-values"}
       />
       <div className={styles.buttons}>
-        {onUpgradeClick && (
-          <Button
-            layout={EButtonLayout.SIMPLE}
-            innerClassName={styles.button}
-            iconPosition="icon-after"
-            theme="graphite"
-            svgIcon={arrowRightIcon}
-            onClick={onUpgradeClick}
-            data-test-id={dataTestId && dataTestId + ".shared-component.upgrade.button"}
-            disabled={disabled}
-          >
-            <FormattedMessage id="shared-component.account-balance.upgrade" />
-          </Button>
-        )}
-        {onWithdrawClick && (
-          <Button
-            layout={EButtonLayout.SIMPLE}
-            innerClassName={styles.button}
-            iconPosition="icon-after"
-            theme="graphite"
-            svgIcon={arrowRightIcon}
-            onClick={onWithdrawClick}
-            data-test-id={dataTestId && dataTestId + ".shared-component.withdraw.button"}
-            disabled={withdrawDisabled}
-          >
-            <FormattedMessage id="shared-component.account-balance.withdraw" />
-          </Button>
-        )}
-        {onDepositClick && (
-          <Button
-            layout={EButtonLayout.SIMPLE}
-            innerClassName={styles.button}
-            iconPosition="icon-after"
-            theme="graphite"
-            disabled={transferDisabled}
-            svgIcon={arrowRightIcon}
-            onClick={onDepositClick}
-          >
-            <FormattedMessage id="shared-component.account-balance.deposit" />
-          </Button>
-        )}
+        {actions &&
+          actions.map(({ onClick, disabled, name, "data-test-id": dataTestId }) => (
+            <Button
+              layout={EButtonLayout.SIMPLE}
+              innerClassName={styles.button}
+              iconPosition="icon-after"
+              theme="graphite"
+              svgIcon={arrowRightIcon}
+              onClick={onClick}
+              data-test-id={dataTestId}
+              disabled={disabled}
+            >
+              {name}
+            </Button>
+          ))}
       </div>
     </div>
   );

@@ -1,10 +1,10 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
+import { CommonHtmlProps } from "../../../types";
 import { AccountBalance } from "../../shared/AccountBalance";
 import { HorizontalLine } from "../../shared/HorizontalLine";
 import { ECurrency } from "../../shared/Money";
-import { IPanelProps } from "../../shared/Panel";
 import { isWalletNotEmpty } from "./utils";
 import { IWalletValues, WalletBalanceContainer } from "./WalletBalance";
 
@@ -12,16 +12,19 @@ import * as ethIcon from "../../../assets/img/eth_icon.svg";
 import * as neuroIcon from "../../../assets/img/nEUR_icon.svg";
 import * as styles from "./WalletBalance.module.scss";
 
-interface ILockedWallet extends IPanelProps {
+interface ILockedWallet {
   data: IWalletValues;
 }
 
-export const LockedWallet: React.SFC<ILockedWallet> = ({ data, className, headerText }) => {
+export const LockedWallet: React.SFC<ILockedWallet & CommonHtmlProps> = ({ data, className }) => {
   return (
-    <WalletBalanceContainer {...{ className, headerText }}>
-      <section className={styles.message}>
+    <WalletBalanceContainer
+      className={className}
+      headerText={<FormattedMessage id="components.wallet.start.locked-wallet" />}
+    >
+      <p className={styles.message}>
         <FormattedMessage id="shared-component.wallet-icbm.already-upgraded-message" />
-      </section>
+      </p>
 
       <section>
         <h4 className={styles.title}>
@@ -34,7 +37,7 @@ export const LockedWallet: React.SFC<ILockedWallet> = ({ data, className, header
             currencyTotal={ECurrency.EUR}
             largeNumber={data.neuroAmount}
             value={data.neuroEuroAmount}
-            dataTestId="lockedEuroWallet"
+            data-test-id="lockedEuroWallet"
           />
         )}
         {isWalletNotEmpty(data.neuroAmount) &&
@@ -46,7 +49,7 @@ export const LockedWallet: React.SFC<ILockedWallet> = ({ data, className, header
             currencyTotal={ECurrency.EUR}
             largeNumber={data.ethAmount}
             value={data.ethEuroAmount}
-            dataTestId="lockedEtherWallet"
+            date-test-id="lockedEtherWallet"
           />
         )}
       </section>
