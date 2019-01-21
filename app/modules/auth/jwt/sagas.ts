@@ -1,8 +1,8 @@
 import { channel, delay } from "redux-saga";
 import { call, Effect, put, select, take } from "redux-saga/effects";
-import { USER_JWT_KEY } from "./../../../lib/persistence/UserStorage";
 
 import { TMessage } from "../../../components/translatedMessages/utils";
+import { REDIRECT_CHANNEL_WATCH_DELAY } from "../../../config/constants";
 import { TGlobalDependencies } from "../../../di/setupBindings";
 import { STORAGE_JWT_KEY } from "../../../lib/persistence/JwtObjectStorage";
 import { IAppState } from "../../../store";
@@ -13,6 +13,7 @@ import { EInitType } from "../../init/reducer";
 import { neuCall } from "../../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../../web3/selectors";
 import { MessageSignCancelledError } from "../errors";
+import { USER_JWT_KEY as USER_KEY } from "./../../../lib/persistence/UserStorage";
 
 enum EUserAuthType {
   LOGOUT = "LOGOUT",
@@ -116,7 +117,6 @@ const redirectChannel = channel();
  * Saga that starts an Event Channel Emitter that listens to storage
  * events from the browser
  */
-
 export function* startRedirectChannel(): any {
   window.addEventListener("storage", (evt: StorageEvent) => {
     if (evt.key === STORAGE_JWT_KEY && evt.oldValue && !evt.newValue) {
@@ -124,7 +124,7 @@ export function* startRedirectChannel(): any {
         type: EUserAuthType.LOGOUT,
       });
     }
-    if (evt.key === USER_JWT_KEY && !evt.oldValue && evt.newValue) {
+    if (evt.key === USER_KEY && !evt.oldValue && evt.newValue) {
       redirectChannel.put({
         type: EUserAuthType.LOGIN,
       });
@@ -148,6 +148,6 @@ export function* watchRedirectChannel(): any {
         yield put(actions.init.start(EInitType.appInit));
         break;
     }
-    yield delay(5000);
+    yield delay(REDIRECT_CHANNEL_WATCH_DELAY);
   }
 }

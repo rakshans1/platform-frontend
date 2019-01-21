@@ -2,9 +2,9 @@ import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 
 export enum EInitType {
-  appInit = "appInit",
-  smartcontractsInit = "smartcontractsInit",
-  walletInit = "walletInit",
+  appInit = "APP_INIT",
+  smartcontractsInit = "SMART_CONTRACT_INIT",
+  walletInit = "WALLET_INIT",
 }
 
 interface IAsyncActionState {

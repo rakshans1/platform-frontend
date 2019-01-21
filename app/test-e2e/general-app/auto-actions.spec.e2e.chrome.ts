@@ -15,8 +15,7 @@ describe("auto-logout/auto-login", () => {
     });
   });
   it.skip("should login automatically when a user logs-in from another tab", () => {
-    // This test is skipped, because the window event listener is not listening to events coming from
-    // cy.window()
+    // This test is skipped, due to problems setting up storage
     cy.visit("/").then(() => {
       assertUserInLanding();
       createAndLoginNewUser({
