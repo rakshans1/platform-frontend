@@ -18,8 +18,11 @@ const DEFAULT_CONFIG = {
   record: true,
   taskTimeout: 240000,
   // parallelization options
-  group: "main",
-  parallel: true,
+  testFiles: process.argv.some(arg => arg == "--chrome")
+    ? '"**/*.spec.e2e.chrome.ts"'
+    : '"**/*.spec.e2e.ts"',
+  group: "chrome-tests",
+  parallel: process.argv.some(arg => arg == "--chrome") ? false : true,
 
   // only necessary if recording specs from a local machine
   /* ciBuildId: Math.random()
