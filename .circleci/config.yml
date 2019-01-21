@@ -121,6 +121,21 @@ jobs:
           ./.circleci/vis-reg-run.sh)
       - run: yarn danger ci
 
+  bundlewatcher:
+    docker:
+      - image: krzkaczor/neufund-platform-base
+    working_directory: /home/circleci/app
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v13-deps-{{ checksum "package.json" }}
+            - v13-deps-
+
+      - run: yarn prepare
+      - run: yarn bundlewatcher
+
   deploy-storybook:
     docker:
       - image: krzkaczor/neufund-platform-base
@@ -155,6 +170,9 @@ workflows:
           requires:
             - lint
       - danger-ci:
+          requires:
+            - lint
+      - bundlewatcher:
           requires:
             - lint
 
