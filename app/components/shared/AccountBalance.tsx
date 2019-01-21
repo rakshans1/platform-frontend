@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { TDataTestId, TTranslatedString } from "../../types";
+import { makeTid } from "../../utils/tidUtils";
 import { Button, EButtonLayout } from "./buttons";
 import { IMoneySuiteWidgetProps, MoneySuiteWidget } from "./MoneySuiteWidget";
 
@@ -34,7 +35,7 @@ export const AccountBalance: React.SFC<IProps & IMoneySuiteWidgetProps & TDataTe
         currencyTotal={currencyTotal}
         largeNumber={largeNumber}
         value={value}
-        data-test-id={dataTestId && dataTestId + ".balance-values"}
+        data-test-id={makeTid(dataTestId, "balance-values")}
       />
       <div className={styles.buttons}>
         {actions &&

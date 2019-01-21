@@ -59,6 +59,7 @@ export const IcbmWallet: React.SFC<IIcbmWallet & CommonHtmlProps> = ({
                 "data-test-id": "wallet.icbm-euro.upgrade-button",
               },
             ]}
+            data-test-id="icbm-wallet.neur"
           />
         )}
         {isWalletNotEmpty(data.neuroAmount) &&
@@ -78,6 +79,7 @@ export const IcbmWallet: React.SFC<IIcbmWallet & CommonHtmlProps> = ({
                 "data-test-id": "wallet.icbm-eth.upgrade-button",
               },
             ]}
+            data-test-id="icbm-wallet.eth"
           />
         )}
       </section>
