@@ -151,7 +151,6 @@ export class LightWallet implements IPersonalWallet {
       address: this.ethereumAddress,
       email: this.email,
       salt: this.vault.salt,
-      vault: JSON.stringify(this.vault.walletInstance),
       walletType: this.walletType,
       walletSubType: this.walletSubType,
     };

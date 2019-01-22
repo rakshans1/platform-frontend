@@ -57,6 +57,7 @@ export function* unlockWallet(
   { web3Manager }: TGlobalDependencies,
   password: string,
 ): Iterator<any> {
+  debugger;
   const lightWallet = web3Manager.personalWallet as LightWallet;
 
   const isPasswordCorrect = yield lightWallet.testPassword(password);

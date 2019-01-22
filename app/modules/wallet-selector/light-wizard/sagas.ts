@@ -26,14 +26,13 @@ import {
 import {
   createLightWalletVault,
   deserializeLightWalletVault,
-  encryptString,
-  getWalletKeyFromSaltAndPassword,
   testWalletPassword,
 } from "../../../lib/web3/LightWalletUtils";
 import { IAppState } from "../../../store";
 import { invariant } from "../../../utils/invariant";
 import { connectLightWallet } from "../../access-wallet/sagas";
 import { actions, TAction } from "../../actions";
+import { checkEmailPromise } from "../../auth/email/sagas";
 import { obtainJWT } from "../../auth/jwt/sagas";
 import {
   createUser,
@@ -53,19 +52,9 @@ import {
 import { EWalletSubType, EWalletType } from "../../web3/types";
 import { selectUrlUserType } from "../selectors";
 import { mapLightWalletErrorToErrorMessage } from "./errors";
+import { getVaultKey } from "./utils";
 
-//Vault nonce should be exactly 24 chars
-const VAULT_MSG = "pleaseallowmetointroducemyselfim";
-const GENERATED_KEY_SIZE = 56;
 export const DEFAULT_HD_PATH = "m/44'/60'/0'";
-
-export async function getVaultKey(salt: string, password: string): Promise<string> {
-  const walletKey = await getWalletKeyFromSaltAndPassword(password, salt, GENERATED_KEY_SIZE);
-  return encryptString({
-    string: VAULT_MSG,
-    pwDerivedKey: walletKey,
-  });
-}
 
 export async function retrieveMetadataFromVaultAPI(
   { vaultApi }: TGlobalDependencies,
@@ -88,7 +77,7 @@ export async function retrieveMetadataFromVaultAPI(
   }
 }
 
-export function* getWalletMetadata(
+export function* getWalletMetadataByURL(
   _: TGlobalDependencies,
   password: string,
 ): Iterator<any | ILightWalletRetrieveMetadata | undefined> {
@@ -148,48 +137,6 @@ export async function setupLightWalletPromise(
     logger.warn("Error while trying to connect with light wallet: ", e);
     throw e;
   }
-}
-
-export function* lightWalletRegisterWatch(
-  { logger }: TGlobalDependencies,
-  action: TAction,
-): Iterator<any> {
-  try {
-    if (action.type !== "LIGHT_WALLET_REGISTER") return;
-
-    const { password, email } = action.payload;
-    const isEmailAvailable = yield neuCall(checkEmailPromise, email);
-
-    if (!isEmailAvailable) {
-      throw new EmailAlreadyExists();
-    }
-    yield neuCall(setupLightWalletPromise, email, password);
-    yield neuCall(signInUser);
-  } catch (e) {
-    yield effects.put(actions.walletSelector.reset());
-
-    let error;
-    if (e instanceof EmailAlreadyExists) {
-      error = createMessage(GenericErrorMessage.USER_ALREADY_EXISTS);
-    } else if (e instanceof LightError) {
-      logger.error("Light wallet recovery error", e);
-      error = mapLightWalletErrorToErrorMessage(e);
-    } else {
-      error = createMessage(SignInUserErrorMessage.MESSAGE_SIGNING_SERVER_CONNECTION_FAILURE);
-    }
-
-    yield put(
-      actions.genericModal.showErrorModal(createMessage(GenericModalMessage.ERROR_TITLE), error),
-    );
-  }
-}
-
-async function checkEmailPromise(
-  { apiUserService }: TGlobalDependencies,
-  email: string,
-): Promise<boolean> {
-  const emailStatus = await apiUserService.emailStatus(email);
-  return emailStatus.isAvailable;
 }
 
 export function* lightWalletRecoverWatch(
@@ -275,27 +222,56 @@ export function* lightWalletBackupWatch({ logger }: TGlobalDependencies): Iterat
   }
 }
 
-export function* loadPrivateDataFromWallet({ web3Manager }: TGlobalDependencies): Iterator<any> {
-  const isUnlocked = yield select((s: IAppState) => selectIsUnlocked(s.web3));
-  if (!isUnlocked) {
-    throw new LightWalletLocked();
-  }
+export function* loadSeedFromWalletWatch({
+  logger,
+  web3Manager,
+}: TGlobalDependencies): Iterator<any> {
   try {
+    const isUnlocked = yield select((s: IAppState) => selectIsUnlocked(s.web3));
+    if (!isUnlocked) {
+      throw new LightWalletLocked();
+    }
     const lightWallet = web3Manager.personalWallet as LightWallet;
     const { seed, privateKey } = yield call(lightWallet.getWalletPrivateData.bind(lightWallet));
     yield put(actions.web3.loadWalletPrivateDataToState(seed, privateKey));
   } catch (e) {
-    throw new Error("Fetching seed failed");
+    logger.error("Load seed from wallet failed", e);
+    yield put(
+      actions.walletSelector.lightWalletConnectionError(mapLightWalletErrorToErrorMessage(e)),
+    );
   }
 }
 
-export function* loadSeedFromWalletWatch({ logger }: TGlobalDependencies): Iterator<any> {
+export function* lightWalletRegisterWatch(
+  { logger }: TGlobalDependencies,
+  action: TAction,
+): Iterator<any> {
   try {
-    yield neuCall(loadPrivateDataFromWallet);
+    if (action.type !== "LIGHT_WALLET_REGISTER") return;
+
+    const { password, email } = action.payload;
+    const isEmailAvailable = yield neuCall(checkEmailPromise, email);
+
+    if (!isEmailAvailable) {
+      throw new EmailAlreadyExists();
+    }
+    yield neuCall(setupLightWalletPromise, email, password);
+    yield neuCall(signInUser);
   } catch (e) {
-    logger.error("Load seed from wallet", e);
+    yield effects.put(actions.walletSelector.reset());
+
+    let error;
+    if (e instanceof EmailAlreadyExists) {
+      error = createMessage(GenericErrorMessage.USER_ALREADY_EXISTS);
+    } else if (e instanceof LightError) {
+      logger.error("Light wallet recovery error", e);
+      error = mapLightWalletErrorToErrorMessage(e);
+    } else {
+      error = createMessage(SignInUserErrorMessage.MESSAGE_SIGNING_SERVER_CONNECTION_FAILURE);
+    }
+
     yield put(
-      actions.walletSelector.lightWalletConnectionError(mapLightWalletErrorToErrorMessage(e)),
+      actions.genericModal.showErrorModal(createMessage(GenericModalMessage.ERROR_TITLE), error),
     );
   }
 }
@@ -310,8 +286,8 @@ export function* lightWalletLoginWatch(
   const { password } = action.payload;
 
   try {
-    const walletMetadata: ILightWalletRetrieveMetadata | undefined = yield neuCall(
-      getWalletMetadata,
+    const walletMetadata: ILightWalletMetadata | undefined = yield neuCall(
+      getWalletMetadataByURL,
       password,
     );
 
