@@ -13,7 +13,7 @@ import { NotificationCenter } from "../lib/dependencies/NotificationCenter";
 import { Storage } from "../lib/persistence/Storage";
 import { BrowserWalletConnector } from "../lib/web3/BrowserWallet";
 import { LedgerWalletConnector } from "../lib/web3/LedgerWallet";
-import { LightWalletConnector, LightWalletUtil } from "../lib/web3/LightWallet";
+import { LightWalletConnector } from "../lib/web3/LightWallet";
 import { Web3Manager } from "../lib/web3/Web3Manager";
 import {
   AsyncIntervalSchedulerFactory,
@@ -82,11 +82,6 @@ export function setupBindings(config: IConfig): Container {
   container
     .bind<SignatureAuthApi>(symbols.signatureAuthApi)
     .to(SignatureAuthApi)
-    .inSingletonScope();
-
-  container
-    .bind<LightWalletUtil>(symbols.lightWalletUtil)
-    .to(LightWalletUtil)
     .inSingletonScope();
 
   container
@@ -211,7 +206,6 @@ export const createGlobalDependencies = (container: Container) => ({
   contractsService: container.get<ContractsService>(symbols.contractsService),
   web3Manager: container.get<Web3Manager>(symbols.web3Manager),
   lightWalletConnector: container.get<LightWalletConnector>(symbols.lightWalletConnector),
-  lightWalletUtil: container.get<LightWalletUtil>(symbols.lightWalletUtil),
   browserWalletConnector: container.get<BrowserWalletConnector>(symbols.browserWalletConnector),
   ledgerWalletConnector: container.get<LedgerWalletConnector>(symbols.ledgerWalletConnector),
 

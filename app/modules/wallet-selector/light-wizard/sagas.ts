@@ -21,9 +21,15 @@ import {
   LightError,
   LightWallet,
   LightWalletLocked,
-  LightWalletUtil,
   LightWalletWrongPassword,
 } from "../../../lib/web3/LightWallet";
+import {
+  createLightWalletVault,
+  deserializeLightWalletVault,
+  encryptString,
+  getWalletKeyFromSaltAndPassword,
+  testWalletPassword,
+} from "../../../lib/web3/LightWalletUtils";
 import { IAppState } from "../../../store";
 import { invariant } from "../../../utils/invariant";
 import { connectLightWallet } from "../../access-wallet/sagas";
@@ -53,29 +59,21 @@ const VAULT_MSG = "pleaseallowmetointroducemyselfim";
 const GENERATED_KEY_SIZE = 56;
 export const DEFAULT_HD_PATH = "m/44'/60'/0'";
 
-export async function getVaultKey(
-  lightWalletUtil: LightWalletUtil,
-  salt: string,
-  password: string,
-): Promise<string> {
-  const walletKey = await lightWalletUtil.getWalletKeyFromSaltAndPassword(
-    password,
-    salt,
-    GENERATED_KEY_SIZE,
-  );
-  return lightWalletUtil.encryptString({
+export async function getVaultKey(salt: string, password: string): Promise<string> {
+  const walletKey = await getWalletKeyFromSaltAndPassword(password, salt, GENERATED_KEY_SIZE);
+  return encryptString({
     string: VAULT_MSG,
     pwDerivedKey: walletKey,
   });
 }
 
 export async function retrieveMetadataFromVaultAPI(
-  { lightWalletUtil, vaultApi }: TGlobalDependencies,
+  { vaultApi }: TGlobalDependencies,
   password: string,
   salt: string,
   email: string,
 ): Promise<ILightWalletRetrieveMetadata> {
-  const vaultKey = await getVaultKey(lightWalletUtil, salt, password);
+  const vaultKey = await getVaultKey(salt, password);
   try {
     const vault = await vaultApi.retrieve(vaultKey);
 
@@ -116,23 +114,23 @@ export function* getWalletMetadata(
 }
 
 export async function setupLightWalletPromise(
-  { lightWalletUtil, vaultApi, lightWalletConnector, web3Manager, logger }: TGlobalDependencies,
+  { vaultApi, lightWalletConnector, web3Manager, logger }: TGlobalDependencies,
   email: string,
   password: string,
   seed: string,
 ): Promise<ILightWalletMetadata> {
   try {
-    const lightWalletVault = await lightWalletUtil.createLightWalletVault({
+    const lightWalletVault = await createLightWalletVault({
       password,
       hdPathString: DEFAULT_HD_PATH,
       recoverSeed: seed,
     });
-    const walletInstance = await lightWalletUtil.deserializeLightWalletVault(
+    const walletInstance = await deserializeLightWalletVault(
       lightWalletVault.walletInstance,
       lightWalletVault.salt,
     );
 
-    const vaultKey = await getVaultKey(lightWalletUtil, lightWalletVault.salt, password);
+    const vaultKey = await getVaultKey(lightWalletVault.salt, password);
     await vaultApi.store(vaultKey, lightWalletVault.walletInstance);
 
     const lightWallet = await lightWalletConnector.connect(
@@ -326,7 +324,7 @@ export function* lightWalletLoginWatch(
       walletMetadata,
       password,
     );
-    const isValidPassword: boolean = yield LightWalletUtil.testWalletPassword(
+    const isValidPassword: boolean = yield testWalletPassword(
       wallet.vault.walletInstance,
       password,
     );

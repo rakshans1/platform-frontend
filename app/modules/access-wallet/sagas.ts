@@ -12,7 +12,8 @@ import {
 } from "../../lib/persistence/WalletMetadataObjectStorage";
 import { BrowserWalletConnector } from "../../lib/web3/BrowserWallet";
 import { LedgerWalletConnector } from "../../lib/web3/LedgerWallet";
-import { LightWalletConnector, LightWalletUtil } from "../../lib/web3/LightWallet";
+import { LightWalletConnector } from "../../lib/web3/LightWallet";
+import { deserializeLightWalletVault } from "../../lib/web3/LightWalletUtils";
 import { IPersonalWallet } from "../../lib/web3/PersonalWeb3";
 import { SignerError, Web3Manager } from "../../lib/web3/Web3Manager";
 import { IAppState } from "../../store";
@@ -93,11 +94,7 @@ export async function connectLightWallet(
   metadata: ILightWalletRetrieveMetadata,
   password?: string,
 ): Promise<IPersonalWallet> {
-  const lightWalletUtils = new LightWalletUtil();
-  const walletInstance = await lightWalletUtils.deserializeLightWalletVault(
-    metadata.vault,
-    metadata.salt,
-  );
+  const walletInstance = await deserializeLightWalletVault(metadata.vault, metadata.salt);
 
   return await lightWalletConnector.connect(
     {
