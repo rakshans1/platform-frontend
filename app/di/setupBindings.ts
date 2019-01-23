@@ -17,6 +17,7 @@ import { SignatureAuthApi } from "../lib/api/SignatureAuthApi";
 import { UsersApi } from "../lib/api/users/UsersApi";
 import { VaultApi } from "../lib/api/vault/VaultApi";
 import { cryptoRandomString, CryptoRandomString } from "../lib/dependencies/cryptoRandomString";
+import { detectBrowser, TDetectBrowser } from "../lib/dependencies/detectBrowser";
 import { ILogger, resolveLogger } from "../lib/dependencies/logger";
 import { NotificationCenter } from "../lib/dependencies/NotificationCenter";
 import { IntlWrapper } from "../lib/intl/IntlWrapper";
