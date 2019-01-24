@@ -36,7 +36,7 @@
     "test:e2e:cypress:chrome": "cypress run --config testFiles=\"**/*.spec.e2e.chrome.ts\" --browser chrome",
     "test:e2e:cypress:record": "node ./cypress/cypress-retries.js --record --parallel",
     "test:e2e:cypress:retry:chrome": "node ./cypress/cypress-retries.js --record --parallel --chrome",
-    "test:e2e:dev": "cypress open",
+    "test:e2e:dev": "cypress open --config testFiles=\"**/*.spec.e2e.ts\"",
     "test": "yarn lint && yarn test:browser && yarn test:node && yarn test:e2e",
     "test:coverage": "yarn test:coverage-no-e2e && yarn test:e2e",
     "test:coverage-no-e2e": "yarn lint && yarn test:browser-coverage && yarn test:node",
