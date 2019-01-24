@@ -4,4 +4,4 @@ import "@storybook/addon-viewport/register";
 import "storybook-addon-intl/register";
 import "storybook-chrome-screenshot/register";
 import "storybook-react-router";
-import '@storybook/addon-options/register';
+import "@storybook/addon-options/register";

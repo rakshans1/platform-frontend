@@ -87,7 +87,7 @@ module.exports = (baseConfig, env, config) => {
                 experimentalWatchApi: true,
               },
             },
-            "react-docgen-typescript-loader"
+            "react-docgen-typescript-loader",
           ],
           include: [paths.app, path.join(__dirname, "../test")],
         },

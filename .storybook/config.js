@@ -9,7 +9,7 @@ import { configureViewport, INITIAL_VIEWPORTS } from "@storybook/addon-viewport"
 import { initScreenshot, withScreenshot } from "storybook-chrome-screenshot/lib";
 import { setIntlConfig, withIntl } from "storybook-addon-intl";
 import { withInfo } from "@storybook/addon-info";
-import { withOptions } from '@storybook/addon-options';
+import { withOptions } from "@storybook/addon-options";
 
 import { withStore } from "../app/utils/storeDecorator";
 
@@ -30,14 +30,18 @@ setIntlConfig({
   getMessages,
 });
 
-addDecorator(withOptions({
-  name: 'Neufund Pattern Library',
-  url: 'platform.neufund.org',
-}));
-addDecorator(withInfo({
-  inline: true,
-  header: false
-}));
+addDecorator(
+  withOptions({
+    name: "Neufund Pattern Library",
+    url: "platform.neufund.org",
+  }),
+);
+addDecorator(
+  withInfo({
+    inline: true,
+    header: false,
+  }),
+);
 addDecorator(checkA11y);
 addDecorator(initScreenshot());
 addDecorator(
