@@ -36,12 +36,7 @@ addDecorator(
     url: "platform.neufund.org",
   }),
 );
-addDecorator(
-  withInfo({
-    inline: true,
-    header: false,
-  }),
-);
+addDecorator(withInfo);
 addDecorator(checkA11y);
 addDecorator(initScreenshot());
 addDecorator(
