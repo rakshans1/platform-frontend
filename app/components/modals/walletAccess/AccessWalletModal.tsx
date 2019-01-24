@@ -35,14 +35,9 @@ interface IExternalProps {
   message?: TTranslatedString;
 }
 
-export const AccessWalletContainerComponent: React.SFC<IStateProps & IDispatchProps> = ({
-  title,
-  message,
-  errorMessage,
-  isUnlocked,
-  onAccept,
-  walletType,
-}) => (
+export const AccessWalletContainerComponent: React.FunctionComponent<
+  IStateProps & IDispatchProps
+> = ({ title, message, errorMessage, isUnlocked, onAccept, walletType }) => (
   <div className="text-center">
     {title && <h1>{title}</h1>}
     {message && <p>{message}</p>}
@@ -93,7 +88,7 @@ export const AccessWalletContainer = appConnect<IStateProps, IDispatchProps, IEx
     isUnlocked: selectIsUnlocked(s.web3),
   }),
   dispatchToProps: dispatch => ({
-    onAccept: (password?: string) => dispatch(actions.signMessageModal.accept(password)),
+    onAccept: (password?: string) => dispatch(actions.accessWallet.accept(password)),
   }),
 })(AccessWalletContainerComponent);
 
@@ -105,7 +100,9 @@ interface IModalDispatchProps {
   onCancel: () => void;
 }
 
-const AccessWalletModalComponent: React.SFC<IModalStateProps & IModalDispatchProps> = props => (
+const AccessWalletModalComponent: React.FunctionComponent<
+  IModalStateProps & IModalDispatchProps
+> = props => (
   <Modal isOpen={props.isOpen} toggle={props.onCancel} centered>
     <ModalComponentBody onClose={props.onCancel}>
       <AccessWalletContainer />
@@ -118,6 +115,6 @@ export const AccessWalletModal = appConnect<IModalStateProps, IModalDispatchProp
     isOpen: s.accessWallet.isModalOpen,
   }),
   dispatchToProps: dispatch => ({
-    onCancel: () => dispatch(actions.signMessageModal.hideAccessWalletModal()),
+    onCancel: () => dispatch(actions.accessWallet.hideAccessWalletModal()),
   }),
 })(AccessWalletModalComponent);

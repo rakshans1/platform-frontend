@@ -36,7 +36,7 @@ interface IStateProps {
   kycRequestStatus?: TRequestStatus;
 }
 
-export const SettingsComponent: React.SFC<IStateProps> = ({
+export const SettingsComponent: React.FunctionComponent<IStateProps> = ({
   isLightWallet,
   isIcbmWalletConnected,
   isLockedWalletConnected,
@@ -100,9 +100,8 @@ export const SettingsComponent: React.SFC<IStateProps> = ({
   );
 };
 
-export const Settings = compose<React.SFC>(
+export const Settings = compose<React.FunctionComponent>(
   createErrorBoundary(ErrorBoundaryLayoutAuthorized),
-  onEnterAction({ actionCreator: d => d(actions.wallet.loadWalletData()) }),
   appConnect<IStateProps>({
     stateToProps: state => ({
       isLightWallet: selectIsLightWallet(state.web3),
@@ -115,6 +114,7 @@ export const Settings = compose<React.SFC>(
   }),
   onEnterAction({
     actionCreator: dispatch => {
+      dispatch(actions.wallet.loadWalletData());
       dispatch(actions.kyc.kycLoadIndividualData());
     },
   }),

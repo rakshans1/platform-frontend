@@ -41,6 +41,7 @@ export function* ensureWalletConnection(
   if (web3Manager.personalWallet) {
     return;
   }
+
   const userType: EUserType = yield select(selectUserType);
   const metadata = walletStorage.get(userType);
 

@@ -61,7 +61,7 @@ type IDispatchProps = ITxSummaryDispatchProps & {
 
 type IProps = IStateProps & IDispatchProps;
 
-const NeuRewardCaption: React.SFC<{ isIcbm?: boolean }> = ({ isIcbm }) => {
+const NeuRewardCaption: React.FunctionComponent<{ isIcbm?: boolean }> = ({ isIcbm }) => {
   const neuMsg = <FormattedMessage id="investment-flow.summary.estimated-reward" />;
   const icbmMsg = (
     <>
@@ -75,7 +75,7 @@ const NeuRewardCaption: React.SFC<{ isIcbm?: boolean }> = ({ isIcbm }) => {
   return isIcbm ? icbmMsg : neuMsg;
 };
 
-const InvestmentSummaryComponent: React.SFC<IProps> = ({
+const InvestmentSummaryComponent: React.FunctionComponent<IProps> = ({
   onAccept,
   onChange,
   downloadAgreement,
@@ -202,8 +202,8 @@ const InvestmentSummary = compose<IProps, {}>(
         investmentEur: selectInvestmentEurValueUlps(state),
         gasCostEth: selectTxGasCostEthUlps(state),
         // tslint:disable: no-useless-cast
-        equityTokens: selectEquityTokenCountByEtoId(etoId, state)!,
-        estimatedReward: selectNeuRewardUlpsByEtoId(etoId, state)!,
+        equityTokens: selectEquityTokenCountByEtoId(state, etoId)!,
+        estimatedReward: selectNeuRewardUlpsByEtoId(state, etoId)!,
         etherPriceEur: selectEtherPriceEur(state),
         isIcbm: selectIsICBMInvestment(state),
       };

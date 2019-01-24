@@ -1,4 +1,4 @@
-import { Form, FormikProps, withFormik } from "formik";
+import { FormikProps, withFormik } from "formik";
 import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
@@ -18,6 +18,7 @@ import {
   BOOL_FALSE_KEY,
   BOOL_TRUE_KEY,
   boolify,
+  Form,
   FormField,
   FormFieldDate,
   FormSelectCountryField,
@@ -176,7 +177,7 @@ export class KYCBeneficialOwnerComponent extends React.Component<IProps> {
   }
 }
 
-export const KYCBeneficialOwner = compose<React.SFC<IOwnProps>>(
+export const KYCBeneficialOwner = compose<React.FunctionComponent<IOwnProps>>(
   appConnect<IStateProps, IDispatchProps, IOwnProps>({
     stateToProps: (state, ownProps) => ({
       id: ownProps.id,

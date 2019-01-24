@@ -45,7 +45,7 @@ interface IProps {
 // The castings should be resolved when the EtoApi.interface.ts reflects the correct data types from swagger!
 
 // TODO: Refactor to smaller components
-const EtoViewLayout: React.SFC<IProps> = ({ eto }) => {
+const EtoViewLayout: React.FunctionComponent<IProps> = ({ eto }) => {
   const {
     advisors,
     companyDescription,
@@ -93,7 +93,7 @@ const EtoViewLayout: React.SFC<IProps> = ({ eto }) => {
   const hasSocialChannelsAdded = !!(socialChannels && socialChannels.length);
   const twitterUrl =
     isTwitterFeedEnabled && socialChannels
-      ? (socialChannels.find(c => c.type === "twitter") as any).url
+      ? socialChannels.find(c => c.type === "twitter").url
       : "";
 
   const isInSetupState = isOnChain(eto) && eto.contract.timedState === EETOStateOnChain.Setup;

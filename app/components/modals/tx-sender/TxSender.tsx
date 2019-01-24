@@ -8,7 +8,7 @@ import { ImmutableFileId } from "../../../lib/api/ImmutableStorage.interfaces";
 import { ITxData } from "../../../lib/web3/types";
 import { actions } from "../../../modules/actions";
 import { TETOWithInvestorTicket } from "../../../modules/investor-tickets/types";
-import { ETxSenderType } from "../../../modules/tx/interfaces";
+import { ETokenType, ETxSenderType } from "../../../modules/tx/interfaces";
 import { ETransactionErrorType, ETxSenderState } from "../../../modules/tx/sender/reducer";
 import { selectTxSenderModalOpened } from "../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../store";
@@ -50,7 +50,7 @@ function isBigModal(props: Props): boolean {
   return props.state === ETxSenderState.INIT && props.type === ETxSenderType.INVEST;
 }
 
-const TxSenderModalComponent: React.SFC<Props> = props => {
+const TxSenderModalComponent: React.FunctionComponent<Props> = props => {
   const { isOpen, onCancel } = props;
 
   return (
@@ -75,7 +75,7 @@ export interface ITxSummaryStateProps {
 export interface ITxSummaryDispatchProps {
   onAccept: () => any;
   onChange?: () => any;
-  downloadICBMAgreement?: () => void;
+  downloadICBMAgreement?: (tokenType: ETokenType) => void;
   downloadDocument?: (immutableFileId: ImmutableFileId, fileName: string) => void;
   generateTemplateByEtoId?: (immutableFileId: IEtoDocument, etoId: string) => void;
 }
@@ -84,7 +84,7 @@ export type TSummaryComponentProps = ITXSummaryExternalProps &
   ITxSummaryStateProps &
   ITxSummaryDispatchProps;
 
-const InitComponent: React.SFC<{ type?: ETxSenderType }> = ({ type }) => {
+const InitComponent: React.FunctionComponent<{ type?: ETxSenderType }> = ({ type }) => {
   switch (type) {
     case ETxSenderType.INVEST:
       return <InvestmentSelection />;
@@ -95,7 +95,7 @@ const InitComponent: React.SFC<{ type?: ETxSenderType }> = ({ type }) => {
   }
 };
 
-const SummaryComponent: React.SFC<{ type?: ETxSenderType }> = ({ type }) => {
+const SummaryComponent: React.FunctionComponent<{ type?: ETxSenderType }> = ({ type }) => {
   switch (type) {
     case ETxSenderType.INVEST:
       return <InvestmentSummary />;
@@ -110,7 +110,7 @@ const SummaryComponent: React.SFC<{ type?: ETxSenderType }> = ({ type }) => {
   }
 };
 
-const SuccessComponent: React.SFC<{ type?: ETxSenderType; txHash?: string }> = ({
+const SuccessComponent: React.FunctionComponent<{ type?: ETxSenderType; txHash?: string }> = ({
   type,
   txHash,
 }) => {
