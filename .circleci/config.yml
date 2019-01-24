@@ -82,7 +82,7 @@ jobs:
   test-e2e-chrome:
     machine:
       enabled: true
-      image: cypress/browsers:chrome67
+      image: circleci/classic:edge
       docker_layer_caching: true
 
     parallelism: 1
@@ -92,6 +92,7 @@ jobs:
     steps:
       - checkout
       - run: ./.circleci/install-yarn.sh
+      - run: ./.circleci/install-chrome.sh
       - restore_cache:
           keys:
             - v13-deps-{{ checksum "package.json" }}
