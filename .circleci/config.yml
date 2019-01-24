@@ -59,7 +59,7 @@ jobs:
   test-e2e:
     machine:
       enabled: true
-      image: cypress/browsers:chrome62
+      image: circleci/classic:edge
       docker_layer_caching: true
 
     parallelism: 4
@@ -82,7 +82,7 @@ jobs:
   test-e2e-chrome:
     machine:
       enabled: true
-      image: circleci/classic:edge
+      image: cypress/browsers:chrome67
       docker_layer_caching: true
 
     parallelism: 1
