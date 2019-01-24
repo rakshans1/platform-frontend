@@ -19,7 +19,7 @@ import { IPersonalWallet } from "../../lib/web3/PersonalWeb3";
 import { SignerError, Web3Manager } from "../../lib/web3/Web3Manager";
 import { IAppState } from "../../store";
 import { invariant } from "../../utils/invariant";
-import { actions, TAction } from "../actions";
+import { actions, TAction, TActionFromCreator } from "../actions";
 import { MessageSignCancelledError } from "../auth/errors";
 import { selectUserType } from "../auth/selectors";
 import { neuCall } from "../sagasUtils";
@@ -117,19 +117,19 @@ export function* connectLightWallet(
 export function* connectWalletAndRunEffect(effect: Effect | Iterator<Effect>): any {
   while (true) {
     try {
-      yield effects.put(actions.signMessageModal.clearSigningError());
+      yield effects.put(actions.accessWallet.clearSigningError());
 
-      const acceptAction: TAction = yield take("ACCESS_WALLET_ACCEPT");
-      if (acceptAction.type !== "ACCESS_WALLET_ACCEPT") {
-        return;
-      }
+      const acceptAction: TActionFromCreator<typeof actions.accessWallet.accept> = yield take(
+        actions.accessWallet.accept.getType(),
+      );
+
       // Password can be undefined if its Metamask or Ledger
       yield neuCall(ensureWalletConnection, acceptAction.payload.password);
 
       return yield effect;
     } catch (e) {
       const error = mapSignMessageErrorToErrorMessage(e);
-      yield effects.put(actions.signMessageModal.signingError(error));
+      yield effects.put(actions.accessWallet.signingError(error));
 
       if (e instanceof SignerError || error.messageType === GenericErrorMessage.GENERIC_ERROR)
         throw e;
@@ -149,7 +149,7 @@ export function* accessWalletAndRunEffect(
   if (isSigning) {
     throw new Error("Signing already in progress");
   }
-  yield put(actions.signMessageModal.showAccessWalletModal(title, message));
+  yield put(actions.accessWallet.showAccessWalletModal(title, message));
 
   // do required operation, or finish in case cancel button was hit
   const { result, cancel } = yield race({
@@ -158,7 +158,7 @@ export function* accessWalletAndRunEffect(
   });
 
   // always hide the current modal
-  yield effects.put(actions.signMessageModal.hideAccessWalletModal());
+  yield effects.put(actions.accessWallet.hideAccessWalletModal());
 
   // if the cancel action was called
   // throw here

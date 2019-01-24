@@ -45,7 +45,7 @@ export const actions = {
   immutableStorage: immutableStorageActions,
   verifyEmail: verifyEmailActions,
   genericModal: genericModalActions,
-  signMessageModal: accessWalletActions,
+  accessWallet: accessWalletActions,
   tokenPrice: tokenPriceActions,
   init: initActions,
   kyc: kycActions,
