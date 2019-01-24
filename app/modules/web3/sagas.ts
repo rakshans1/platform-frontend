@@ -7,7 +7,7 @@ import { LIGHT_WALLET_PASSWORD_CACHE_TIME } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { EUserType } from "../../lib/api/users/interfaces";
 import { TWalletMetadata } from "../../lib/persistence/WalletMetadataObjectStorage";
-import { LightWallet, LightWalletWrongPassword } from "../../lib/web3/LightWallet";
+import { LightWallet } from "../../lib/web3/LightWallet";
 import { EWeb3ManagerEvents } from "../../lib/web3/Web3Manager";
 import { IAppState } from "../../store";
 import { actions, TAction } from "../actions";
@@ -51,22 +51,6 @@ export function* cancelLocking(): Iterator<any> {
   if (lockWalletTask) {
     yield cancel(lockWalletTask);
   }
-}
-
-export function* unlockWallet(
-  { web3Manager }: TGlobalDependencies,
-  password: string,
-): Iterator<any> {
-  debugger;
-  const lightWallet = web3Manager.personalWallet as LightWallet;
-
-  const isPasswordCorrect = yield lightWallet.testPassword(password);
-  if (!isPasswordCorrect) {
-    throw new LightWalletWrongPassword();
-  }
-
-  lightWallet.password = password;
-  yield put(actions.web3.walletUnlocked());
 }
 
 export function* loadPreviousWallet(

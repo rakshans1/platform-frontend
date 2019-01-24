@@ -139,6 +139,45 @@ export async function setupLightWalletPromise(
   }
 }
 
+export function* lightWalletBackupWatch({ logger }: TGlobalDependencies): Iterator<any> {
+  try {
+    const user = yield select((state: IAppState) => state.auth.user);
+    yield neuCall(updateUserPromise, { ...user, backupCodesVerified: true });
+    yield neuCall(
+      displayInfoModalSaga,
+      getMessageTranslation(createMessage(BackupRecoveryMessage.BACKUP_SUCCESS_TITLE)),
+      getMessageTranslation(createMessage(BackupRecoveryMessage.BACKUP_SUCCESS_DESCRIPTION)),
+    );
+    yield loadUser();
+    yield effects.put(actions.routing.goToProfile());
+  } catch (e) {
+    logger.error("Light Wallet Backup Error", e);
+    yield put(
+      actions.walletSelector.lightWalletConnectionError(mapLightWalletErrorToErrorMessage(e)),
+    );
+  }
+}
+
+export function* loadSeedFromWalletWatch({
+  logger,
+  web3Manager,
+}: TGlobalDependencies): Iterator<any> {
+  try {
+    const isUnlocked = yield select((s: IAppState) => selectIsUnlocked(s.web3));
+    if (!isUnlocked) {
+      throw new LightWalletLocked();
+    }
+    const lightWallet = web3Manager.personalWallet as LightWallet;
+    const { seed, privateKey } = yield call(lightWallet.getWalletPrivateData.bind(lightWallet));
+    yield put(actions.web3.loadWalletPrivateDataToState(seed, privateKey));
+  } catch (e) {
+    logger.error("Load seed from wallet failed", e);
+    yield put(
+      actions.walletSelector.lightWalletConnectionError(mapLightWalletErrorToErrorMessage(e)),
+    );
+  }
+}
+
 export function* lightWalletRecoverWatch(
   { logger }: TGlobalDependencies,
   action: TAction,
@@ -203,45 +242,6 @@ export function* lightWalletRecoverWatch(
   }
 }
 
-export function* lightWalletBackupWatch({ logger }: TGlobalDependencies): Iterator<any> {
-  try {
-    const user = yield select((state: IAppState) => state.auth.user);
-    yield neuCall(updateUserPromise, { ...user, backupCodesVerified: true });
-    yield neuCall(
-      displayInfoModalSaga,
-      getMessageTranslation(createMessage(BackupRecoveryMessage.BACKUP_SUCCESS_TITLE)),
-      getMessageTranslation(createMessage(BackupRecoveryMessage.BACKUP_SUCCESS_DESCRIPTION)),
-    );
-    yield loadUser();
-    yield effects.put(actions.routing.goToProfile());
-  } catch (e) {
-    logger.error("Light Wallet Backup Error", e);
-    yield put(
-      actions.walletSelector.lightWalletConnectionError(mapLightWalletErrorToErrorMessage(e)),
-    );
-  }
-}
-
-export function* loadSeedFromWalletWatch({
-  logger,
-  web3Manager,
-}: TGlobalDependencies): Iterator<any> {
-  try {
-    const isUnlocked = yield select((s: IAppState) => selectIsUnlocked(s.web3));
-    if (!isUnlocked) {
-      throw new LightWalletLocked();
-    }
-    const lightWallet = web3Manager.personalWallet as LightWallet;
-    const { seed, privateKey } = yield call(lightWallet.getWalletPrivateData.bind(lightWallet));
-    yield put(actions.web3.loadWalletPrivateDataToState(seed, privateKey));
-  } catch (e) {
-    logger.error("Load seed from wallet failed", e);
-    yield put(
-      actions.walletSelector.lightWalletConnectionError(mapLightWalletErrorToErrorMessage(e)),
-    );
-  }
-}
-
 export function* lightWalletRegisterWatch(
   { logger }: TGlobalDependencies,
   action: TAction,
@@ -284,7 +284,6 @@ export function* lightWalletLoginWatch(
     return;
   }
   const { password } = action.payload;
-
   try {
     const walletMetadata: ILightWalletMetadata | undefined = yield neuCall(
       getWalletMetadataByURL,
@@ -295,11 +294,13 @@ export function* lightWalletLoginWatch(
       invariant(walletMetadata, "Missing metadata");
       return;
     }
+
     const wallet: LightWallet = yield connectLightWallet(
       lightWalletConnector,
       walletMetadata,
       password,
     );
+
     const isValidPassword: boolean = yield testWalletPassword(
       wallet.vault.walletInstance,
       password,
