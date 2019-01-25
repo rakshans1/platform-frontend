@@ -73,3 +73,9 @@ export const BROWSER_WALLET_RECONNECT_INTERVAL = 1000;
  * General constants
  */
 export const IS_CYPRESS = typeof window === "undefined" ? false : !!(window as any).Cypress;
+
+/*
+ * Storage Listener Constants
+ */
+
+export const REDIRECT_CHANNEL_WATCH_DELAY = 5000;

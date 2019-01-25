@@ -74,9 +74,9 @@ export function* initStartSaga(_: TGlobalDependencies, action: TAction): Iterato
   const { initType } = action.payload;
 
   switch (initType) {
-    case "appInit":
+    case EInitType.appInit:
       return yield neuCall(initApp);
-    case "smartcontractsInit":
+    case EInitType.smartcontractsInit:
       return yield neuCall(initSmartcontracts);
     default:
       throw new Error("Unrecognized init type!");

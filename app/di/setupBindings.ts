@@ -1,27 +1,11 @@
 import { Container } from "inversify";
+
 import { IConfig } from "../config/getConfig";
 import { AuthorizedBinaryHttpClient } from "../lib/api/client/AuthBinaryHttpClient";
+import { AuthorizedJsonHttpClient } from "../lib/api/client/AuthJsonHttpClient";
 import { BinaryHttpClient } from "../lib/api/client/BinaryHttpClient";
 import { IHttpClient } from "../lib/api/client/IHttpClient";
 import { JsonHttpClient } from "../lib/api/client/JsonHttpClient";
-import { SignatureAuthApi } from "../lib/api/SignatureAuthApi";
-import { UsersApi } from "../lib/api/users/UsersApi";
-import { VaultApi } from "../lib/api/vault/VaultApi";
-import { cryptoRandomString, CryptoRandomString } from "../lib/dependencies/cryptoRandomString";
-import { ILogger, resolveLogger } from "../lib/dependencies/logger";
-import { NotificationCenter } from "../lib/dependencies/NotificationCenter";
-import { Storage } from "../lib/persistence/Storage";
-import { BrowserWalletConnector } from "../lib/web3/BrowserWallet";
-import { LedgerWalletConnector } from "../lib/web3/LedgerWallet";
-import { LightWalletConnector } from "../lib/web3/LightWallet";
-import { Web3Manager } from "../lib/web3/Web3Manager";
-import {
-  AsyncIntervalSchedulerFactory,
-  AsyncIntervalSchedulerFactoryType,
-} from "../utils/AsyncIntervalScheduler";
-import { USER_JWT_KEY } from "./../lib/persistence/UserStorage";
-
-import { AuthorizedJsonHttpClient } from "../lib/api/client/AuthJsonHttpClient";
 import { EtoApi } from "../lib/api/eto/EtoApi";
 import { EtoFileApi } from "../lib/api/eto/EtoFileApi";
 import { EtoPledgeApi } from "../lib/api/eto/EtoPledgeApi";
@@ -29,14 +13,30 @@ import { FileStorageApi } from "../lib/api/FileStorageApi";
 import { GasApi } from "../lib/api/GasApi";
 import { ImmutableStorageApi } from "../lib/api/ImmutableStorageApi";
 import { KycApi } from "../lib/api/KycApi";
+import { SignatureAuthApi } from "../lib/api/SignatureAuthApi";
+import { UsersApi } from "../lib/api/users/UsersApi";
+import { VaultApi } from "../lib/api/vault/VaultApi";
+import { cryptoRandomString, CryptoRandomString } from "../lib/dependencies/cryptoRandomString";
 import { detectBrowser, TDetectBrowser } from "../lib/dependencies/detectBrowser";
+import { ILogger, resolveLogger } from "../lib/dependencies/logger";
+import { NotificationCenter } from "../lib/dependencies/NotificationCenter";
 import { IntlWrapper } from "../lib/intl/IntlWrapper";
 import { STORAGE_JWT_KEY } from "../lib/persistence/JwtObjectStorage";
 import { ObjectStorage } from "../lib/persistence/ObjectStorage";
+import { Storage } from "../lib/persistence/Storage";
 import { TWalletMetadata } from "../lib/persistence/WalletMetadataObjectStorage";
 import { WalletStorage } from "../lib/persistence/WalletStorage";
+import { BrowserWalletConnector } from "../lib/web3/BrowserWallet";
 import { ContractsService } from "../lib/web3/ContractsService";
+import { LedgerWalletConnector } from "../lib/web3/LedgerWallet";
+import { LightWalletConnector } from "../lib/web3/LightWallet";
 import { IEthereumNetworkConfig } from "../lib/web3/types";
+import { Web3Manager } from "../lib/web3/Web3Manager";
+import {
+  AsyncIntervalSchedulerFactory,
+  AsyncIntervalSchedulerFactoryType,
+} from "../utils/AsyncIntervalScheduler";
+import { USER_JWT_KEY } from "./../lib/persistence/UserStorage";
 import { symbols } from "./symbols";
 
 export function setupBindings(config: IConfig): Container {

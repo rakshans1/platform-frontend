@@ -173,9 +173,9 @@ export const verifyLatestUserEmail = () => {
   });
 };
 
-export const assertUserInDashboard = () => {
+export const assertUserInDashboard = (isIssuer: boolean = false) => {
   cy.url().should("contain", appRoutes.dashboard);
-  return cy.get(tid("dashboard-application"));
+  return isIssuer ? cy.get(tid("eto-dashboard-application")) : cy.get(tid("dashboard-application"));
 };
 
 export const assertUserInLanding = () => {
@@ -209,7 +209,7 @@ export const registerWithLightWallet = (
   cy.get(tid("wallet-selector-register-confirm-password")).type(password);
   cy.get(tid("wallet-selector-register-button")).awaitedClick();
   cy.get(tid("wallet-selector-register-button")).should("be.disabled");
-  assertUserInDashboard();
+  assertUserInDashboard(asIssuer);
   acceptTOS();
 };
 
