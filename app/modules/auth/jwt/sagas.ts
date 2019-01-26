@@ -1,8 +1,7 @@
-import { channel, delay } from "redux-saga";
+import { channel } from "redux-saga";
 import { call, Effect, put, select, take } from "redux-saga/effects";
 
 import { TMessage } from "../../../components/translatedMessages/utils";
-import { REDIRECT_CHANNEL_WATCH_DELAY } from "../../../config/constants";
 import { TGlobalDependencies } from "../../../di/setupBindings";
 import { STORAGE_JWT_KEY } from "../../../lib/persistence/JwtObjectStorage";
 import { IAppState } from "../../../store";
@@ -148,6 +147,5 @@ export function* watchRedirectChannel(): any {
         yield put(actions.init.start(EInitType.appInit));
         break;
     }
-    yield delay(REDIRECT_CHANNEL_WATCH_DELAY);
   }
 }
