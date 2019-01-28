@@ -33,10 +33,7 @@ export function* autoLockLightWallet({ web3Manager, logger }: TGlobalDependencie
   }
 }
 
-export function* autoClearWalletPrivateDataWatcher({
-  web3Manager,
-  logger,
-}: TGlobalDependencies): Iterator<any> {
+export function* autoClearWalletPrivateDataWatcher({ logger }: TGlobalDependencies): Iterator<any> {
   logger.info(`Clearing wallet private data in ${LIGHT_WALLET_PRIVATE_DATA_CACHE_TIME} ms`);
 
   yield call(delay, LIGHT_WALLET_PRIVATE_DATA_CACHE_TIME);
