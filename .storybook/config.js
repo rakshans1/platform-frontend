@@ -30,14 +30,6 @@ setIntlConfig({
   getMessages,
 });
 
-addDecorator(
-  withOptions({
-    name: "Neufund Pattern Library",
-    url: "platform.neufund.org",
-  }),
-);
-addDecorator(withInfo);
-addDecorator(checkA11y);
 addDecorator(initScreenshot());
 addDecorator(
   withScreenshot({
@@ -61,6 +53,14 @@ addDecorator(
     ],
   }),
 );
+addDecorator(
+  withOptions({
+    name: "Neufund Pattern Library",
+    url: "platform.neufund.org",
+  }),
+);
+addDecorator(withInfo);
+addDecorator(checkA11y);
 addDecorator(withIntl);
 addDecorator(StoryRouter());
 addDecorator(withStore());
