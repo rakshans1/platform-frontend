@@ -30,37 +30,46 @@ setIntlConfig({
   getMessages,
 });
 
-addDecorator(initScreenshot());
-addDecorator(
-  withScreenshot({
-    delay: 1000,
-    viewport: [
-      // Mobile
-      {
-        width: 375,
-        height: 667,
-      },
-      // Tablet
-      {
-        width: 768,
-        height: 800,
-      },
-      // Desktop
-      {
-        width: 1200,
-        height: 800,
-      },
-    ],
-  }),
-);
-addDecorator(
-  withOptions({
-    name: "Neufund Pattern Library",
-    url: "platform.neufund.org",
-  }),
-);
-addDecorator(withInfo);
-addDecorator(checkA11y);
+if (process.env.NF_STORYBOOK_SCREENSHOT) {
+  addDecorator(initScreenshot());
+  addDecorator(
+    withScreenshot({
+      delay: 1000,
+      viewport: [
+        // Mobile
+        {
+          width: 375,
+          height: 667,
+        },
+        // Tablet
+        {
+          width: 768,
+          height: 800,
+        },
+        // Desktop
+        {
+          width: 1200,
+          height: 800,
+        },
+      ],
+    }),
+  );
+} else {
+  addDecorator(
+    withOptions({
+      name: "Neufund Pattern Library",
+      url: "platform.neufund.org",
+    }),
+  );
+  addDecorator(
+    withInfo({
+      inline: true,
+      header: false,
+    }),
+  );
+  addDecorator(checkA11y);
+}
+
 addDecorator(withIntl);
 addDecorator(StoryRouter());
 addDecorator(withStore());
