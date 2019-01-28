@@ -3,7 +3,10 @@ import { call, cancel, fork, put, select, take } from "redux-saga/effects";
 
 import { Web3Message } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
-import { LIGHT_WALLET_PASSWORD_CACHE_TIME } from "../../config/constants";
+import {
+  LIGHT_WALLET_PASSWORD_CACHE_TIME,
+  LIGHT_WALLET_PRIVATE_DATA_CACHE_TIME,
+} from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { EUserType } from "../../lib/api/users/interfaces";
 import { TWalletMetadata } from "../../lib/persistence/WalletMetadataObjectStorage";
@@ -27,8 +30,19 @@ export function* autoLockLightWallet({ web3Manager, logger }: TGlobalDependencie
     logger.info("Resetting light wallet password now");
     yield put(actions.web3.walletLocked());
     (web3Manager.personalWallet as LightWallet).password = undefined;
-    yield put(actions.web3.clearWalletPrivateDataFromState()); //Better to clear the seed here as well
   }
+}
+
+export function* autoClearWalletPrivateDataWatcher({
+  web3Manager,
+  logger,
+}: TGlobalDependencies): Iterator<any> {
+  logger.info(`Clearing wallet private data in ${LIGHT_WALLET_PRIVATE_DATA_CACHE_TIME} ms`);
+
+  yield call(delay, LIGHT_WALLET_PRIVATE_DATA_CACHE_TIME);
+
+  logger.info("Clearing wallet private data now");
+  yield put(actions.web3.clearWalletPrivateDataFromState()); //Better to clear the seed here as well
 }
 
 export function* autoLockLightWalletWatcher(
@@ -132,6 +146,11 @@ export const web3Sagas = function*(): Iterator<any> {
     neuTakeEvery,
     ["NEW_PERSONAL_WALLET_PLUGGED", "WEB3_WALLET_UNLOCKED"],
     autoLockLightWalletWatcher,
+  );
+  yield fork(
+    neuTakeEvery,
+    ["NEW_PERSONAL_WALLET_PLUGGED", "WEB3_WALLET_UNLOCKED"],
+    autoClearWalletPrivateDataWatcher,
   );
   yield fork(neuTakeEvery, ["PERSONAL_WALLET_DISCONNECTED", "WEB3_WALLET_LOCKED"], cancelLocking);
   yield fork(neuTakeEvery, "PERSONAL_WALLET_CONNECTION_LOST", personalWalletConnectionLost);
