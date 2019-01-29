@@ -31,4 +31,8 @@ describe("promisifies a function", () => {
 
     expect(await promisify(anotherFn.bind(context))(1)).to.eq(3);
   });
+
+  it("double promisify does no harm", async () => {
+    expect(await promisify(promisify(fn))(1, 2)).to.eq(3);
+  });
 });
