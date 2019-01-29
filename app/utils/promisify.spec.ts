@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { promisify } from "./Promisify";
+import { promisify } from "./promisify";
 
 describe("promisifies a function", () => {
   const fn = (a: number, b: number, cb: Function) => {
