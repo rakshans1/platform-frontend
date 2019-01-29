@@ -8,6 +8,7 @@ const loadAppEnv = require("./loadAppEnv");
 const applicationEnv = loadAppEnv(process.env);
 
 module.exports = {
+  stats: { children: false },
   entry: ["./app/index.tsx"],
   resolve: {
     extensions: [".ts", ".tsx", ".js"],

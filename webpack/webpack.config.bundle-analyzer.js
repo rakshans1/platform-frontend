@@ -4,7 +4,7 @@ const merge = require("webpack-merge");
 const prodConfig = require("./webpack.config.prod");
 
 const bundleAnalyzerConfig = merge(prodConfig, {
-  plugins: [new BundleAnalyzerPlugin()],
+  plugins: [new BundleAnalyzerPlugin({logLevel: "silent"})],
 });
 
 module.exports = bundleAnalyzerConfig;

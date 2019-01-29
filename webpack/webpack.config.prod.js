@@ -3,6 +3,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const webpack = require("webpack");
+const { DuplicatesPlugin } = require("inspectpack/plugin");
 
 const merge = require("webpack-merge");
 const path = require("path");
@@ -11,6 +12,7 @@ const configCommon = require("./webpack.config.common");
 const paths = require("./paths");
 
 module.exports = merge(configCommon, {
+
   mode: "production",
   optimization: {
     splitChunks: {
@@ -38,6 +40,12 @@ module.exports = merge(configCommon, {
     new MiniCssExtractPlugin({
       filename: "[contenthash].[name].css",
     }),
+    new DuplicatesPlugin({
+      // Emit compilation warning or error? (Default: `false`)
+      emitErrors: false,
+      // Display full duplicates information? (Default: `false`)
+      verbose: false
+    })
   ],
   module: {
     rules: [
