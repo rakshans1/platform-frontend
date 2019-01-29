@@ -11,7 +11,7 @@ import {
   DEFAULT_PASSWORD,
   generateRandomEmailAddress,
 } from "../utils/userHelpers";
-import { LIGHT_WALLET_PASSWORD_CACHE_TIME } from "../../config/constants";
+import { LIGHT_WALLET_PRIVATE_DATA_CACHE_TIME } from "../../config/constants";
 import { tid, notificationTid } from "../utils/selectors";
 
 describe("Backup Seed and Private Key save and view", () => {
@@ -32,7 +32,7 @@ describe("Backup Seed and Private Key save and view", () => {
 
       confirmAccessModal();
 
-      cy.wait(LIGHT_WALLET_PASSWORD_CACHE_TIME);
+      cy.wait(LIGHT_WALLET_PRIVATE_DATA_CACHE_TIME);
 
       assertLockedAccessModal();
     });

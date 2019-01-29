@@ -8,7 +8,7 @@ import {
   convertToUniqueEmail,
   registerWithLightWallet,
   verifyLatestUserEmail,
-  confirmAccessModalNoPW,
+  confirmAccessModal,
 } from "../utils";
 import { tid } from "../utils/selectors";
 
@@ -33,7 +33,7 @@ describe("Verify Email Widget", () => {
     cy.get(tid("verify-email-widget-form-email-input")).type(secondEmail);
     cy.get(tid("verify-email-widget-form-submit")).awaitedClick();
 
-    confirmAccessModalNoPW();
+    confirmAccessModal();
 
     // Email server takes time before getting the request
     assertWaitForLatestEmailSentWithSalt(secondEmail);
