@@ -5,11 +5,12 @@ import * as ethSig from "eth-sig-util";
 import { addHexPrefix, hashPersonalMessage, toBuffer } from "ethereumjs-util";
 
 import { tid } from "../../../test/testUtils";
+import { getVaultKey } from "../../modules/wallet-selector/light-wizard/utils";
 
 /*
 Pre-login user for faster tests
 */
-
+const VAULT_API_ROOT = "/api/wallet";
 export const INVESTOR_WALLET_KEY = "NF_WALLET_METADATA";
 const ISSUER_WALLET_KEY = "NF_WALLET_ISSUER_METADATA";
 export const JWT_KEY = "NF_JWT";
@@ -33,7 +34,6 @@ export const createAndLoginNewUser = (
 ) => {
   return cy.clearLocalStorage().then(async ls => {
     cy.log("Logging in...");
-
     const userType = params.type ? params.type : "investor";
 
     const {
@@ -52,17 +52,18 @@ export const createAndLoginNewUser = (
         email: "dave@neufund.org",
         salt: salt,
         walletType: "LIGHT",
-        vault: lightWalletInstance.serialize(),
       }),
     );
 
     // fetch a token and store it in local storage
     const jwt = await getJWT(address, lightWalletInstance, walletKey, params.permissions);
     ls.setItem(JWT_KEY, `"${jwt}"`);
+    await createVaultApi(salt, DEFAULT_PASSWORD, lightWalletInstance.serialize());
 
-    if (!params.onlyLogin)
+    if (!params.onlyLogin) {
       // create a user object on the backend
       await createUser(privateKey, userType, params.kyc);
+    }
 
     // mark backup codes verified
     await markBackupCodesVerified(jwt);
@@ -257,4 +258,23 @@ export const logout = () => {
   cy.log("logging out");
   cy.get(tid("Header-logout")).awaitedClick();
   cy.wait(2000);
+};
+
+export const createVaultApi = async (
+  salt: string,
+  password: string,
+  serializedVault: string,
+): Promise<any> => {
+  const vaultKey = await getVaultKey(salt, password);
+
+  const path = `${VAULT_API_ROOT}/vault/${vaultKey}`;
+  const payload = { wallet: serializedVault };
+  return fetch(path, {
+    method: "POST",
+    body: JSON.stringify(payload),
+    headers: {
+      Accept: "*/*",
+      "Content-Type": "application/json",
+    },
+  });
 };
