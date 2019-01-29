@@ -56,20 +56,20 @@ if (process.env.NF_STORYBOOK_SCREENSHOT) {
   );
 } else {
   addDecorator(
-    withOptions({
-      name: "Neufund Pattern Library",
-      url: "platform.neufund.org",
-    }),
-  );
-  addDecorator(
     withInfo({
       inline: true,
       header: false,
     }),
   );
-  addDecorator(checkA11y);
 }
 
+addDecorator(
+  withOptions({
+    name: "Neufund Pattern Library",
+    url: "platform.neufund.org",
+  }),
+);
+addDecorator(checkA11y);
 addDecorator(withIntl);
 addDecorator(StoryRouter());
 addDecorator(withStore());

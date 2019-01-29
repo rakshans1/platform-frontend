@@ -87,7 +87,7 @@ module.exports = (baseConfig, env, config) => {
                 experimentalWatchApi: true,
               },
             },
-            "react-docgen-typescript-loader",
+            process.env.NF_STORYBOOK_SCREENSHOT ? undefined : "react-docgen-typescript-loader",
           ],
           include: [paths.app, path.join(__dirname, "../test")],
         },
