@@ -1,4 +1,4 @@
-import { promisify } from "bluebird";
+import { promisify } from '../../utils/Promisify';
 import * as hex2ascii from "hex2ascii";
 import { injectable } from "inversify";
 import * as Web3 from "web3";

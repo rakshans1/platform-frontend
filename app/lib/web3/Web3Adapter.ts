@@ -1,5 +1,5 @@
 import { BigNumber } from "bignumber.js";
-import { promisify } from "bluebird";
+import { promisify } from "../../utils/Promisify";
 import * as Web3 from "web3";
 
 import { makeEthereumAddressChecksummed } from "../../modules/web3/utils";
