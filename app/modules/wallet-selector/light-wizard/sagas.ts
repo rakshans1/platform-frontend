@@ -1,4 +1,3 @@
-import { effects } from "redux-saga";
 import { call, fork, put, select } from "redux-saga/effects";
 
 import {
@@ -92,9 +91,7 @@ export function* getWalletMetadataByURL(
       queryStringWalletInfo.email,
     );
   }
-  const savedMetadata = yield effects.select((s: IAppState) =>
-    selectPreviousConnectedWallet(s.web3),
-  );
+  const savedMetadata = yield select((s: IAppState) => selectPreviousConnectedWallet(s.web3));
   if (savedMetadata && savedMetadata.walletType === EWalletType.LIGHT) {
     return savedMetadata;
   }
@@ -149,7 +146,7 @@ export function* lightWalletBackupWatch({ logger }: TGlobalDependencies): Iterat
       getMessageTranslation(createMessage(BackupRecoveryMessage.BACKUP_SUCCESS_DESCRIPTION)),
     );
     yield loadUser();
-    yield effects.put(actions.routing.goToProfile());
+    yield put(actions.routing.goToProfile());
   } catch (e) {
     logger.error("Light Wallet Backup Error", e);
     yield put(
@@ -179,7 +176,7 @@ export function* loadSeedFromWalletWatch({
 }
 
 export function* lightWalletRecoverWatch(
-  { logger }: TGlobalDependencies,
+  { lightWalletConnector, web3Manager }: TGlobalDependencies,
   action: TAction,
 ): Iterator<any> {
   try {
@@ -189,7 +186,6 @@ export function* lightWalletRecoverWatch(
       return;
     }
     const { password, email, seed } = action.payload;
-
     const walletMetadata = yield neuCall(setupLightWalletPromise, email, password, seed, userType);
 
     yield put(actions.walletSelector.messageSigning());
@@ -206,9 +202,9 @@ export function* lightWalletRecoverWatch(
       const user: IUser = yield neuCall(loadUserPromise);
       if (isEmailAvailable) {
         userUpdate.newEmail = walletMetadata.email;
-        yield effects.call(updateUser, userUpdate);
+        yield call(updateUser, userUpdate);
       } else {
-        if (user.verifiedEmail === email.toLowerCase()) yield effects.call(updateUser, userUpdate);
+        if (user.verifiedEmail === email.toLowerCase()) yield call(updateUser, userUpdate);
         else {
           throw new EmailAlreadyExists();
         }
@@ -219,33 +215,19 @@ export function* lightWalletRecoverWatch(
           throw new EmailAlreadyExists();
         }
         userUpdate.newEmail = walletMetadata.email;
-        yield effects.call(createUser, userUpdate);
+        yield call(createUser, userUpdate);
       } else throw e;
     }
+    const wallet = yield connectLightWallet(lightWalletConnector, walletMetadata, password);
+    yield web3Manager.plugPersonalWallet(wallet);
+
     yield put(actions.routing.goToSuccessfulRecovery());
   } catch (e) {
-    yield effects.put(actions.walletSelector.reset());
-
-    let error;
-    if (e instanceof EmailAlreadyExists) {
-      error = createMessage(GenericErrorMessage.USER_ALREADY_EXISTS);
-    } else if (e instanceof LightError) {
-      logger.error("Light wallet recovery error", e);
-      error = mapLightWalletErrorToErrorMessage(e);
-    } else {
-      error = createMessage(SignInUserErrorMessage.MESSAGE_SIGNING_SERVER_CONNECTION_FAILURE);
-    }
-
-    yield put(
-      actions.genericModal.showErrorModal(createMessage(GenericModalMessage.ERROR_TITLE), error),
-    );
+    neuCall(handleLightWalletError, e);
   }
 }
 
-export function* lightWalletRegisterWatch(
-  { logger }: TGlobalDependencies,
-  action: TAction,
-): Iterator<any> {
+export function* lightWalletRegisterWatch(_: TGlobalDependencies, action: TAction): Iterator<any> {
   try {
     if (action.type !== "LIGHT_WALLET_REGISTER") return;
 
@@ -258,22 +240,26 @@ export function* lightWalletRegisterWatch(
     yield neuCall(setupLightWalletPromise, email, password);
     yield neuCall(signInUser);
   } catch (e) {
-    yield effects.put(actions.walletSelector.reset());
-
-    let error;
-    if (e instanceof EmailAlreadyExists) {
-      error = createMessage(GenericErrorMessage.USER_ALREADY_EXISTS);
-    } else if (e instanceof LightError) {
-      logger.error("Light wallet recovery error", e);
-      error = mapLightWalletErrorToErrorMessage(e);
-    } else {
-      error = createMessage(SignInUserErrorMessage.MESSAGE_SIGNING_SERVER_CONNECTION_FAILURE);
-    }
-
-    yield put(
-      actions.genericModal.showErrorModal(createMessage(GenericModalMessage.ERROR_TITLE), error),
-    );
+    neuCall(handleLightWalletError, e);
   }
+}
+
+function* handleLightWalletError({ logger }: TGlobalDependencies, e: Error): any {
+  yield put(actions.walletSelector.reset());
+
+  let error;
+  if (e instanceof EmailAlreadyExists) {
+    error = createMessage(GenericErrorMessage.USER_ALREADY_EXISTS);
+  } else if (e instanceof LightError) {
+    logger.error("Light wallet recovery/register error", e);
+    error = mapLightWalletErrorToErrorMessage(e);
+  } else {
+    error = createMessage(SignInUserErrorMessage.MESSAGE_SIGNING_SERVER_CONNECTION_FAILURE);
+  }
+
+  yield put(
+    actions.genericModal.showErrorModal(createMessage(GenericModalMessage.ERROR_TITLE), error),
+  );
 }
 
 export function* lightWalletLoginWatch(
@@ -313,7 +299,7 @@ export function* lightWalletLoginWatch(
     yield neuCall(signInUser);
   } catch (e) {
     logger.error("Light Wallet login error", e);
-    yield effects.put(actions.walletSelector.reset());
+    yield put(actions.walletSelector.reset());
     yield put(
       actions.walletSelector.lightWalletConnectionError(mapLightWalletErrorToErrorMessage(e)),
     );
