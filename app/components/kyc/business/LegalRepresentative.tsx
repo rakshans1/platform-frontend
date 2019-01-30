@@ -25,6 +25,7 @@ import {
 import { KYCBeneficialOwners } from "./BeneficialOwners";
 
 import {
+  EKycRequestType,
   IKycBusinessData,
   IKycFileInfo,
   IKycIndividualData,
@@ -177,12 +178,12 @@ const KYCEnhancedForm = withFormik<IProps, IKycIndividualData>({
   handleSubmit: (values, props) => props.props.submitForm(boolify(values)),
 })(KYCForm);
 
-const FileUploadList: React.SFC<IProps & { lrDataValid: boolean }> = props => {
+const FileUploadList: React.FunctionComponent<IProps & { lrDataValid: boolean }> = props => {
   if (!props.lrDataValid) return <div />;
   return (
     <div>
       <MultiFileUpload
-        uploadType="individual"
+        uploadType={EKycRequestType.INDIVIDUAL}
         layout="vertical"
         acceptedFiles="image/*,application/pdf"
         data-test-id="kyc-company-legal-representative-documents"
@@ -194,7 +195,7 @@ const FileUploadList: React.SFC<IProps & { lrDataValid: boolean }> = props => {
   );
 };
 
-const BeneficialOwners: React.SFC<IProps & { lrDataValid: boolean }> = props => {
+const BeneficialOwners: React.FunctionComponent<IProps & { lrDataValid: boolean }> = props => {
   if (!props.lrDataValid || props.files.length === 0) return null;
   return <KYCBeneficialOwners />;
 };
@@ -228,7 +229,7 @@ export const KycLegalRepresentativeComponent = ({
   );
 };
 
-export const KycLegalRepresentative = compose<React.SFC>(
+export const KycLegalRepresentative = compose<React.FunctionComponent>(
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: state => ({
       businessData: state.kyc.businessData,
