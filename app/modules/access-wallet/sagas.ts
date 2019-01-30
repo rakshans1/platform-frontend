@@ -13,8 +13,8 @@ import {
 } from "../../lib/persistence/WalletMetadataObjectStorage";
 import { BrowserWalletConnector } from "../../lib/web3/BrowserWallet";
 import { LedgerWalletConnector } from "../../lib/web3/LedgerWallet";
-import { LightWalletConnector } from "../../lib/web3/LightWallet";
-import { deserializeLightWalletVault } from "../../lib/web3/LightWalletUtils";
+import { LightWalletConnector, LightWalletWrongPassword } from "../../lib/web3/LightWallet";
+import { deserializeLightWalletVault, testWalletPassword } from "../../lib/web3/LightWalletUtils";
 import { IPersonalWallet } from "../../lib/web3/PersonalWeb3";
 import { SignerError, Web3Manager } from "../../lib/web3/Web3Manager";
 import { IAppState } from "../../store";
@@ -23,7 +23,7 @@ import { actions, TActionFromCreator } from "../actions";
 import { MessageSignCancelledError } from "../auth/errors";
 import { selectUserType } from "../auth/selectors";
 import { neuCall } from "../sagasUtils";
-import { retrieveMetadataFromVaultAPI } from "../wallet-selector/light-wizard/sagas";
+import { retrieveMetadataFromVaultAPI } from "../wallet-selector/light-wizard/metadata/sagas";
 import { EWalletType } from "../web3/types";
 import { mapSignMessageErrorToErrorMessage, MismatchedWalletAddressError } from "./errors";
 import { selectIsSigning } from "./reducer";
@@ -105,7 +105,7 @@ export function* connectLightWallet(
   );
   const walletInstance = yield deserializeLightWalletVault(walletVault.vault, metadata.salt);
 
-  return yield lightWalletConnector.connect(
+  const wallet = yield lightWalletConnector.connect(
     {
       walletInstance,
       salt: metadata.salt,
@@ -113,6 +113,11 @@ export function* connectLightWallet(
     metadata.email,
     password,
   );
+  const isValidPassword: boolean = yield testWalletPassword(wallet.vault.walletInstance, password);
+  if (!isValidPassword) {
+    throw new LightWalletWrongPassword();
+  }
+  return wallet;
 }
 
 export function* connectWalletAndRunEffect(effect: Effect | Iterator<Effect>): any {
