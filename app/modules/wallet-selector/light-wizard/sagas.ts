@@ -4,7 +4,6 @@ import {
   BackupRecoveryMessage,
   GenericErrorMessage,
   GenericModalMessage,
-  getMessageTranslation,
   SignInUserErrorMessage,
 } from "../../../components/translatedMessages/messages";
 import { createMessage } from "../../../components/translatedMessages/utils";

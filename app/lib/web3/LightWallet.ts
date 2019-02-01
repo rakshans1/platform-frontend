@@ -15,6 +15,7 @@ import { IEthereumNetworkConfig, IRawTxData } from "./types";
 import { symbols } from "../../di/symbols";
 import { EWalletSubType, EWalletType } from "../../modules/web3/types";
 import { EthereumAddress } from "../../types";
+import { promisify } from "../../utils/promisify";
 import { ILightWalletMetadata } from "../persistence/WalletMetadataObjectStorage";
 import {
   getWalletKey,
