@@ -67,7 +67,7 @@ export function* loadSeedFromWalletWatch({
       throw new LightWalletLocked();
     }
     const lightWallet = web3Manager.personalWallet as LightWallet;
-    const { seed, privateKey } = yield call(lightWallet.getWalletPrivateData.bind(lightWallet));
+    const { seed, privateKey } = yield call(lightWallet.getWalletPrivateData);
     yield put(actions.web3.loadWalletPrivateDataToState(seed, privateKey));
   } catch (e) {
     logger.error("Load seed from wallet failed", e);
@@ -173,7 +173,7 @@ export function* lightWalletLoginWatch(
   }
   const { password } = action.payload;
   try {
-    const walletMetadata: ILightWalletMetadata | undefined = yield neuCall(
+    const walletMetadata: ILightWalletMetadata | undefined = yield call(
       getWalletMetadataByURL,
       password,
     );

@@ -34,7 +34,6 @@ export async function retrieveMetadataFromVaultAPI(
 }
 
 export function* getWalletMetadataByURL(
-  _: TGlobalDependencies,
   password: string,
 ): Iterator<any | ILightWalletRetrieveMetadata | undefined> {
   const queryStringWalletInfo: { email: string; salt: string } | undefined = yield select(
