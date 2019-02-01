@@ -6,7 +6,7 @@
         "messagesDir": "./intl/messages/"
       }
     ],
-    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    ["@babel/plugin-proposal-decorators", { "legacy": true }]
   ],
   "presets": ["@babel/preset-typescript", "@babel/react"]
 }

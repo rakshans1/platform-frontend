@@ -1,4 +1,6 @@
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+// const { DuplicatesPlugin } = require("inspectpack/plugin");
+
 const merge = require("webpack-merge");
 
 const prodConfig = require("./webpack.config.prod");

@@ -13,6 +13,9 @@ module.exports = {
   entry: ["./app/index.tsx"],
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
+    alias: {
+      './lodash.min': 'lodash/lodash.js',
+    }
   },
   output: {
     path: paths.dist,

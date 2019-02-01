@@ -103,6 +103,7 @@
     "@types/yup": "^0.26.0",
     "autoprefixer": "^9.4.2",
     "babel-loader": "^8.0.4",
+    "babel-plugin-lodash": "^3.3.4",
     "babel-plugin-react-intl-krzkaczor": "^2.4.1",
     "bundlewatch": "^0.2.1",
     "chai": "^4.2.0",

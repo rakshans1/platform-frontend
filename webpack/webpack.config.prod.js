@@ -3,7 +3,6 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const webpack = require("webpack");
-const { DuplicatesPlugin } = require("inspectpack/plugin");
 
 const merge = require("webpack-merge");
 const path = require("path");
@@ -38,12 +37,6 @@ module.exports = merge.smart(configCommon, {
     }),
     new MiniCssExtractPlugin({
       filename: "[contenthash].[name].css",
-    }),
-    new DuplicatesPlugin({
-      // Emit compilation warning or error? (Default: `false`)
-      emitErrors: false,
-      // Display full duplicates information? (Default: `false`)
-      verbose: false
     })
   ],
   module: {
