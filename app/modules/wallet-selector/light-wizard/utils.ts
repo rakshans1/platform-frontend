@@ -1,8 +1,13 @@
-import { TGlobalDependencies } from '../../../di/setupBindings';
-import { ILightWalletMetadata } from '../../../lib/persistence/WalletMetadataObjectStorage';
-import { createLightWalletVault, deserializeLightWalletVault, encryptString, getWalletKeyFromSaltAndPassword } from "../../../lib/web3/LightWalletUtils";
+import { TGlobalDependencies } from "../../../di/setupBindings";
+import { ILightWalletMetadata } from "../../../lib/persistence/WalletMetadataObjectStorage";
+import {
+  createLightWalletVault,
+  deserializeLightWalletVault,
+  encryptString,
+  getWalletKeyFromSaltAndPassword,
+} from "../../../lib/web3/LightWalletUtils";
 import { GENERATED_KEY_SIZE, VAULT_MSG } from "./constants";
-import { DEFAULT_HD_PATH } from './sagas';
+import { DEFAULT_HD_PATH } from "./sagas";
 
 export async function getVaultKey(salt: string, password: string): Promise<string> {
   const walletKey = await getWalletKeyFromSaltAndPassword(password, salt, GENERATED_KEY_SIZE);

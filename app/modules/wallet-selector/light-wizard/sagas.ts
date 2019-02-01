@@ -11,14 +11,8 @@ import { CHANGE_EMAIL_PERMISSION } from "../../../config/constants";
 import { TGlobalDependencies } from "../../../di/setupBindings";
 import { IUser, IUserInput } from "../../../lib/api/users/interfaces";
 import { EmailAlreadyExists, UserNotExisting } from "../../../lib/api/users/UsersApi";
-import {
-  ILightWalletMetadata,
-} from "../../../lib/persistence/WalletMetadataObjectStorage";
-import {
-  LightError,
-  LightWallet,
-  LightWalletLocked,
-} from "../../../lib/web3/LightWallet";
+import { ILightWalletMetadata } from "../../../lib/persistence/WalletMetadataObjectStorage";
+import { LightError, LightWallet, LightWalletLocked } from "../../../lib/web3/LightWallet";
 import { IAppState } from "../../../store";
 import { invariant } from "../../../utils/invariant";
 import { connectLightWallet } from "../../access-wallet/sagas";
@@ -35,13 +29,11 @@ import {
 } from "../../auth/user/sagas";
 import { displayInfoModalSaga } from "../../generic-modal/sagas";
 import { neuCall, neuTakeEvery } from "../../sagasUtils";
-import {
-  selectIsUnlocked,
-} from "../../web3/selectors";
+import { selectIsUnlocked } from "../../web3/selectors";
 import { EWalletSubType } from "../../web3/types";
 import { selectUrlUserType } from "../selectors";
 import { mapLightWalletErrorToErrorMessage } from "./errors";
-import { getWalletMetadataByURL } from './metadata/sagas';
+import { getWalletMetadataByURL } from "./metadata/sagas";
 import { setupLightWalletPromise } from "./utils";
 
 export const DEFAULT_HD_PATH = "m/44'/60'/0'";
@@ -50,10 +42,10 @@ export function* lightWalletBackupWatch({ logger }: TGlobalDependencies): Iterat
   try {
     const user = yield select((state: IAppState) => state.auth.user);
     yield neuCall(updateUserPromise, { ...user, backupCodesVerified: true });
-    yield neuCall(
+    yield call(
       displayInfoModalSaga,
-      getMessageTranslation(createMessage(BackupRecoveryMessage.BACKUP_SUCCESS_TITLE)),
-      getMessageTranslation(createMessage(BackupRecoveryMessage.BACKUP_SUCCESS_DESCRIPTION)),
+      createMessage(BackupRecoveryMessage.BACKUP_SUCCESS_TITLE),
+      createMessage(BackupRecoveryMessage.BACKUP_SUCCESS_DESCRIPTION),
     );
     yield loadUser();
     yield put(actions.routing.goToProfile());

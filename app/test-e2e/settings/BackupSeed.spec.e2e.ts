@@ -8,7 +8,6 @@ import {
   registerWithLightWallet,
 } from "../utils";
 import { notificationTid, tid } from "../utils/selectors";
-import { notificationTid, tid } from "../utils/selectors";
 import {
   createAndLoginNewUser,
   DEFAULT_PASSWORD,

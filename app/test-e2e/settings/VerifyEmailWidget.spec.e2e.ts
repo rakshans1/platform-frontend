@@ -5,10 +5,10 @@ import {
   assertVerifyEmailWidgetIsInVerfiedEmailState,
   assertWaitForLatestEmailSentWithSalt,
   clearEmailServer,
+  confirmAccessModal,
   convertToUniqueEmail,
   registerWithLightWallet,
   verifyLatestUserEmail,
-  confirmAccessModal,
 } from "../utils";
 import { tid } from "../utils/selectors";
 

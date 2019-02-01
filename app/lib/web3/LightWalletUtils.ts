@@ -1,9 +1,9 @@
-import { promisify } from "bluebird";
 import * as LightWalletProvider from "eth-lightwallet";
 import * as nacl from "tweetnacl";
 import * as naclUtil from "tweetnacl-util";
 
-import { ICreateVault, ILightWallet, IVault } from "./LightWallet";
+import { promisify } from "../../utils/promisify";
+import { ICreateVault, IVault } from "./LightWallet";
 
 export class LightWalletUtilError extends Error {}
 export class LightWrongPasswordSaltError extends LightWalletUtilError {}
@@ -12,10 +12,20 @@ export class LightKeyEncryptError extends LightWalletUtilError {}
 export class LightDeserializeError extends LightWalletUtilError {}
 export class LightWalletWrongMnemonic extends LightWalletUtilError {}
 
+interface ILightWalletInstance {
+  generateNewAddress: (pwDerivedKey: any, n: number) => void;
+  serialize: () => string;
+  deriveKeyFromPasswordAndSalt: (password: string, salt: string, derkeyLen: number) => Uint8Array;
+  keyFromPassword: (password: string) => Uint8Array;
+  exportPrivateKey: (address: string, pwDerivedKey: Uint8Array) => string;
+  addresses: string[];
+  getSeed: (pwDerivedKey: Uint8Array) => string;
+}
+
 export const deserializeLightWalletVault = async (
   serializedWallet: string,
   salt: string,
-): Promise<ILightWallet> => {
+): Promise<ILightWalletInstance> => {
   try {
     return await LightWalletProvider.keystore.deserialize(serializedWallet, salt);
   } catch (e) {
@@ -30,7 +40,7 @@ export const createLightWalletVault = async ({
   customSalt,
 }: ICreateVault): Promise<IVault> => {
   try {
-    const create = promisify<any, object>(LightWalletProvider.keystore.createVault);
+    const create = promisify<ILightWalletInstance>(LightWalletProvider.keystore.createVault);
     //256bit strength generates a 24 word mnemonic
     const entropyStrength = 256;
     const seed = recoverSeed
@@ -48,7 +58,7 @@ export const createLightWalletVault = async ({
     });
     const unlockedWallet = await getWalletKey(lightWalletInstance, password);
     lightWalletInstance.generateNewAddress(unlockedWallet, 1);
-    return { walletInstance: await lightWalletInstance.serialize(), salt };
+    return { walletInstance: lightWalletInstance.serialize(), salt };
   } catch (e) {
     if (e instanceof LightWalletWrongMnemonic) throw new LightWalletWrongMnemonic();
     throw new LightCreationError();
@@ -82,7 +92,7 @@ export const getWalletKeyFromSaltAndPassword = async (
   keySize: number = 32,
 ): Promise<Uint8Array> => {
   try {
-    const keyFromSaltAndPassword = promisify<any, string, string, number>(
+    const keyFromSaltAndPassword = promisify<Uint8Array>(
       LightWalletProvider.keystore.deriveKeyFromPasswordAndSalt,
     );
     return await keyFromSaltAndPassword(password, salt, keySize);
@@ -91,9 +101,12 @@ export const getWalletKeyFromSaltAndPassword = async (
   }
 };
 
-export const getWalletKey = async (lightWalletInstance: any, password: string): Promise<object> => {
+export const getWalletKey = async (
+  lightWalletInstance: ILightWalletInstance,
+  password: string,
+): Promise<Uint8Array> => {
   try {
-    const keyFromPassword = promisify<ILightWallet, string>(
+    const keyFromPassword = promisify<Uint8Array>(
       lightWalletInstance.keyFromPassword.bind(lightWalletInstance),
     );
     return await keyFromPassword(password);
@@ -103,14 +116,14 @@ export const getWalletKey = async (lightWalletInstance: any, password: string): 
 };
 
 export const getWalletSeed = async (
-  lightWalletInstance: any,
+  lightWalletInstance: ILightWalletInstance,
   password: string,
 ): Promise<string> => {
   try {
-    const keyFromPassword = promisify<ILightWallet, string>(
+    const keyFromPassword = promisify<Uint8Array>(
       lightWalletInstance.keyFromPassword.bind(lightWalletInstance),
     );
-    return await lightWalletInstance.getSeed(await keyFromPassword(password));
+    return lightWalletInstance.getSeed(await keyFromPassword(password));
   } catch (e) {
     throw new LightWrongPasswordSaltError();
   }
@@ -125,16 +138,16 @@ export const testWalletPassword = async (
 };
 
 export const getWalletPrivKey = async (
-  lightWalletInstance: any,
+  lightWalletInstance: ILightWalletInstance,
   password: string,
 ): Promise<string> => {
   try {
-    const keyFromPassword = promisify<ILightWallet, string>(
+    const keyFromPassword = promisify<Uint8Array>(
       lightWalletInstance.keyFromPassword.bind(lightWalletInstance),
     );
 
     // Take first address only
-    return await lightWalletInstance.exportPrivateKey(
+    return lightWalletInstance.exportPrivateKey(
       lightWalletInstance.addresses[0],
       await keyFromPassword(password),
     );

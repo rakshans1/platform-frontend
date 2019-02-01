@@ -5,6 +5,7 @@ import { addHexPrefix, hashPersonalMessage, toBuffer } from "ethereumjs-util";
 
 import { tid } from "../../../test/testUtils";
 import { getVaultKey } from "../../modules/wallet-selector/light-wizard/utils";
+import { promisify } from "../../utils/promisify";
 
 /*
 Pre-login user for faster tests
