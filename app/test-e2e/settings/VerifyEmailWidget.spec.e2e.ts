@@ -5,7 +5,6 @@ import {
   assertVerifyEmailWidgetIsInVerfiedEmailState,
   assertWaitForLatestEmailSentWithSalt,
   clearEmailServer,
-  confirmAccessModalNoPW,
   convertToUniqueEmail,
   registerWithLightWallet,
   verifyLatestUserEmail,

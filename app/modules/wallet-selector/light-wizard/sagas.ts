@@ -18,7 +18,6 @@ import {
   LightError,
   LightWallet,
   LightWalletLocked,
-  LightWalletWrongPassword,
 } from "../../../lib/web3/LightWallet";
 import { IAppState } from "../../../store";
 import { invariant } from "../../../utils/invariant";

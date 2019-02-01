@@ -15,7 +15,6 @@ import { IEthereumNetworkConfig, IRawTxData } from "./types";
 import { symbols } from "../../di/symbols";
 import { EWalletSubType, EWalletType } from "../../modules/web3/types";
 import { EthereumAddress } from "../../types";
-import { promisify } from "../../utils/promisify";
 import { ILightWalletMetadata } from "../persistence/WalletMetadataObjectStorage";
 import {
   getWalletKey,
@@ -81,15 +80,15 @@ export class LightWallet implements IPersonalWallet {
     return SignerType.ETH_SIGN;
   }
 
-  public async testConnection(networkId: string): Promise<boolean> {
+  public testConnection = async (networkId: string): Promise<boolean> => {
     const currentNetworkId = await this.web3Adapter.getNetworkId();
     if (currentNetworkId !== networkId) {
       return false;
     }
     return !!(await this.web3Adapter.getAccountAddress());
-  }
+  };
 
-  public async signMessage(data: string): Promise<string> {
+  public signMessage = async (data: string): Promise<string> => {
     if (!this.password) {
       throw new LightWalletMissingPasswordError();
     }
@@ -107,9 +106,9 @@ export class LightWallet implements IPersonalWallet {
     } catch (e) {
       throw new LightSignMessageError();
     }
-  }
+  };
 
-  public async sendTransaction(txData: Web3.TxData): Promise<string> {
+  public sendTransaction = async (txData: Web3.TxData): Promise<string> => {
     if (!this.password) {
       throw new LightWalletMissingPasswordError();
     }
@@ -132,22 +131,22 @@ export class LightWallet implements IPersonalWallet {
       this.ethereumAddress,
     );
     return await this.web3Adapter.sendRawTransaction(addHexPrefix(rawData));
-  }
+  };
 
-  public async getWalletPrivateData(): Promise<{ seed: string; privateKey: string }> {
+  public getWalletPrivateData = async (): Promise<{ seed: string; privateKey: string }> => {
     if (!this.password) {
       throw new LightWalletMissingPasswordError();
     }
     const seed = await getWalletSeed(this.vault.walletInstance, this.password);
     const privateKey = await getWalletPrivKey(this.vault.walletInstance, this.password);
     return { seed, privateKey };
-  }
+  };
 
   public async testPassword(newPassword: string): Promise<boolean> {
     return await testWalletPassword(this.vault.walletInstance, newPassword);
   }
 
-  public getMetadata(): ILightWalletMetadata {
+  public getMetadata = (): ILightWalletMetadata => {
     return {
       address: this.ethereumAddress,
       email: this.email,
@@ -155,7 +154,7 @@ export class LightWallet implements IPersonalWallet {
       walletType: this.walletType,
       walletSubType: this.walletSubType,
     };
-  }
+  };
 }
 
 @injectable()
