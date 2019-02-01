@@ -26,9 +26,16 @@ enum EMoneyFormat {
   FLOAT = "float",
 }
 
-type TMoneyTransfer = "income" | "outcome";
+enum EMoneyTransfer {
+  INCOME = styles.income,
+  OUTCOME = styles.outcome,
+}
 
-type TTheme = "t-green" | "t-orange";
+enum ETheme {
+  GREEN = styles.tGreen,
+  ORANGE = styles.tOrange,
+  GREEN_BIG = styles.tBigValue,
+}
 
 interface IOwnProps extends React.HTMLAttributes<HTMLSpanElement> {
   currency: ECurrency;
@@ -36,20 +43,23 @@ interface IOwnProps extends React.HTMLAttributes<HTMLSpanElement> {
   format?: EMoneyFormat;
   currencySymbol?: ECurrencySymbol;
   currencyClassName?: string;
-  transfer?: TMoneyTransfer;
-  theme?: TTheme;
+  transfer?: EMoneyTransfer;
+  theme?: ETheme;
+  isPrice?: boolean;
 }
 
 type IProps = IOwnProps;
 
-const selectDecimalPlaces = (currency: ECurrency): number => {
+const selectDecimalPlaces = (currency: ECurrency, isPrice?: boolean): number => {
+  if (isPrice) {
+    return 8;
+  }
+
   switch (currency) {
     case ECurrency.ETH:
-      return 4;
     case ECurrency.NEU:
       return 4;
     case ECurrency.EUR:
-      return 2;
     case ECurrency.EUR_TOKEN:
       return 2;
   }
@@ -92,8 +102,9 @@ export function getFormattedMoney(
   value: string | number | BigNumber,
   currency: ECurrency,
   format: EMoneyFormat,
+  isPrice?: boolean,
 ): string {
-  return formatMoney(value, getFormatDecimals(format), selectDecimalPlaces(currency));
+  return formatMoney(value, getFormatDecimals(format), selectDecimalPlaces(currency, isPrice));
 }
 
 const Money: React.FunctionComponent<IProps> = ({
@@ -104,6 +115,7 @@ const Money: React.FunctionComponent<IProps> = ({
   transfer,
   currencySymbol = ECurrencySymbol.CODE,
   theme,
+  isPrice,
   ...props
 }) => {
   if (!value) {
@@ -111,8 +123,8 @@ const Money: React.FunctionComponent<IProps> = ({
   }
 
   const money =
-    format === EMoneyFormat.WEI && !React.isValidElement(value)
-      ? getFormattedMoney(value as BigNumber, currency, EMoneyFormat.WEI)
+    (format === EMoneyFormat.WEI && !React.isValidElement(value)) || isPrice
+      ? getFormattedMoney(value as BigNumber, currency, format, isPrice)
       : value;
 
   const formattedMoney = !React.isValidElement(money) ? (
@@ -127,7 +139,7 @@ const Money: React.FunctionComponent<IProps> = ({
           {selectCurrencySymbol(currency)}
         </span>
       )}
-      {formattedMoney}
+      <span className={cn(styles.value)}>{formattedMoney}</span>
       {currencySymbol === ECurrencySymbol.CODE && (
         <span className={cn(styles.currency, currencyClassName)}>
           {" "}
@@ -143,8 +155,9 @@ export {
   selectCurrencySymbol,
   selectCurrencyCode,
   selectDecimalPlaces,
-  TMoneyTransfer,
+  EMoneyTransfer,
   EMoneyFormat,
   ECurrency,
   ECurrencySymbol,
+  ETheme,
 };
