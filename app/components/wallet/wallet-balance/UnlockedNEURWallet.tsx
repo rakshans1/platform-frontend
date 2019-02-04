@@ -3,6 +3,7 @@ import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 
 import { externalRoutes } from "../../../config/externalRoutes";
 import { CommonHtmlProps } from "../../../types";
+import { isZero } from "../../../utils/Number.utils";
 import { AccountBalance } from "../../shared/AccountBalance";
 import { ECurrency } from "../../shared/Money";
 import { WalletBalanceContainer } from "./WalletBalance";
@@ -60,7 +61,7 @@ export const UnlockedNEURWallet: React.FunctionComponent<IUnlockedNEURWallet & C
                 {
                   name: <FormattedMessage id="components.wallet.start.neur-wallet.redeem" />,
                   onClick: onRedeem,
-                  disabled: parseFloat(neuroAmount) === 0,
+                  disabled: isZero(neuroAmount),
                 },
               ]
             : undefined

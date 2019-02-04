@@ -2,6 +2,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { CommonHtmlProps } from "../../../types";
+import { isZero } from "../../../utils/Number.utils";
 import { AccountAddress } from "../../shared/AccountAddress";
 import { AccountBalance } from "../../shared/AccountBalance";
 import { ECurrency } from "../../shared/Money";
@@ -30,10 +31,10 @@ export const UnlockedETHWallet: React.SFC<IUnlockedETHWallet & CommonHtmlProps> 
   return (
     <WalletBalanceContainer
       className={className}
-      headerText={<FormattedMessage id="components.wallet.start.my-wallet" />}
+      headerText={<FormattedMessage id="components.wallet.start.eth-wallet" />}
     >
       <p className={styles.message}>
-        <FormattedMessage id={"shared-component.wallet-balance.explanation"} />
+        <FormattedMessage id={"shared-component.eth-wallet-balance.explanation"} />
       </p>
 
       <section>
@@ -58,7 +59,7 @@ export const UnlockedETHWallet: React.SFC<IUnlockedETHWallet & CommonHtmlProps> 
             {
               name: <FormattedMessage id="shared-component.account-balance.withdraw" />,
               onClick: withdrawEth,
-              disabled: process.env.NF_WITHDRAW_ENABLED !== "1" || parseFloat(ethAmount) === 0,
+              disabled: process.env.NF_WITHDRAW_ENABLED !== "1" || isZero(ethAmount),
               "data-test-id": "wallet.eth.withdraw.button",
             },
             {
