@@ -5,7 +5,6 @@ import {
   BackupRecoveryMessage,
   GenericErrorMessage,
   GenericModalMessage,
-  getMessageTranslation,
   SignInUserErrorMessage,
 } from "../../../components/translatedMessages/messages";
 import { createMessage } from "../../../components/translatedMessages/utils";
@@ -28,15 +27,15 @@ import { IAppState } from "../../../store";
 import { invariant } from "../../../utils/invariant";
 import { connectLightWallet } from "../../access-wallet/sagas";
 import { actions, TAction } from "../../actions";
+import { obtainJWT } from "../../auth/jwt/sagas";
 import {
   createUser,
   loadUser,
   loadUserPromise,
-  obtainJWT,
   signInUser,
   updateUser,
   updateUserPromise,
-} from "../../auth/sagas";
+} from "../../auth/user/sagas";
 import { displayInfoModalSaga } from "../../generic-modal/sagas";
 import { neuCall, neuTakeEvery } from "../../sagasUtils";
 import {
@@ -157,9 +156,8 @@ export function* lightWalletRegisterWatch(
   action: TAction,
 ): Iterator<any> {
   try {
-    if (action.type !== "LIGHT_WALLET_REGISTER") {
-      return;
-    }
+    if (action.type !== "LIGHT_WALLET_REGISTER") return;
+
     const { password, email } = action.payload;
     const isEmailAvailable = yield neuCall(checkEmailPromise, email);
 
@@ -263,10 +261,10 @@ export function* lightWalletBackupWatch({ logger }: TGlobalDependencies): Iterat
   try {
     const user = yield select((state: IAppState) => state.auth.user);
     yield neuCall(updateUserPromise, { ...user, backupCodesVerified: true });
-    yield neuCall(
+    yield call(
       displayInfoModalSaga,
-      getMessageTranslation(createMessage(BackupRecoveryMessage.BACKUP_SUCCESS_TITLE)),
-      getMessageTranslation(createMessage(BackupRecoveryMessage.BACKUP_SUCCESS_DESCRIPTION)),
+      createMessage(BackupRecoveryMessage.BACKUP_SUCCESS_TITLE),
+      createMessage(BackupRecoveryMessage.BACKUP_SUCCESS_DESCRIPTION),
     );
     yield loadUser();
     yield effects.put(actions.routing.goToProfile());

@@ -24,7 +24,7 @@ interface IIcbmWallet {
   data: IIcbmWalletValues;
 }
 
-export const IcbmWallet: React.SFC<IIcbmWallet & CommonHtmlProps> = ({
+export const IcbmWallet: React.FunctionComponent<IIcbmWallet & CommonHtmlProps> = ({
   data,
   className,
   onUpgradeEtherClick,

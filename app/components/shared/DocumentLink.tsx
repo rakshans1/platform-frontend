@@ -4,6 +4,7 @@ import * as React from "react";
 import { TTranslatedString } from "../../types";
 import { Button, ButtonTextPosition, EButtonLayout } from "./buttons";
 import { Document } from "./Document";
+import { ExternalLink } from "./links";
 
 import * as styles from "./DocumentLink.module.scss";
 
@@ -13,7 +14,7 @@ export interface IDocumentLinkProps {
   altIcon?: React.ReactNode;
 }
 
-const DocumentLink: React.SFC<IDocumentLinkProps> = ({ url, name, altIcon }) => {
+const DocumentLink: React.FunctionComponent<IDocumentLinkProps> = ({ url, name, altIcon }) => {
   const contents = (
     <>
       {altIcon || <Document extension={url} />}
@@ -25,9 +26,9 @@ const DocumentLink: React.SFC<IDocumentLinkProps> = ({ url, name, altIcon }) => 
     return <span className={styles.documentLink}>{contents}</span>;
   } else {
     return (
-      <a href={url} className={styles.documentLink} target="_blank">
+      <ExternalLink href={url} className={styles.documentLink}>
         {contents}
-      </a>
+      </ExternalLink>
     );
   }
 };
@@ -37,16 +38,18 @@ export interface IDocumentTemplateButtonProps {
   altIcon?: React.ReactNode;
   className?: string;
   onClick?: () => void;
+  layout?: EButtonLayout;
 }
 
-const DocumentTemplateButton: React.SFC<IDocumentTemplateButtonProps> = ({
+const DocumentTemplateButton: React.FunctionComponent<IDocumentTemplateButtonProps> = ({
   onClick,
   title,
   altIcon,
+  layout,
 }) => {
   return (
     <Button
-      layout={EButtonLayout.INLINE}
+      layout={layout}
       onClick={onClick}
       innerClassName={styles.documentButton}
       textPosition={ButtonTextPosition.LEFT}
@@ -62,7 +65,7 @@ export interface IDocumentTemplateButtonProps {
   className?: string;
 }
 
-const DocumentTemplateLabel: React.SFC<IDocumentTemplateButtonProps> = ({
+const DocumentTemplateLabel: React.FunctionComponent<IDocumentTemplateButtonProps> = ({
   title,
   altIcon,
   className,
@@ -73,6 +76,10 @@ const DocumentTemplateLabel: React.SFC<IDocumentTemplateButtonProps> = ({
       {title}
     </div>
   );
+};
+
+DocumentTemplateButton.defaultProps = {
+  layout: EButtonLayout.INLINE,
 };
 
 export { DocumentLink, DocumentTemplateButton, DocumentTemplateLabel };

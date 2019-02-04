@@ -1,5 +1,6 @@
 import { LocationChangeAction } from "connected-react-router";
 
+import { portfolioActions } from "../components/portfolio/actions";
 import { TDictionaryValues } from "../types";
 import { accessWalletActions } from "./access-wallet/actions";
 import { authActions } from "./auth/actions";
@@ -24,6 +25,7 @@ import { routingActions } from "./routing/actions";
 import { formSingleFileUploadActions } from "./shared/formSingleFileUpload/actions";
 import { remoteFileActions } from "./shared/remoteFile/actions";
 import { tokenPriceActions } from "./shared/tokenPrice/actions";
+import { tosModalActions } from "./terms-of-service-modal/actions";
 import { txMonitorActions } from "./tx/monitor/actions";
 import { txSenderActions } from "./tx/sender/actions";
 import { txTransactionsActions } from "./tx/transactions/actions";
@@ -70,6 +72,8 @@ export const actions = {
   investmentFlow: investmentFlowActions,
   videoModal: videoModalActions,
   personProfileModal: personProfileModalActions,
+  tosModal: tosModalActions,
+  portfolio: portfolioActions,
 };
 
 /**

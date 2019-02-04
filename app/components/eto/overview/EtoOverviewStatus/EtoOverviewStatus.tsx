@@ -60,7 +60,7 @@ interface IStateProps {
   maxCapExceeded: boolean;
 }
 
-const StatusOfEto: React.SFC<IStatusOfEto> = ({ previewCode }) => {
+const StatusOfEto: React.FunctionComponent<IStatusOfEto> = ({ previewCode }) => {
   return (
     <div className={styles.statusOfEto}>
       <span className={styles.title}>
@@ -179,7 +179,7 @@ function onEtoNavigationClick(
   };
 }
 
-const EtoOverviewStatusLayout: React.SFC<
+const EtoOverviewStatusLayout: React.FunctionComponent<
   IExternalProps & CommonHtmlProps & IStateProps & IDispatchProps
 > = ({
   eto,
@@ -376,9 +376,9 @@ const EtoOverviewStatus = compose<
   appConnect<IStateProps, IDispatchProps, IExternalProps>({
     stateToProps: (state, props) => ({
       isAuthorized: selectIsAuthorized(state.auth),
-      isEligibleToPreEto: selectIsEligibleToPreEto(props.eto.etoId, state),
+      isEligibleToPreEto: selectIsEligibleToPreEto(state, props.eto.etoId),
       isPreEto: selectEtoOnChainStateById(state, props.eto.etoId) === EETOStateOnChain.Whitelist,
-      maxCapExceeded: selectInitialMaxCapExceeded(props.eto.etoId, state),
+      maxCapExceeded: selectInitialMaxCapExceeded(state, props.eto.etoId),
     }),
     dispatchToProps: (dispatch, { eto }) => ({
       navigateToEto: () =>

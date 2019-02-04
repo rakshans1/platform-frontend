@@ -12,6 +12,7 @@ import * as styles from "./ETOState.module.scss";
 export enum EProjectStatusSize {
   MEDIUM = "medium",
   LARGE = "large",
+  SMALL = "small",
 }
 
 export enum EProjecStatusLayout {
@@ -54,9 +55,10 @@ const stateToClassName: Partial<Record<EEtoState | EETOStateOnChain, string>> = 
   [EEtoState.PENDING]: styles.pending,
   [EEtoState.LISTED]: styles.listed,
   [EETOStateOnChain.Refund]: styles.refund,
+  [EETOStateOnChain.Signing]: styles.signing,
 };
 
-const ETOStateLayout: React.SFC<IStateProps & IExternalProps> = ({
+const ETOStateLayout: React.FunctionComponent<IStateProps & IExternalProps> = ({
   eto,
   size = EProjectStatusSize.MEDIUM,
   layout = EProjecStatusLayout.NORMAL,

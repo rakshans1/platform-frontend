@@ -10,7 +10,6 @@ import { appConnect } from "../../../store";
 import { TTranslatedString } from "../../../types";
 import { HiResImage } from "../../shared/HiResImage";
 import { getMessageTranslation } from "../../translatedMessages/messages";
-import { TMessage } from "../../translatedMessages/utils";
 import { ModalComponentBody } from "../ModalComponentBody";
 import { AccessLightWalletPrompt } from "./AccessLightWalletPrompt";
 
@@ -35,14 +34,9 @@ interface IExternalProps {
   message?: TTranslatedString;
 }
 
-export const AccessWalletContainerComponent: React.SFC<IStateProps & IDispatchProps> = ({
-  title,
-  message,
-  errorMessage,
-  isUnlocked,
-  onAccept,
-  walletType,
-}) => (
+export const AccessWalletContainerComponent: React.FunctionComponent<
+  IStateProps & IDispatchProps
+> = ({ title, message, errorMessage, isUnlocked, onAccept, walletType }) => (
   <div className="text-center">
     {title && <h1>{title}</h1>}
     {message && <p>{message}</p>}
@@ -88,7 +82,7 @@ export const AccessWalletContainer = appConnect<IStateProps, IDispatchProps, IEx
       : s.accessWallet.modalTitle && getMessageTranslation(s.accessWallet.modalTitle),
     message: external.message
       ? external.message
-      : s.accessWallet.modalTitle && getMessageTranslation(s.accessWallet.modalMessage as TMessage),
+      : s.accessWallet.modalMessage && getMessageTranslation(s.accessWallet.modalMessage),
     walletType: selectWalletType(s.web3),
     isUnlocked: selectIsUnlocked(s.web3),
   }),
@@ -105,7 +99,9 @@ interface IModalDispatchProps {
   onCancel: () => void;
 }
 
-const AccessWalletModalComponent: React.SFC<IModalStateProps & IModalDispatchProps> = props => (
+const AccessWalletModalComponent: React.FunctionComponent<
+  IModalStateProps & IModalDispatchProps
+> = props => (
   <Modal isOpen={props.isOpen} toggle={props.onCancel} centered>
     <ModalComponentBody onClose={props.onCancel}>
       <AccessWalletContainer />

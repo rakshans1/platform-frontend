@@ -18,7 +18,9 @@ interface IProps {
   actions?: TAction[];
 }
 
-export const AccountBalance: React.SFC<IProps & IMoneySuiteWidgetProps & TDataTestId> = ({
+export const AccountBalance: React.FunctionComponent<
+  IProps & IMoneySuiteWidgetProps & TDataTestId
+> = ({
   icon,
   currency,
   currencyTotal,

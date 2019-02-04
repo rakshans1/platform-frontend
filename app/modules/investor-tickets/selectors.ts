@@ -3,11 +3,11 @@ import BigNumber from "bignumber.js";
 import { Q18 } from "../../config/constants";
 import { getShareAndTokenPrice } from "../../lib/api/eto/EtoUtils";
 import { IAppState } from "../../store";
-import { selectPublicEtoById, selectPublicEtos } from "../public-etos/selectors";
+import { selectPublicEtoById, selectPublicEtos, selectTokenData } from "../public-etos/selectors";
 import { EETOStateOnChain } from "../public-etos/types";
 import { isOnChain } from "../public-etos/utils";
 import { selectLockedWalletConnected } from "../wallet/selectors";
-import { ICalculatedContribution, TETOWithInvestorTicket } from "./types";
+import { ICalculatedContribution, TETOWithInvestorTicket, TETOWithTokenData } from "./types";
 
 const selectInvestorTicketsState = (state: IAppState) => state.investorTickets;
 
@@ -34,7 +34,6 @@ export const selectEtoWithInvestorTickets = (
   state: IAppState,
 ): TETOWithInvestorTicket[] | undefined => {
   const etos = selectPublicEtos(state);
-
   if (etos) {
     return etos
       .filter(isOnChain)
@@ -53,7 +52,11 @@ export const selectMyAssets = (state: IAppState): TETOWithInvestorTicket[] | und
   const etos = selectEtoWithInvestorTickets(state);
 
   if (etos) {
-    return etos.filter(eto => eto.investorTicket.claimedOrRefunded);
+    return etos.filter(
+      eto =>
+        eto.contract!.timedState === EETOStateOnChain.Claim ||
+        eto.contract!.timedState === EETOStateOnChain.Payout,
+    );
   }
 
   return undefined;
@@ -81,7 +84,7 @@ export const selectMyInvestorTicketByEtoId = (
   return undefined;
 };
 
-export const selectCalculatedContribution = (etoId: string, state: IAppState) => {
+export const selectCalculatedContribution = (state: IAppState, etoId: string) => {
   const investorState = selectInvestorTicketsState(state);
 
   return (
@@ -99,7 +102,7 @@ export const selectInitialCalculatedContribution = (
   return investorState.initialCalculatedContributions[etoId];
 };
 
-export const selectInitialMaxCapExceeded = (etoId: string, state: IAppState): boolean => {
+export const selectInitialMaxCapExceeded = (state: IAppState, etoId: string): boolean => {
   const initialCalculatedContribution = selectInitialCalculatedContribution(etoId, state);
 
   if (!initialCalculatedContribution) return false;
@@ -107,14 +110,14 @@ export const selectInitialMaxCapExceeded = (etoId: string, state: IAppState): bo
   return initialCalculatedContribution.maxCapExceeded;
 };
 
-export const selectEquityTokenCountByEtoId = (etoId: string, state: IAppState) => {
-  const contrib = selectCalculatedContribution(etoId, state);
+export const selectEquityTokenCountByEtoId = (state: IAppState, etoId: string) => {
+  const contrib = selectCalculatedContribution(state, etoId);
   return contrib && contrib.equityTokenInt.toString();
 };
 
-export const selectCalculatedEtoTicketSizesUlpsById = (etoId: string, state: IAppState) => {
+export const selectCalculatedEtoTicketSizesUlpsById = (state: IAppState, etoId: string) => {
   const eto = selectPublicEtoById(state, etoId);
-  const contrib = selectCalculatedContribution(etoId, state);
+  const contrib = selectCalculatedContribution(state, etoId);
   const investorTicket = selectInvestorTicket(state, etoId);
 
   let min = (contrib && contrib.minTicketEurUlps) || (eto && Q18.mul(eto.minTicketEur || 0));
@@ -136,18 +139,30 @@ export const selectCalculatedEtoTicketSizesUlpsById = (etoId: string, state: IAp
   }
 };
 
-export const selectNeuRewardUlpsByEtoId = (etoId: string, state: IAppState) => {
-  const contrib = selectCalculatedContribution(etoId, state);
+export const selectNeuRewardUlpsByEtoId = (state: IAppState, etoId: string) => {
+  const contrib = selectCalculatedContribution(state, etoId);
   return contrib && contrib.neuRewardUlps.toString();
 };
 
-export const selectIsWhitelisted = (etoId: string, state: IAppState) => {
-  const contrib = selectCalculatedContribution(etoId, state);
+export const selectIsWhitelisted = (state: IAppState, etoId: string) => {
+  const contrib = selectCalculatedContribution(state, etoId);
   return !!contrib && contrib.isWhitelisted;
 };
 
-export const selectIsEligibleToPreEto = (etoId: string, state: IAppState) => {
+export const selectIsEligibleToPreEto = (state: IAppState, etoId: string) => {
   const isLockedWalletConnected = selectLockedWalletConnected(state);
-  const isWhitelisted = selectIsWhitelisted(etoId, state);
+  const isWhitelisted = selectIsWhitelisted(state, etoId);
   return isLockedWalletConnected || isWhitelisted;
+};
+
+export const selectMyAssetsWithTokenData = (state: IAppState): TETOWithTokenData[] | undefined => {
+  const myAsssets = selectMyAssets(state);
+  if (myAsssets) {
+    return myAsssets.map((asset: TETOWithInvestorTicket) => ({
+      ...asset,
+      tokenData: selectTokenData(state.publicEtos, asset.previewCode)!,
+    }));
+  }
+
+  return undefined;
 };

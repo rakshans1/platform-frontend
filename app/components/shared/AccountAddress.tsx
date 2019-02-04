@@ -5,7 +5,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { CommonHtmlProps, TDataTestId } from "../../types";
 import { Avatar } from "./Avatar";
 import { CopyToClipboardButton } from "./CopyToClipboardButton";
-import { EtherscanAddressLink } from "./EtherscanLink";
+import { EtherscanAddressLink } from "./links";
 
 import * as styles from "./AccountAddress.module.scss";
 
@@ -13,7 +13,9 @@ export interface IAccountAddressProps {
   address: string;
 }
 
-const AccountAddress: React.SFC<IAccountAddressProps & CommonHtmlProps & TDataTestId> = ({
+const AccountAddress: React.FunctionComponent<
+  IAccountAddressProps & CommonHtmlProps & TDataTestId
+> = ({
   address,
   className,
   "data-test-id": dataTestId = "account-address.your.ether-address.from-div",

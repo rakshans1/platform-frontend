@@ -3,7 +3,7 @@ import { FormattedPlural } from "react-intl";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 
 import { Button, ButtonLink, EButtonLayout } from "./buttons";
-import { ECurrency, Money } from "./Money";
+import { ECurrency, ETheme, Money } from "./Money";
 import { PercentageIndicatorBar } from "./PercentageIndicatorBar";
 import { ITag, Tag } from "./Tag";
 
@@ -32,7 +32,7 @@ interface IProps {
   handleEmailSend: () => void;
 }
 
-export const InvestmentPreview: React.SFC<IProps> = ({
+export const InvestmentPreview: React.FunctionComponent<IProps> = ({
   company,
   tags,
   preFoundingStatus,
@@ -132,7 +132,7 @@ export const InvestmentPreview: React.SFC<IProps> = ({
                   <Money
                     currency={ECurrency.EUR_TOKEN}
                     value="123456000000000000000000"
-                    theme="t-green"
+                    theme={ETheme.GREEN}
                   />
                 </strong>
               </div>

@@ -6,7 +6,7 @@ import { CommonHtmlProps } from "../../../types";
 import { Button, EButtonLayout } from "../../shared/buttons";
 import { Date } from "../../shared/Date";
 import { InlineIcon } from "../../shared/InlineIcon";
-import { ECurrency, Money } from "../../shared/Money";
+import { ECurrency, EMoneyTransfer, Money } from "../../shared/Money";
 import { Panel } from "../../shared/Panel";
 import { TableBody } from "../../shared/table/TableBody";
 import { TableCell } from "../../shared/table/TableCell";
@@ -32,12 +32,9 @@ const NoPayoutsInfo = () => (
     <FormattedMessage id="components.wallet.claimed-dividends.you-claimed-no-proceeds" />
   </div>
 );
-export const ClaimedDividends: React.SFC<IClaimedDividendsProps & CommonHtmlProps> = ({
-  totalEurValue,
-  recentPayouts,
-  className,
-  ...htmlProps
-}) => (
+export const ClaimedDividends: React.FunctionComponent<
+  IClaimedDividendsProps & CommonHtmlProps
+> = ({ totalEurValue, recentPayouts, className, ...htmlProps }) => (
   <Panel
     rightComponent={<TotalEuro totalEurValue={totalEurValue} />}
     className={cn(styles.claimedDividends, className)}
@@ -56,7 +53,11 @@ export const ClaimedDividends: React.SFC<IClaimedDividendsProps & CommonHtmlProp
               <Date timestamp={timestamp} />
             </TableCell>
             <TableCell narrow>
-              <Money currency={ECurrency.EUR_TOKEN} value={amount} transfer="income" />
+              <Money
+                currency={ECurrency.EUR_TOKEN}
+                value={amount}
+                transfer={EMoneyTransfer.INCOME}
+              />
             </TableCell>
             <TableCell narrow>
               <Button layout={EButtonLayout.SECONDARY}>

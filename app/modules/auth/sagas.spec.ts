@@ -4,13 +4,13 @@ import { dummyEthereumAddress, dummyEthereumAddressWithChecksum } from "../../..
 import { createMock } from "../../../test/testUtils";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { SignatureAuthApi } from "../../lib/api/SignatureAuthApi";
-import { noopLogger } from "../../lib/dependencies/Logger";
+import { noopLogger } from "../../lib/dependencies/logger";
 import { BrowserWallet } from "../../lib/web3/BrowserWallet";
 import { SignerType } from "../../lib/web3/PersonalWeb3";
 import { Web3Manager } from "../../lib/web3/Web3Manager";
 import { IAppState } from "../../store";
 import { EWalletSubType, EWalletType } from "../web3/types";
-import { obtainJwtPromise } from "./sagas";
+import { obtainJwtPromise } from "./jwt/sagas";
 
 describe("Jwt actions", () => {
   describe("obtain-jwt", () => {

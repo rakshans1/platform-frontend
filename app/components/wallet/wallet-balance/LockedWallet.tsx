@@ -16,7 +16,10 @@ interface ILockedWallet {
   data: IWalletValues;
 }
 
-export const LockedWallet: React.SFC<ILockedWallet & CommonHtmlProps> = ({ data, className }) => {
+export const LockedWallet: React.FunctionComponent<ILockedWallet & CommonHtmlProps> = ({
+  data,
+  className,
+}) => {
   return (
     <WalletBalanceContainer
       className={className}

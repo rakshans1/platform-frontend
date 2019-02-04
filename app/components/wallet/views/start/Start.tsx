@@ -56,7 +56,7 @@ interface IDispatchProps {
 
 type TProps = IStateProps & IDispatchProps;
 
-export const WalletStartComponent: React.SFC<TProps> = ({
+export const WalletStartComponent: React.FunctionComponent<TProps> = ({
   userAddress,
   liquidWalletData,
   lockedWalletData,
@@ -118,7 +118,7 @@ export const WalletStartComponent: React.SFC<TProps> = ({
   </>
 );
 
-export const WalletStart = compose<React.SFC>(
+export const WalletStart = compose<React.FunctionComponent>(
   onEnterAction({
     actionCreator: dispatch => dispatch(actions.wallet.loadWalletData()),
   }),
