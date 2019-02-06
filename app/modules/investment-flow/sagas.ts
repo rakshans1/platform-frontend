@@ -6,9 +6,8 @@ import { TGlobalDependencies } from "../../di/setupBindings";
 import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
 import { ITxData } from "../../lib/web3/types";
 import { IAppState } from "../../store";
-import { addBigNumbers, compareBigNumbers, subtractBigNumbers } from "../../utils/BigNumberUtils";
+import { compareBigNumbers } from "../../utils/BigNumberUtils";
 import { isLessThanNHours } from "../../utils/Date.utils";
-import { convertToBigInt } from "../../utils/Number.utils";
 import { extractNumber } from "../../utils/StringUtils";
 import { actions, TAction } from "../actions";
 import { loadComputedContributionFromContract } from "../investor-portfolio/sagas";
@@ -50,6 +49,7 @@ import {
   selectIsBankTransferModalOpened,
   selectIsICBMInvestment,
 } from "./selectors";
+import {ICalculatedContribution} from "../investor-portfolio/types";
 
 // default: 3 days
 const HOURS_TO_DISABLE_BANK_TRANSFER = parseInt(
@@ -61,15 +61,18 @@ function* processCurrencyValue(action: TAction): any {
   if (action.type !== "INVESTMENT_FLOW_SUBMIT_INVESTMENT_VALUE") return;
   const state: IAppState = yield select();
 
-  const value:BigNumber = convertToBigInt(new BigNumber(extractNumber(action.payload.value)));
+  const value:BigNumber = new BigNumber(extractNumber(action.payload.value));
+
+  if (value.isNaN()) return;
+
   const curr = action.payload.currency;
-  const oldVal =
+  const oldVal: BigNumber | null =
     curr === EInvestmentCurrency.Ether
       ? selectInvestmentEthValueUlps(state)
       : selectInvestmentEurValueUlps(state);
 
   // stop if value has not changed. allows editing fractions without overriding user input.
-  if (compareBigNumbers(oldVal || "0", value || "0") === 0) return;
+  if (compareBigNumbers(oldVal || "0", value || "0") === 0) return; //FIXME find out what it is
 
   yield put(actions.investmentFlow.setIsInputValidated(false));
   yield computeAndSetCurrencies(value, curr);
@@ -81,9 +84,9 @@ function* computeAndSetCurrencies(value: BigNumber, currency: EInvestmentCurrenc
   const state: IAppState = yield select();
   const etherPriceEur = selectEtherPriceEur(state);
   const eurPriceEther = selectEurPriceEther(state);
-  if (!value) {
-    yield put(actions.investmentFlow.setEthValue("")); //FIXME wtf empty string again
-    yield put(actions.investmentFlow.setEurValue("")); //FIXME wtf empty string again
+  if (value.isNaN()) { //fixme remove this.
+    yield put(actions.investmentFlow.setEthValue(null));
+    yield put(actions.investmentFlow.setEurValue(null));
   } else if (etherPriceEur && !etherPriceEur.isZero()) {
     switch (currency) {
       case EInvestmentCurrency.Ether:
@@ -105,7 +108,7 @@ function* investEntireBalance(): any {
 
   const type = selectInvestmentType(state);
 
-  let balance = "";
+  let balance = null;
   switch (type) {
     case EInvestmentType.ICBMEth:
       balance = selectLockedEtherBalance(state.wallet);
@@ -119,8 +122,7 @@ function* investEntireBalance(): any {
 
     case EInvestmentType.InvestmentWallet:
       const gasCostEth = selectTxGasCostEthUlps(state);
-      balance = selectLiquidEtherBalance(state.wallet);
-      balance = subtractBigNumbers([balance, gasCostEth]);
+      balance = selectLiquidEtherBalance(state.wallet).sub(gasCostEth);
       yield computeAndSetCurrencies(balance, EInvestmentCurrency.Ether);
       break;
   }
@@ -130,56 +132,57 @@ function* investEntireBalance(): any {
   }
 }
 
-function validateInvestment(state: IAppState): EInvestmentErrorState | undefined {
+function calculateInvestmentError(state: IAppState): EInvestmentErrorState | undefined {
   const investmentFlow = state.investmentFlow;
-  const euroValue = investmentFlow.euroValueUlps;
-  const etherValue = investmentFlow.ethValueUlps;
-  const wallet = state.wallet.data;
-  const contribs = selectCalculatedContribution(state, investmentFlow.etoId);
-  const ticketSizes = selectCalculatedEtoTicketSizesUlpsById(state, investmentFlow.etoId);
 
-  if (!contribs || !euroValue || !wallet || !ticketSizes) return;
+  if(!investmentFlow.etoId) {
+    return;
+  } else {
+    const euroValue = investmentFlow.euroValueUlps !== null ? new BigNumber(investmentFlow.euroValueUlps) : null;
+    const etherValue = investmentFlow.ethValueUlps !== null ? new BigNumber(investmentFlow.ethValueUlps) : null;
+    const wallet = state.wallet.data;
+    const contribs:ICalculatedContribution | undefined = selectCalculatedContribution(state, investmentFlow.etoId);
+    const ticketSizes = selectCalculatedEtoTicketSizesUlpsById(state, investmentFlow.etoId); //{bignumber, bignumber}
 
-  const gasPrice = selectTxGasCostEthUlps(state);
+    if (!contribs || !euroValue || !etherValue || !wallet || !ticketSizes) return;
 
-  if (investmentFlow.investmentType === EInvestmentType.InvestmentWallet) {
+    const gasPrice = selectTxGasCostEthUlps(state);
+
     if (
-      compareBigNumbers(
-        addBigNumbers([etherValue, gasPrice]),
-        selectLiquidEtherBalance(state.wallet),
-      ) > 0
+      investmentFlow.investmentType === EInvestmentType.InvestmentWallet &&
+      etherValue.add(gasPrice).comparedTo(selectLiquidEtherBalance(state.wallet)) > 0
     ) {
-      return EInvestmentErrorState.ExceedsWalletBalance;
+        return EInvestmentErrorState.ExceedsWalletBalance;
     }
-  }
 
-  if (investmentFlow.investmentType === EInvestmentType.ICBMnEuro) {
-    if (compareBigNumbers(euroValue, selectLockedEuroTokenBalance(state.wallet)) > 0) {
-      return EInvestmentErrorState.ExceedsWalletBalance;
+    if (investmentFlow.investmentType === EInvestmentType.ICBMnEuro &&
+      euroValue.comparedTo(selectLockedEuroTokenBalance(state.wallet)) > 0
+    ) {
+        return EInvestmentErrorState.ExceedsWalletBalance;
     }
-  }
 
-  if (investmentFlow.investmentType === EInvestmentType.ICBMEth) {
-    if (compareBigNumbers(etherValue, selectLockedEtherBalance(state.wallet)) > 0) {
-      return EInvestmentErrorState.ExceedsWalletBalance;
+    if (investmentFlow.investmentType === EInvestmentType.ICBMEth &&
+      etherValue.comparedTo(selectLockedEtherBalance(state.wallet)) > 0
+    ) {
+        return EInvestmentErrorState.ExceedsWalletBalance;
     }
-  }
 
-  if (compareBigNumbers(euroValue, ticketSizes.minTicketEurUlps) < 0) {
-    return EInvestmentErrorState.BelowMinimumTicketSize;
-  }
+    if (euroValue.comparedTo(ticketSizes.minTicketEurUlps) < 0) {
+      return EInvestmentErrorState.BelowMinimumTicketSize;
+    }
 
-  if (compareBigNumbers(euroValue, ticketSizes.maxTicketEurUlps) > 0) {
-    return EInvestmentErrorState.AboveMaximumTicketSize;
-  }
+    if (euroValue.comparedTo(ticketSizes.maxTicketEurUlps) > 0) {
+      return EInvestmentErrorState.AboveMaximumTicketSize;
+    }
 
-  if (contribs.maxCapExceeded) {
-    return EInvestmentErrorState.ExceedsTokenAmount;
-  }
+    if (contribs.maxCapExceeded) {
+      return EInvestmentErrorState.ExceedsTokenAmount;
+    }
 
-  return;
+    return;
+  }
 }
-
+//todo move debounce, input validation etc to the component
 function* validateAndCalculateInputs({ contractsService }: TGlobalDependencies): any {
   // debounce validation
   yield delay(300);
@@ -196,7 +199,11 @@ function* validateAndCalculateInputs({ contractsService }: TGlobalDependencies):
       yield put(actions.investorEtoTicket.setCalculatedContribution(eto.etoId, contribution));
 
       state = yield select();
-      yield put(actions.investmentFlow.setErrorState(validateInvestment(state)));
+
+      const error = yield calculateInvestmentError(state);
+      if(error){
+        yield put(actions.investmentFlow.setErrorState(error))
+      }
 
       // validate and set transaction if not on bank transfer
       if (state.investmentFlow.investmentType !== EInvestmentType.BankTransfer) {
@@ -222,7 +229,7 @@ function* start(action: TAction): any {
   yield put(actions.investmentFlow.setEtoId(etoId));
   yield put(actions.kyc.kycLoadClientData());
   yield put(actions.txTransactions.startInvestment());
-  yield put(actions.investorEtoTicket.loadEtoInvestorTicket(selectPublicEtoById(state, etoId)!));
+  yield put(actions.investorEtoTicket.loadEtoInvestorTicket(selectPublicEtoById(state, etoId)!)); //fixme casting
 
   yield take("TX_SENDER_WATCH_PENDING_TXS_DONE");
   yield getActiveInvestmentTypes();

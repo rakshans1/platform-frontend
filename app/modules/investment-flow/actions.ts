@@ -26,9 +26,9 @@ export const investmentFlowActions = {
     createSimpleAction("INVESTMENT_FLOW_TOGGLE_BANK_TRANSFER_GAS_STIPEND"),
   // state mutations
   setEtoId: (etoId: string) => createAction("INVESTMENT_FLOW_SET_ETO_ID", { etoId }),
-  setEthValue: (value: string) =>
+  setEthValue: (value: string | null) =>
     createAction("INVESTMENT_FLOW_SET_INVESTMENT_ETH_VALUE", { value }),
-  setEurValue: (value: string) =>
+  setEurValue: (value: string | null) =>
     createAction("INVESTMENT_FLOW_SET_INVESTMENT_EUR_VALUE", { value }),
   setErrorState: (errorState?: EInvestmentErrorState) =>
     createAction("INVESTMENT_FLOW_SET_INVESTMENT_ERROR_STATE", { errorState }),

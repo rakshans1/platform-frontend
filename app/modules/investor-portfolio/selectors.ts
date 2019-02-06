@@ -85,7 +85,7 @@ export const selectMyInvestorTicketByEtoId = (
   return undefined;
 };
 
-export const selectCalculatedContribution = (state: IAppState, etoId: string) => {
+export const selectCalculatedContribution = (state: IAppState, etoId: string):ICalculatedContribution | undefined => {
   const investorState = selectInvestorTicketsState(state);
 
   return (
