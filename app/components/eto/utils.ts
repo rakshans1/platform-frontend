@@ -1,4 +1,4 @@
-import { cloneDeep, flow, get, set } from "lodash";
+import { cloneDeep, flow, get, set, isFunction } from "lodash";
 
 import { formatFlexiPrecision } from "../../utils/Number.utils";
 
@@ -25,7 +25,11 @@ export const convert = (data: any, conversionSpec: any) => {
     const dataCopy = cloneDeep(data);
     Object.keys(conversionSpec).forEach(key => {
       const fieldValue = get(dataCopy, key);
-      set(dataCopy, key, convertField(fieldValue, conversionSpec[key]));
+      if (isFunction(conversionSpec[key])){
+        set(dataCopy, key, convertField(fieldValue, conversionSpec[key]));
+      } else {
+        set(dataCopy, key, convert(fieldValue, conversionSpec[key]))
+      }
     });
     return dataCopy;
   } else {

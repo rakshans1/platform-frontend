@@ -2,12 +2,12 @@ import BigNumber from "bignumber.js";
 
 export interface ITxData {
   to: string;
-  value: string;
+  value: BigNumber;
   data?: string;
   from: string;
   input?: string;
-  gas: string;
-  gasPrice: string;
+  gas: BigNumber;
+  gasPrice: BigNumber;
 }
 
 export interface IRawTxData extends ITxData {
@@ -18,4 +18,4 @@ export interface IEthereumNetworkConfig {
   rpcUrl: string;
 }
 
-export type TBigNumberVariant = number | string | BigNumber;
+export type TBigNumberVariant = BigNumber;

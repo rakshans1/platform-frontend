@@ -31,6 +31,7 @@ interface IDispatchProps {
 type IProps = IStateProps & IDispatchProps & FormikProps<TPartialCompanyEtoData>;
 
 const EtoRegistrationRiskAssessmentComponent = (props: IProps) => {
+  console.log("EtoRegistrationRiskAssessmentComponent",(props as any).browser) //FIXME
   return (
     <EtoFormBase title="Risk Assessment" validator={EtoRiskAssessmentType.toYup()}>
       <Section>
@@ -116,6 +117,7 @@ const EtoRegistrationRiskAssessment = compose<React.FunctionComponent>(
       loadingData: s.etoFlow.loading,
       savingData: s.etoFlow.saving,
       stateValues: selectIssuerCompany(s) as TPartialCompanyEtoData,
+      browser: s.browser.name //FIXME
     }),
     dispatchToProps: dispatch => ({
       saveData: (data: TPartialCompanyEtoData) => {

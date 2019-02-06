@@ -2,7 +2,7 @@ import { TCompanyEtoData, TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfa
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 import { actions } from "../actions";
-import { IEtoContractData, IEtoTokenData } from "./types";
+import { IEtoContractData, IEtoTokenStateData } from "./types";
 
 export interface IPublicEtoState {
   publicEtos: { [previewCode: string]: TEtoSpecsData | undefined };
@@ -11,7 +11,7 @@ export interface IPublicEtoState {
   displayOrder: string[] | undefined;
   maxCapExceeded: { [previewCode: string]: boolean | undefined };
   etoWidgetError: boolean | undefined;
-  tokenData: { [previewCode: string]: IEtoTokenData | undefined };
+  tokenData: { [previewCode: string]: IEtoTokenStateData | undefined };
 }
 
 export const etoFlowInitialState: IPublicEtoState = {

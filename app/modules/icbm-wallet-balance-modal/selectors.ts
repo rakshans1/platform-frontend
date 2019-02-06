@@ -1,3 +1,5 @@
+import BigNumber from "bignumber.js";
+
 import { DeepReadonly } from "../../types";
 import { IAppState } from "./../../store";
 import { IIcbmWalletBalanceModal, IWalletMigrationData, TWalletMigrationSteps } from "./reducer";
@@ -6,15 +8,15 @@ import { IIcbmWalletBalanceModal, IWalletMigrationData, TWalletMigrationSteps } 
 export const selectIcbmWalletEthAddress = (state: IAppState): string | undefined =>
   state.icbmWalletBalanceModal.icbmWalletEthAddress;
 
-export const selectEtherNeumarksDueIcbmModal = (state: IAppState): string =>
-  (state.icbmWalletBalanceModal.icbmLockedEthWallet &&
+export const selectEtherNeumarksDueIcbmModal = (state: IAppState): BigNumber =>
+  new BigNumber((state.icbmWalletBalanceModal.icbmLockedEthWallet &&
     state.icbmWalletBalanceModal.icbmLockedEthWallet.neumarksDue) ||
-  "0";
+  "0");
 
-export const selectEtherBalanceIcbmModal = (state: IAppState): string =>
-  (state.icbmWalletBalanceModal.icbmLockedEthWallet &&
+export const selectEtherBalanceIcbmModal = (state: IAppState): BigNumber =>
+  new BigNumber((state.icbmWalletBalanceModal.icbmLockedEthWallet &&
     state.icbmWalletBalanceModal.icbmLockedEthWallet.LockedBalance) ||
-  "0";
+  "0");
 
 // Migration Tool Selectors
 export const selectWalletMigrationData = (

@@ -27,27 +27,27 @@ export enum EBankTransferFlowState {
 }
 
 export interface IInvestmentFlowState {
-  etoId: string;
-  euroValueUlps: string;
-  ethValueUlps: string;
+  etoId: string | null;
+  euroValueUlps: string | null;
+  ethValueUlps: string | null;
   investmentType?: EInvestmentType;
   activeInvestmentTypes: EInvestmentType[];
   errorState?: EInvestmentErrorState;
   isValidatedInput: boolean;
   bankTransferFlowState?: EBankTransferFlowState;
   bankTransferGasStipend?: boolean;
-  bankTransferReference: string;
+  bankTransferReference: string | null;
 }
 
 export const investmentFlowInitialState: IInvestmentFlowState = {
-  etoId: "",
-  euroValueUlps: "",
-  ethValueUlps: "",
+  etoId: null,
+  euroValueUlps: null,
+  ethValueUlps: null,
   investmentType: EInvestmentType.InvestmentWallet,
   activeInvestmentTypes: [],
   isValidatedInput: false,
   bankTransferGasStipend: true,
-  bankTransferReference: "",
+  bankTransferReference: null,
 };
 
 export const investmentFlowReducer: AppReducer<IInvestmentFlowState> = (

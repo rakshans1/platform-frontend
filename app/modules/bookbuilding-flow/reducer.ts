@@ -3,7 +3,7 @@ import { AppReducer } from "../../store";
 import { DeepReadonly, Dictionary } from "../../types";
 import { SET_BOOKBUILDING_FLOW_STATS, SET_PLEDGE } from "./actions";
 
-export interface IBookbuildingFLow {
+export interface IBookbuildingFLow { //FIXME change all from number to BN
   bookbuildingStats: Dictionary<IBookBuildingStats>;
   pledges: Dictionary<IPledge | undefined>;
 }

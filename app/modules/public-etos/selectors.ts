@@ -3,7 +3,8 @@ import { find } from "lodash/fp";
 import { IAppState } from "../../store";
 import { DeepReadonly } from "../../types";
 import { IPublicEtoState } from "./reducer";
-import { EETOStateOnChain, IEtoTokenData, TEtoWithCompanyAndContract } from "./types";
+import {EETOStateOnChain, IEtoTokenData, TEtoWithCompanyAndContract} from "./types";
+import BigNumber from "bignumber.js";
 
 const selectPublicEtosState = (state: IAppState) => state.publicEtos;
 
@@ -118,5 +119,14 @@ export const selectTokenData = (
   state: DeepReadonly<IPublicEtoState>,
   previewCode: string,
 ): IEtoTokenData | undefined => {
-  return state.tokenData[previewCode];
+  const tokenData = state.tokenData[previewCode];
+    return tokenData
+    ? {
+      balance: new BigNumber(tokenData.balance),
+      tokensPerShare: new BigNumber(tokenData.tokensPerShare),
+      totalCompanyShares: new BigNumber(tokenData.totalCompanyShares),
+      companyValuationEurUlps: new BigNumber(tokenData.companyValuationEurUlps),
+      tokenPrice: new BigNumber(tokenData.tokenPrice),
+    }
+    : undefined
 };

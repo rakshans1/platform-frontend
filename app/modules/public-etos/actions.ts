@@ -2,7 +2,7 @@ import { TCompanyEtoData, TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfa
 import { EEtoDocumentType, IEtoDocument } from "../../lib/api/eto/EtoFileApi.interfaces";
 import { Dictionary } from "../../types";
 import { createActionFactory } from "../actionsUtils";
-import { IEtoContractData, IEtoTokenData } from "./types";
+import { IEtoContractData, IEtoTokenStateData } from "./types";
 
 export const etoActions = {
   // public actions
@@ -31,7 +31,7 @@ export const etoActions = {
   })),
   setTokenData: createActionFactory(
     "PORTFOLIO_SET_TOKEN_DATA",
-    (previewCode: string, tokenData: IEtoTokenData) => ({
+    (previewCode: string, tokenData: IEtoTokenStateData) => ({
       previewCode,
       tokenData,
     }),

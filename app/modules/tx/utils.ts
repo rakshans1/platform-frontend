@@ -2,8 +2,6 @@ import BigNumber from "bignumber.js";
 import { addHexPrefix } from "ethereumjs-util";
 import { TxData } from "web3";
 
-import { TBigNumberVariant } from "../../lib/web3/types";
-import { multiplyBigNumbers } from "../../utils/BigNumberUtils";
 
 export const GAS_PRICE_MULTIPLIER = 1 + parseFloat(process.env.NF_GAS_PRICE_OVERHEAD || "0");
 
@@ -11,13 +9,13 @@ export const GAS_LIMIT_MULTIPLIER = 1 + parseFloat(process.env.NF_GAS_LIMIT_OVER
 
 export const EMPTY_DATA = "0x00";
 
-export const calculateGasPriceWithOverhead = (gasPrice: TBigNumberVariant) =>
-  new BigNumber(multiplyBigNumbers([gasPrice, GAS_PRICE_MULTIPLIER])).ceil().toString();
+export const calculateGasPriceWithOverhead = (gasPrice: BigNumber):BigNumber =>
+  gasPrice.mul(GAS_PRICE_MULTIPLIER);
 
-export const calculateGasLimitWithOverhead = (gasLimit: TBigNumberVariant) =>
-  new BigNumber(multiplyBigNumbers([gasLimit, GAS_LIMIT_MULTIPLIER])).ceil().toString();
+export const calculateGasLimitWithOverhead = (gasLimit: BigNumber):BigNumber =>
+  gasLimit.mul(GAS_LIMIT_MULTIPLIER);
 
-export const encodeTransaction = (txData: Partial<TxData>) => {
+export const encodeTransaction = (txData: Partial<TxData>) => { //FIXME todo
   return {
     from: addHexPrefix(txData.from!),
     to: addHexPrefix(txData.to!),

@@ -1,5 +1,5 @@
 import { AppReducer } from "../../store";
-
+//TODO is this used anywhere?
 export interface IMoneyState {
   euroTokenDecimals: number;
   etherTokenDecimals: number;

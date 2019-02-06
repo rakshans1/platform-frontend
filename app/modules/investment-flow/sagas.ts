@@ -61,7 +61,7 @@ function* processCurrencyValue(action: TAction): any {
   if (action.type !== "INVESTMENT_FLOW_SUBMIT_INVESTMENT_VALUE") return;
   const state: IAppState = yield select();
 
-  const value = action.payload.value && convertToBigInt(extractNumber(action.payload.value));
+  const value:BigNumber = convertToBigInt(new BigNumber(extractNumber(action.payload.value)));
   const curr = action.payload.currency;
   const oldVal =
     curr === EInvestmentCurrency.Ether
@@ -77,25 +77,24 @@ function* processCurrencyValue(action: TAction): any {
   yield put(actions.investmentFlow.validateInputs());
 }
 
-function* computeAndSetCurrencies(value: string, currency: EInvestmentCurrency): any {
+function* computeAndSetCurrencies(value: BigNumber, currency: EInvestmentCurrency): any {
   const state: IAppState = yield select();
   const etherPriceEur = selectEtherPriceEur(state);
   const eurPriceEther = selectEurPriceEther(state);
   if (!value) {
-    yield put(actions.investmentFlow.setEthValue(""));
-    yield put(actions.investmentFlow.setEurValue(""));
-  } else if (etherPriceEur && etherPriceEur !== "0") {
-    const bignumber = new BigNumber(value);
+    yield put(actions.investmentFlow.setEthValue("")); //FIXME wtf empty string again
+    yield put(actions.investmentFlow.setEurValue("")); //FIXME wtf empty string again
+  } else if (etherPriceEur && !etherPriceEur.isZero()) {
     switch (currency) {
       case EInvestmentCurrency.Ether:
-        const eurVal = bignumber.mul(etherPriceEur);
-        yield put(actions.investmentFlow.setEthValue(bignumber.toFixed(0, BigNumber.ROUND_UP)));
+        const eurVal = value.mul(etherPriceEur);
+        yield put(actions.investmentFlow.setEthValue(value.toFixed(0, BigNumber.ROUND_UP)));
         yield put(actions.investmentFlow.setEurValue(eurVal.toFixed(0, BigNumber.ROUND_UP)));
         return;
       case EInvestmentCurrency.Euro:
-        const ethVal = bignumber.mul(eurPriceEther);
+        const ethVal = value.mul(eurPriceEther);
         yield put(actions.investmentFlow.setEthValue(ethVal.toFixed(0, BigNumber.ROUND_UP)));
-        yield put(actions.investmentFlow.setEurValue(bignumber.toFixed(0, BigNumber.ROUND_UP)));
+        yield put(actions.investmentFlow.setEurValue(value.toFixed(0, BigNumber.ROUND_UP)));
         return;
     }
   }
