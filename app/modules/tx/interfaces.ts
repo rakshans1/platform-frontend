@@ -1,3 +1,5 @@
+import {TPendingTxs} from "../../lib/api/users/interfaces";
+
 export interface IWithdrawDraftType {
   type: ETxSenderType.WITHDRAW;
   to: string;
@@ -20,4 +22,8 @@ export enum ETxSenderType {
 export enum ETokenType {
   ETHER = "ETHER",
   EURO = "EURO",
+}
+
+export interface ITxMonitorState {
+  txs: TPendingTxs;
 }

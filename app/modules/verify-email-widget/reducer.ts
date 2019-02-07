@@ -1,9 +1,6 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
-
-export interface IVerifyEmailWidgetState {
-  isButtonLocked: boolean;
-}
+import {IVerifyEmailWidgetState} from './interfaces';
 
 const verifyEmailWidgetInitialState: IVerifyEmailWidgetState = { isButtonLocked: false };
 
@@ -13,7 +10,7 @@ export const verifyEmailWidgetReducer: AppReducer<IVerifyEmailWidgetState> = (
 ): DeepReadonly<IVerifyEmailWidgetState> => {
   switch (action.type) {
     case "VERIFY_EMAIL_BUTTON_LOCK":
-      return {
+      return{
         ...state,
         isButtonLocked: true,
       };

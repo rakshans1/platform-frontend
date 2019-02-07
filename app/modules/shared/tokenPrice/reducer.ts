@@ -1,18 +1,5 @@
 import { AppReducer } from "../../../store";
-
-export interface ITokenPriceState {
-  loading: boolean;
-  error?: string;
-  tokenPriceData?: ITokenPriceStateData;
-}
-
-// balances of all coins are represented by bignumber.js strings
-export interface ITokenPriceStateData {
-  etherPriceEur: string;
-  neuPriceEur: string;
-  eurPriceEther: string;
-  priceOutdated: boolean;
-}
+import {ITokenPriceState} from './interfaces'
 
 const walletInitialState: ITokenPriceState = {
   loading: true,

@@ -2,10 +2,8 @@ import { find } from "lodash/fp";
 
 import { IAppState } from "../../store";
 import { DeepReadonly } from "../../types";
-import { IPublicEtoState } from "./reducer";
-import {EETOStateOnChain, IEtoTokenData, TEtoWithCompanyAndContract} from "./types";
+import { IPublicEtoState, EETOStateOnChain, IEtoTokenData, TEtoWithCompanyAndContract } from "./interfaces";
 import BigNumber from "bignumber.js";
-import {TEtoSpecsData} from "../../lib/api/eto/EtoApi.interfaces";
 
 const selectPublicEtosState = (state: IAppState) => state.publicEtos;
 
@@ -32,7 +30,7 @@ export const selectEtoTokenName = (state: IAppState, etoId: string) => {
 export const selectPublicEto = (state: IAppState, previewCode: string) =>
   state.publicEtos.publicEtos[previewCode];
 
-export const selectPublicEtoById = (state: IAppState, etoId: string):TEtoSpecsData | undefined => {
+export const selectPublicEtoById = (state: IAppState, etoId: string):IPublicEtoState | undefined => {
   return state.publicEtos.publicEtos[selectEtoPreviewCode(state, etoId)!];
 };
 

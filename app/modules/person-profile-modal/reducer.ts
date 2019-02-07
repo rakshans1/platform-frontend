@@ -1,20 +1,7 @@
-import { IEtoSocialProfile } from "../../components/shared/SocialProfilesList";
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
+import {IPersonProfileModalState, IPersonProfileModal} from './interfaces'
 
-export interface IPersonProfileModalState {
-  isOpen: boolean;
-  personProfileModalObj?: IPersonProfileModal;
-}
-
-export interface IPersonProfileModal {
-  image: string;
-  name: string;
-  role: string;
-  description: string | React.ReactNode;
-  socialChannels: IEtoSocialProfile[];
-  website?: string;
-}
 
 const initialState: IPersonProfileModalState = {
   isOpen: false,

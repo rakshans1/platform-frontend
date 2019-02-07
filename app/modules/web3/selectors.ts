@@ -6,7 +6,7 @@ import { createSelector } from "reselect";
 import { TWalletMetadata } from "../../lib/persistence/WalletMetadataObjectStorage";
 import { IAppState } from "../../store";
 import { EthereumAddress } from "../../types";
-import { IConnectedWeb3State, IWalletPrivateData, IWeb3State } from "./reducer";
+import { IConnectedWeb3State, IWalletPrivateData, IWeb3State } from "./interfaces";
 import { EWalletSubType, EWalletType } from "./types";
 import { makeEthereumAddressChecksummed } from "./utils";
 

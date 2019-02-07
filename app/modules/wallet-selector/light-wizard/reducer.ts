@@ -1,11 +1,5 @@
-import { TMessage } from "../../../components/translatedMessages/utils";
 import { AppReducer } from "../../../store";
-import { DeepReadonly } from "../../../types";
-
-export interface ILightWalletWizardState {
-  errorMsg?: DeepReadonly<TMessage>;
-  isLoading: boolean;
-}
+import {ILightWalletWizardState} from './interfaces'
 
 export const lightWalletWizardInitialState: ILightWalletWizardState = { isLoading: false };
 

@@ -1,9 +1,9 @@
 import { IAppState } from "../../../store";
-import { ITokenPriceStateData } from "./reducer";
+import { ITokenPriceDataState } from "./interfaces";
 import BigNumber from "bignumber.js";
 
 
-const selectTokenPriceData = (state: IAppState): ITokenPriceStateData | undefined =>
+const selectTokenPriceData = (state: IAppState): ITokenPriceDataState | undefined =>
   state.tokenPrice.tokenPriceData;
 
 export const selectEtherPriceEur = (state: IAppState): BigNumber => {

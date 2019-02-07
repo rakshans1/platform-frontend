@@ -1,10 +1,10 @@
 import BigNumber from "bignumber.js";
 import * as Web3Utils from "web3-utils";
-import { ETHEREUM_ZERO_ADDRESS } from "../../../app/config/constants";
+import { ETHEREUM_ZERO_ADDRESS } from "../../config/constants";
 import { IAppState } from "../../store";
 import { selectEtherPriceEur, selectNeuPriceEur } from "../shared/tokenPrice/selectors";
 import { selectTxGasCostEthUlps } from "../tx/sender/selectors";
-import { IWalletState } from "./reducer";
+import { IWalletState } from "./interfaces";
 
 /**
  * Simple State Selectors

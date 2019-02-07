@@ -1,32 +1,6 @@
 import { AppReducer } from "../../store";
 
-export interface IWalletState {
-  loading: boolean;
-  error?: string;
-  data?: IWalletStateData;
-}
-
-export interface ILockedWallet {
-  LockedBalance: string;
-  neumarksDue: string;
-  unlockDate: string;
-}
-
-// balances of all coins are represented by bignumber.js strings
-export interface IWalletStateData {
-  euroTokenLockedWallet: ILockedWallet;
-  etherTokenLockedWallet: ILockedWallet;
-
-  etherTokenBalance: string;
-  euroTokenBalance: string;
-  etherBalance: string;
-  neuBalance: string;
-
-  euroTokenICBMLockedWallet: ILockedWallet;
-  etherTokenICBMLockedWallet: ILockedWallet;
-  etherTokenUpgradeTarget?: string;
-  euroTokenUpgradeTarget?: string;
-}
+import {IWalletState} from './interfaces'
 
 const walletInitialState: IWalletState = {
   loading: true,

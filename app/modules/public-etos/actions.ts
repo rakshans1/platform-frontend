@@ -1,8 +1,8 @@
-import { TCompanyEtoData, TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfaces";
-import { EEtoDocumentType, IEtoDocument } from "../../lib/api/eto/EtoFileApi.interfaces";
+import {IEtoDocument, EEtoDocumentType} from '../eto-documents/interfaces'
 import { Dictionary } from "../../types";
 import { createActionFactory } from "../actionsUtils";
-import { IEtoContractData, IEtoTokenStateData } from "./types";
+import { IEtoContractData, IEtoTokenStateData } from "./interfaces";
+import {TCompanyEtoDataState, TPublicEtoDataState} from "../eto-flow/interfaces";
 
 export const etoActions = {
   // public actions
@@ -43,13 +43,13 @@ export const etoActions = {
       etos,
       companies,
     }: {
-      etos: Dictionary<TEtoSpecsData>;
-      companies: Dictionary<TCompanyEtoData>;
+      etos: Dictionary<TPublicEtoDataState>;
+      companies: Dictionary<TCompanyEtoDataState>;
     }) => ({ etos, companies }),
   ),
   setPublicEto: createActionFactory(
     "PUBLIC_ETOS_SET_PUBLIC_ETO",
-    ({ eto, company }: { eto: TEtoSpecsData; company: TCompanyEtoData }) => ({ eto, company }),
+    ({ eto, company }: { eto: TPublicEtoDataState; company: TCompanyEtoDataState }) => ({ eto, company }),
   ),
   setEtosDisplayOrder: createActionFactory("PUBLIC_ETOS_SET_DISPLAY_ORDER", (order: string[]) => ({
     order,

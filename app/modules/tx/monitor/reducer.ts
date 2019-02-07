@@ -1,10 +1,8 @@
-import { TPendingTxs } from "../../../lib/api/users/interfaces";
+import { ITxMonitorState } from "../interfaces";
 import { AppReducer } from "../../../store";
 import { DeepReadonly } from "../../../types";
 
-export interface ITxMonitorState {
-  txs: TPendingTxs;
-}
+
 
 const initialState: ITxMonitorState = {
   txs: { pendingTransaction: undefined, oooTransactions: [] },

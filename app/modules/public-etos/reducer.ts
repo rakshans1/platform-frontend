@@ -1,18 +1,8 @@
-import { TCompanyEtoData, TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfaces";
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 import { actions } from "../actions";
-import { IEtoContractData, IEtoTokenStateData } from "./types";
 
-export interface IPublicEtoState {
-  publicEtos: { [previewCode: string]: TEtoSpecsData | undefined };
-  companies: { [companyId: string]: TCompanyEtoData | undefined };
-  contracts: { [previewCode: string]: IEtoContractData };
-  displayOrder: string[] | undefined;
-  maxCapExceeded: { [previewCode: string]: boolean | undefined };
-  etoWidgetError: boolean | undefined;
-  tokenData: { [previewCode: string]: IEtoTokenStateData | undefined };
-}
+import {IPublicEtoState} from './interfaces'
 
 export const etoFlowInitialState: IPublicEtoState = {
   publicEtos: {},

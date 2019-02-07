@@ -1,28 +1,9 @@
-import { TMessage } from "../../../components/translatedMessages/utils";
 import { AppReducer } from "../../../store";
 import { DeepReadonly } from "../../../types";
+import {ILedgerWizardState} from './interfaces';
 
 export const DEFAULT_DERIVATION_PATH_PREFIX = "44'/60'/0'/";
 export const DEFAULT_LEDGER_ACCOUNTS_PER_PAGE = 10;
-
-export interface ILedgerAccount {
-  address: string;
-  derivationPath: string;
-  balanceETH: string;
-  balanceNEU: string;
-}
-
-export interface ILedgerWizardState {
-  isInitialConnectionInProgress: boolean;
-  isConnectionEstablished: boolean;
-  errorMsg?: TMessage;
-  isLoadingAddresses: boolean;
-  derivationPathPrefix: string; // TODO: it can be optional, not required for advanced - false
-  index: number; // TODO: it can be optional, not required for advanced - false
-  numberOfAccountsPerPage: number; // TODO: it can be optional, not required for advanced - false
-  accounts: ILedgerAccount[];
-  advanced: boolean;
-}
 
 export const ledgerWizardInitialState: ILedgerWizardState = {
   isInitialConnectionInProgress: true,

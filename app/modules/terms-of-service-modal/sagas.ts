@@ -10,8 +10,8 @@ import { ensurePermissionsArePresent } from "../auth/jwt/sagas";
 import { selectCurrentAgreementHash } from "../auth/selectors";
 import { selectIsSmartContractInitDone } from "../init/selectors";
 import { neuCall, neuTakeEvery, neuTakeOnly } from "../sagasUtils";
-import { AuthMessage } from "./../../components/translatedMessages/messages";
-import { EInitType } from "./../init/reducer";
+import { AuthMessage } from "../../components/translatedMessages/messages";
+import { EInitType } from "../init/interfaces";
 
 /**
  * Handle ToS / agreement

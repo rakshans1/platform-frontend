@@ -1,14 +1,6 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
-
-export interface IVideoModalState {
-  isOpen: boolean;
-  videoModalObj?: IVideoModal;
-}
-
-export interface IVideoModal {
-  youTubeUrl: string;
-}
+import {IVideoModalState, IVideoModalDataState} from './interfaces'
 
 const initialState: IVideoModalState = {
   isOpen: false,
@@ -37,5 +29,5 @@ export const videoModalReducer: AppReducer<IVideoModalState> = (
 };
 
 export const selectVideoModalIsOpen = (state: IVideoModalState): boolean => state.isOpen;
-export const selectVideoModalObj = (state: IVideoModalState): IVideoModal | undefined =>
+export const selectVideoModalObj = (state: IVideoModalState): IVideoModalDataState | undefined =>
   state.videoModalObj;

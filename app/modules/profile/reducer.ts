@@ -1,9 +1,7 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
+import {IProfile} from './interfaces'
 
-export interface IProfile {
-  isEmailTemporaryCancelled: boolean;
-}
 
 const initialState: IProfile = {
   isEmailTemporaryCancelled: false,

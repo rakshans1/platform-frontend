@@ -1,6 +1,6 @@
 import { createAction } from "../../actionsUtils";
 import { IDraftType } from "../interfaces";
-import { EValidationState } from "../sender/reducer";
+import { EValidationState } from "../sender/interfaces";
 
 export const txValidatorActions = {
   txSenderValidateDraft: (txDraft: IDraftType) => createAction("TX_SENDER_VALIDATE_DRAFT", txDraft),
