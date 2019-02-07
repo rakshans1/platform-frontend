@@ -1,5 +1,5 @@
 import { createAction } from "../actionsUtils";
-import { EInitType } from "./reducer";
+import { EInitType } from "./interfaces";
 
 export const initActions = {
   start: (initType: EInitType) => createAction("INIT_START", { initType }),

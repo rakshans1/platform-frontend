@@ -5,6 +5,7 @@ import { DeepReadonly } from "../../types";
 import { IPublicEtoState } from "./reducer";
 import {EETOStateOnChain, IEtoTokenData, TEtoWithCompanyAndContract} from "./types";
 import BigNumber from "bignumber.js";
+import {TEtoSpecsData} from "../../lib/api/eto/EtoApi.interfaces";
 
 const selectPublicEtosState = (state: IAppState) => state.publicEtos;
 
@@ -31,7 +32,7 @@ export const selectEtoTokenName = (state: IAppState, etoId: string) => {
 export const selectPublicEto = (state: IAppState, previewCode: string) =>
   state.publicEtos.publicEtos[previewCode];
 
-export const selectPublicEtoById = (state: IAppState, etoId: string) => {
+export const selectPublicEtoById = (state: IAppState, etoId: string):TEtoSpecsData | undefined => {
   return state.publicEtos.publicEtos[selectEtoPreviewCode(state, etoId)!];
 };
 

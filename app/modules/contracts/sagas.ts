@@ -2,7 +2,7 @@ import { put } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { actions } from "../actions";
-import { IPlatformTermsConstants } from "./reducer";
+import { IPlatformTermsConstants } from "./interfaces";
 
 export async function initializeContracts({
   contractsService,

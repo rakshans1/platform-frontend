@@ -1,6 +1,6 @@
 import { ITxData } from "../../../lib/web3/types";
 import { createAction, createSimpleAction } from "../../actionsUtils";
-import { ETxSenderType } from "./../interfaces";
+import { ETxSenderType } from "../interfaces";
 import { ETransactionErrorType, TSummaryData } from "./reducer";
 
 export const txSenderActions = {

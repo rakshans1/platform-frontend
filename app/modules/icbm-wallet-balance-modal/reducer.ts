@@ -1,27 +1,8 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
-import { ILockedWallet } from "./../wallet/reducer";
+import {IIcbmWalletBalanceModalState} from './intefaces'
 
-export type TWalletMigrationSteps = 1 | 2;
-export interface IWalletMigrationData {
-  smartContractAddress: string;
-  migrationInputData: string;
-  gasLimit: string;
-  value: string;
-}
-export interface IIcbmWalletBalanceModal {
-  isOpen: boolean;
-  loading: boolean;
-  icbmWalletEthAddress?: string;
-  icbmLockedEthWallet?: ILockedWallet;
-  walletMigrationData?: IWalletMigrationData[];
-  currentMigrationStep: TWalletMigrationSteps;
-  isMigrating: boolean;
-  firstTransactionDone: boolean;
-  secondTransactionDone: boolean;
-}
-
-const initialState: IIcbmWalletBalanceModal = {
+const initialState: IIcbmWalletBalanceModalState = {
   isOpen: false,
   loading: false,
   isMigrating: false,
@@ -30,10 +11,10 @@ const initialState: IIcbmWalletBalanceModal = {
   currentMigrationStep: 1,
 };
 
-export const icbmWalletBalanceModalReducer: AppReducer<IIcbmWalletBalanceModal> = (
+export const icbmWalletBalanceModalReducer: AppReducer<IIcbmWalletBalanceModalState> = (
   state = initialState,
   action,
-): DeepReadonly<IIcbmWalletBalanceModal> => {
+): DeepReadonly<IIcbmWalletBalanceModalState> => {
   switch (action.type) {
     case "ICBM_WALLET_BALANCE_MODAL_SHOW":
       return {

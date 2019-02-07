@@ -1,5 +1,6 @@
-import { TGeneralEtoData } from "../../lib/api/eto/EtoApi.interfaces";
+import { TGeneralEtoData } from "./interfaces";
 import { createAction, createSimpleAction } from "../actionsUtils";
+import {DeepPartial} from "../../types";
 
 export const etoFlowActions = {
   loadIssuerEto: () => createSimpleAction("ETO_FLOW_LOAD_ISSUER_ETO"),
@@ -10,7 +11,7 @@ export const etoFlowActions = {
   submitDataStart: () => createSimpleAction("ETO_FLOW_SUBMIT_DATA_START"),
   setIssuerEtoPreviewCode: (etoPreviewCode: string) =>
     createAction("ETO_FLOW_SET_ISSUER_ETO_PREVIEW_CODE", { etoPreviewCode }),
-  saveDataStart: (data: Partial<TGeneralEtoData>) =>
+  saveDataStart: (data: DeepPartial<TGeneralEtoData>) =>
     createAction("ETO_FLOW_SAVE_DATA_START", { data }),
   changeBookBuildingStatus: (status: boolean) =>
     createAction("ETO_FLOW_CHANGE_BOOK_BUILDING_STATES", { status }),

@@ -1,10 +1,7 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 import { actions } from "../actions";
-
-export interface IImmutableStorageState {
-  pendingDownloads: { [ipfsHash: string]: boolean };
-}
+import {IImmutableStorageState} from './interfaces'
 
 export const immutableStorageInitialState: IImmutableStorageState = {
   pendingDownloads: {},

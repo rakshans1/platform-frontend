@@ -1,5 +1,5 @@
 import { IAppState } from "../../store";
-import { IInitState } from "./reducer";
+import { IInitState } from "./interfaces";
 
 export const selectIsInitInProgress = (initState: IInitState): boolean =>
   initState.appInit.inProgress || initState.smartcontractsInit.inProgress;

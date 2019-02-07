@@ -1,6 +1,6 @@
 import { TMessage } from "../../components/translatedMessages/utils";
 import { createAction, createSimpleAction } from "../actionsUtils";
-import { TIconType } from "./reducer";
+import { TIconType } from "./interfaces";
 
 // TODO: Refactor actions to receive single object as a parameter
 export const genericModalActions = {

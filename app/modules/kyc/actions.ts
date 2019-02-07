@@ -6,9 +6,9 @@ import {
   IKycIndividualData,
   IKycLegalRepresentative,
   IKycRequestState,
-} from "../../lib/api/KycApi.interfaces";
+  TClaims
+} from "./interfaces";
 import { createAction, createSimpleAction } from "../actionsUtils";
-import { TClaims } from "./types";
 
 export const kycActions = {
   /**

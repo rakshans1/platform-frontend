@@ -8,7 +8,7 @@ import { selectPublicEtoById, selectPublicEtos, selectTokenData } from "../publi
 import { EETOStateOnChain } from "../public-etos/types";
 import { isOnChain } from "../public-etos/utils";
 import { selectLockedWalletConnected } from "../wallet/selectors";
-import { ICalculatedContribution, TETOWithInvestorTicket, TETOWithTokenData } from "./types";
+import { ICalculatedContribution, TETOWithInvestorTicket, TETOWithTokenData } from "./interfaces";
 
 const selectInvestorTicketsState = (state: IAppState) => state.investorTickets;
 
@@ -25,7 +25,7 @@ export const selectHasInvestorTicket = (state: IAppState, etoId: string) => {
 
   if (investmentTicket) {
     // equivEurUlps is set to zero when investor didn't invest
-    return !investmentTicket.equivEurUlps.isZero();
+    return !(new BigNumber(investmentTicket.equivEurUlps).isZero());
   }
 
   return false;

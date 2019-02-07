@@ -1,7 +1,7 @@
 import { createAction, createActionFactory, createSimpleAction } from "../actionsUtils";
 import { ETokenType } from "../tx/interfaces";
 import { ILockedWallet } from "../wallet/reducer";
-import { IWalletMigrationData } from "./reducer";
+import { IWalletMigrationDataState } from "./intefaces";
 
 export const icbmWalletBalanceModalActions = {
   // UX
@@ -13,7 +13,7 @@ export const icbmWalletBalanceModalActions = {
   //Setters
   loadIcbmWalletData: (data: ILockedWallet) =>
     createAction("ICBM_WALLET_BALANCE_MODAL_LOAD_WALLET_DATA", { data }),
-  loadIcbmMigrationData: (walletMigrationData: IWalletMigrationData[]) =>
+  loadIcbmMigrationData: (walletMigrationData: IWalletMigrationDataState[]) =>
     createAction("ICBM_WALLET_BALANCE_MODAL_LOAD_MIGRATION_DATA", {
       walletMigrationData,
     }),

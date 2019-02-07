@@ -1,14 +1,6 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
-
-export interface IDepositEthModal {
-  isOpen: boolean;
-}
-
-export interface IDepositEthModalState {
-  isOpen: boolean;
-  depositEthModalObj?: IDepositEthModal;
-}
+import {IDepositEthModalState} from './interfaces'
 
 const initialState: IDepositEthModalState = {
   isOpen: false,

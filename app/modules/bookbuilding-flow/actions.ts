@@ -1,4 +1,4 @@
-import { IPledge } from "../../lib/api/eto/EtoPledgeApi.interfaces";
+import {IBookBuildingStatsState, IPledgeState} from './interfaces';
 import { createAction } from "../actionsUtils";
 
 export const LOAD_BOOKBUILDING_FLOW_STATS = "LOAD_BOOKBUILDING_FLOW_STATS";
@@ -13,12 +13,12 @@ export const LOAD_PLEDGE = "LOAD_PLEDGE";
 
 export const bookBuildingFlowActions = {
   loadBookBuildingStats: (etoId: string) => createAction(LOAD_BOOKBUILDING_FLOW_STATS, { etoId }),
-  setBookBuildingStats: (etoId: string, stats: any) =>
+  setBookBuildingStats: (etoId: string, stats: IBookBuildingStatsState) =>
     createAction(SET_BOOKBUILDING_FLOW_STATS, { stats, etoId }),
   loadPledge: (etoId: string) => createAction(LOAD_PLEDGE, { etoId }),
-  savePledge: (etoId: string, pledge: IPledge) => createAction(SAVE_PLEDGE, { etoId, pledge }),
+  savePledge: (etoId: string, pledge: IPledgeState) => createAction(SAVE_PLEDGE, { etoId, pledge }),
   deletePledge: (etoId: string) => createAction(DELETE_PLEDGE, { etoId }),
-  setPledge: (etoId: string, pledge?: IPledge) => createAction(SET_PLEDGE, { etoId, pledge }),
+  setPledge: (etoId: string, pledge?: IPledgeState) => createAction(SET_PLEDGE, { etoId, pledge }),
   bookBuildingStartWatch: (etoId: string) => createAction(WATCH_BOOKBUILDING_FLOW_STATS, { etoId }),
   bookBuildingStopWatch: (etoId: string) =>
     createAction(UNWATCH_BOOKBUILDING_FLOW_STATS, { etoId }),

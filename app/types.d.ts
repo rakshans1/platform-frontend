@@ -102,3 +102,5 @@ export type TFormikConnect = {
 };
 
 export type TElementRef<T> = null | T;
+
+export type NumericString = Opaque<"NumericString", string>;

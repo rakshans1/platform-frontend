@@ -32,7 +32,6 @@ import "font-awesome/scss/font-awesome.scss";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import "./styles/overrides.scss";
-import {stringifierMiddleware} from "./middlewares/stringifierMiddleware";
 
 function renderApp(
   store: Store<IAppState>,
@@ -70,7 +69,6 @@ function startupApp(history: History): { store: Store<IAppState>; container: Con
 
   const middleware = applyMiddleware(
     ...compact([
-      stringifierMiddleware,
       routerMiddleware(history),
       sagaMiddleware,
       process.env.NODE_ENV === "production" && reduxLogger(logger),

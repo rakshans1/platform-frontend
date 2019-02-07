@@ -1,12 +1,6 @@
-import { IUser } from "../../lib/api/users/interfaces";
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
-
-export interface IAuthState {
-  user?: IUser;
-  jwt?: string;
-  currentAgreementHash?: string;
-}
+import {IAuthState } from './interfaces'
 
 const authInitialState: IAuthState = {};
 

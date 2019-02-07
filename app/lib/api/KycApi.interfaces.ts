@@ -8,10 +8,7 @@ import {
   restrictedCountry,
 } from "./util/schemaHelpers";
 
-export enum EKycRequestType {
-  BUSINESS = "business",
-  INDIVIDUAL = "individual",
-}
+
 
 export interface IKycPerson {
   firstName?: string;

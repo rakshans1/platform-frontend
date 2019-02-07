@@ -1,12 +1,12 @@
-import { TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfaces";
 import { Dictionary } from "../../types";
 import { createAction, createActionFactory } from "../actionsUtils";
-import { ICalculatedContribution, IInvestorTicket, ITokenDisbursal } from "./types";
+import { ICalculatedContribution, IInvestorTicket, ITokenDisbursal } from "./interfaces";
+import {TPublicEtoDataState} from "../eto-flow/interfaces";
 
 export const investorEtoTicketActions = {
   // public actions
-  loadEtoInvestorTicket: (eto: TEtoSpecsData) => createAction("INVESTOR_TICKET_LOAD", { eto }),
-  loadInvestorTickets: (etos: Dictionary<TEtoSpecsData>) =>
+  loadEtoInvestorTicket: (eto: TPublicEtoDataState) => createAction("INVESTOR_TICKET_LOAD", { eto }),
+  loadInvestorTickets: (etos: Dictionary<TPublicEtoDataState>) =>
     createAction("INVESTOR_TICKET_ETOS_LOAD", { etos }),
   claim: (etoId: string) => createAction("INVESTOR_TICKET_CLAIM", { etoId }),
   loadClaimables: createActionFactory("INVESTOR_CLAIMABLES_LOAD"),

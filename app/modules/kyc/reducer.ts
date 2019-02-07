@@ -1,60 +1,8 @@
 import { filter, findIndex, isNil, omitBy } from "lodash";
 
-import {
-  IKycBeneficialOwner,
-  IKycBusinessData,
-  IKycFileInfo,
-  IKycIndividualData,
-  IKycLegalRepresentative,
-  IKycRequestState,
-} from "../../lib/api/KycApi.interfaces";
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
-import { TClaims } from "./types";
-
-export interface IKycState {
-  // individual
-  individualRequestState?: IKycRequestState;
-  individualRequestStateLoading?: boolean;
-  individualRequestError?: string;
-
-  individualData?: IKycIndividualData;
-  individualDataLoading?: boolean;
-
-  individualFilesLoading?: boolean;
-  individualFileUploading?: boolean;
-  individualFiles: IKycFileInfo[];
-
-  // business
-  businessRequestState?: IKycRequestState;
-  businessRequestStateLoading?: boolean;
-  businessRequestError?: string;
-
-  businessData?: IKycBusinessData;
-  businessDataLoading?: boolean;
-
-  businessFilesLoading?: boolean;
-  businessFileUploading?: boolean;
-  businessFiles: IKycFileInfo[];
-
-  // legal representatives
-  legalRepresentative?: IKycLegalRepresentative;
-  legalRepresentativeLoading?: boolean;
-  legalRepresentativeFilesLoading?: boolean;
-  legalRepresentativeFileUploading?: boolean;
-  legalRepresentativeFiles: IKycFileInfo[];
-
-  // beneficial owners
-  loadingBeneficialOwners?: boolean;
-  loadingBeneficialOwner?: boolean;
-  beneficialOwners: IKycBeneficialOwner[];
-  beneficialOwnerFilesLoading: { [id: string]: boolean };
-  beneficialOwnerFileUploading: { [id: string]: boolean };
-  beneficialOwnerFiles: { [id: string]: IKycFileInfo[] };
-
-  // contract claims
-  claims: TClaims | undefined;
-}
+import {IKycState} from './interfaces'
 
 const kycInitialState: IKycState = {
   individualFiles: [],

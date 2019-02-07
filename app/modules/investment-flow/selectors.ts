@@ -10,7 +10,7 @@ import { EETOStateOnChain } from "../public-etos/types";
 import { EValidationState } from "../tx/sender/reducer";
 import { selectTxValidationState } from "../tx/sender/selectors";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
-import {EBankTransferFlowState, EInvestmentCurrency, EInvestmentErrorState, EInvestmentType} from "./reducer";
+import {EBankTransferFlowState, EInvestmentCurrency, EInvestmentErrorState, EInvestmentType} from "./interfaces";
 
 // State Selectors
 
@@ -83,7 +83,7 @@ export const selectBankTransferReferenceCode = (state: IAppState):string | null 
     : null;
   const etoId = selectInvestmentEtoId(state);
   if(etoId && reference) {
-    const date = moment().format("DD-MM-YYYY");
+    const date = moment().format("DD-MM-YYYY"); //FIXME this is not utc!
 
     let code = `Investment Amount, Reservation and Acquisition Agreement from ${date} NF ${addressHex} REF ${reference}`;
     if (selectIsBankTransferGasStipend(state)) {

@@ -1,12 +1,7 @@
-import { GasModelShape } from "../../lib/api/GasApi";
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
+import {IGasState} from "./interfaces";
 
-export interface IGasState {
-  loading: boolean;
-  gasPrice?: GasModelShape;
-  error?: string;
-}
 
 export const gasInitialState: IGasState = {
   loading: false,

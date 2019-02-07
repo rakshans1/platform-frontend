@@ -1,16 +1,9 @@
-import { IEtoFiles } from "../../lib/api/eto/EtoFileApi.interfaces";
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
+import {IEtoDocumentsState} from './interfaces'
 
-export interface IEtoDocumentState {
-  loading: boolean;
-  saving: boolean;
-  showIpfsModal: boolean;
-  etoFileData: IEtoFiles;
-  uploadAction?: () => void;
-}
 
-export const etoFlowInitialState: IEtoDocumentState = {
+export const etoFlowInitialState: IEtoDocumentsState = {
   loading: false,
   saving: false,
   etoFileData: {
@@ -19,10 +12,10 @@ export const etoFlowInitialState: IEtoDocumentState = {
   showIpfsModal: false,
 };
 
-export const etoDocumentReducer: AppReducer<IEtoDocumentState> = (
+export const etoDocumentReducer: AppReducer<IEtoDocumentsState> = (
   state = etoFlowInitialState,
   action,
-): DeepReadonly<IEtoDocumentState> => {
+): DeepReadonly<IEtoDocumentsState> => {
   switch (action.type) {
     case "ETO_DOCUMENTS_LOAD_FILE_DATA_START":
       return {

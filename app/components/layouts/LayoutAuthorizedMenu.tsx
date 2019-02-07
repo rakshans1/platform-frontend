@@ -11,7 +11,7 @@ import { EUserType } from "../../lib/api/users/interfaces";
 import { actions } from "../../modules/actions";
 import { selectUserType } from "../../modules/auth/selectors";
 import { selectShouldEtoDataLoad } from "../../modules/eto-flow/selectors";
-import { selectGenericModalIsOpen } from "../../modules/generic-modal/reducer";
+import { selectGenericModalIsOpen } from "../../modules/generic-modal/selectors";
 import { selectIsClaimsVerified } from "../../modules/kyc/selectors";
 import { selectIsActionRequiredSettings } from "../../modules/notifications/selectors";
 import { appConnect } from "../../store";

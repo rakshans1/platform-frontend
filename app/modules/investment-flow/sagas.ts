@@ -182,14 +182,14 @@ function calculateInvestmentError(state: IAppState): EInvestmentErrorState | und
     return;
   }
 }
-//todo move debounce, input validation etc to the component
+//TODO move debounce, input validation etc to the component
 function* validateAndCalculateInputs({ contractsService }: TGlobalDependencies): any {
   // debounce validation
   yield delay(300);
 
   let state: IAppState = yield select();
-  const eto = selectPublicEtoById(state, state.investmentFlow.etoId);
-  const value = state.investmentFlow.euroValueUlps;
+  const eto = state.investmentFlow.etoId && selectPublicEtoById(state, state.investmentFlow.etoId);
+  const value = selectInvestmentEurValueUlps(state); //bn
   if (value && eto) {
     const etoContract: ETOCommitment = yield contractsService.getETOCommitmentContract(eto.etoId);
     if (etoContract) {
@@ -246,54 +246,56 @@ export function* onInvestmentTxModalHide(): any {
 function* getActiveInvestmentTypes(): any {
   const state: IAppState = yield select();
   const etoId = selectInvestmentEtoId(state);
-  const eto = selectEtoWithCompanyAndContractById(state, etoId);
-  const etoState = selectEtoOnChainStateById(state, etoId);
+  if(etoId){
+    const eto = etoId && selectEtoWithCompanyAndContractById(state, etoId);//null
+    const etoState = etoId && selectEtoOnChainStateById(state, etoId);//null
 
-  let activeTypes: EInvestmentType[] = [
-    EInvestmentType.InvestmentWallet,
-    EInvestmentType.BankTransfer,
-  ];
+    let activeTypes: EInvestmentType[] = [
+      EInvestmentType.InvestmentWallet,
+      EInvestmentType.BankTransfer,
+    ];
 
-  // no public bank transfer 3 days before eto end
-  const etoEndDate = eto && eto.contract && eto.contract.startOfStates[EETOStateOnChain.Signing];
-  if (
-    etoState === EETOStateOnChain.Public &&
-    etoEndDate &&
-    isLessThanNHours(new Date(), etoEndDate, HOURS_TO_DISABLE_BANK_TRANSFER)
-  ) {
-    activeTypes.splice(1); // remove bank transfer
-  }
+    // no public bank transfer 3 days before eto end
+    const etoEndDate = eto && eto.contract && eto.contract.startOfStates[EETOStateOnChain.Signing];
+    if (
+      etoState === EETOStateOnChain.Public &&
+      etoEndDate &&
+      isLessThanNHours(new Date(), etoEndDate, HOURS_TO_DISABLE_BANK_TRANSFER) //FIXME this is not UTC
+    ) {
+      activeTypes.splice(1); // remove bank transfer
+    }
 
-  // no whitelist bank transfer 3 days before public eto
-  const etoEndWhitelistDate =
-    eto && eto.contract && eto.contract.startOfStates[EETOStateOnChain.Public];
-  if (
-    etoState === EETOStateOnChain.Whitelist &&
-    etoEndWhitelistDate &&
-    isLessThanNHours(new Date(), etoEndWhitelistDate, HOURS_TO_DISABLE_BANK_TRANSFER)
-  ) {
-    activeTypes.splice(1); // remove bank transfer
-  }
+    // no whitelist bank transfer 3 days before public eto
+    const etoEndWhitelistDate =
+      eto && eto.contract && eto.contract.startOfStates[EETOStateOnChain.Public];
+    if (
+      etoState === EETOStateOnChain.Whitelist &&
+      etoEndWhitelistDate &&
+      isLessThanNHours(new Date(), etoEndWhitelistDate, HOURS_TO_DISABLE_BANK_TRANSFER) //FIXME this is not UTC
+    ) {
+      activeTypes.splice(1); // remove bank transfer
+    }
 
-  // no regular investment if not whitelisted in pre eto
-  if (etoState === EETOStateOnChain.Whitelist && !selectIsWhitelisted(state, etoId)) {
-    activeTypes = [];
-  }
+    // no regular investment if not whitelisted in pre eto
+    if (etoState === EETOStateOnChain.Whitelist && !selectIsWhitelisted(state, etoId)) {
+      activeTypes = [];
+    }
 
-  // only ICBM investment if balance available
-  if (compareBigNumbers(selectLockedEuroTokenBalance(state.wallet), 0) > 0) {
-    activeTypes.unshift(EInvestmentType.ICBMnEuro);
-  }
-  if (compareBigNumbers(selectLockedEtherBalance(state.wallet), 0) > 0) {
-    activeTypes.unshift(EInvestmentType.ICBMEth);
-  }
+    // only ICBM investment if balance available
+    if (compareBigNumbers(selectLockedEuroTokenBalance(state.wallet), 0) > 0) {
+      activeTypes.unshift(EInvestmentType.ICBMnEuro);
+    }
+    if (compareBigNumbers(selectLockedEtherBalance(state.wallet), 0) > 0) {
+      activeTypes.unshift(EInvestmentType.ICBMEth);
+    }
 
-  yield put(actions.investmentFlow.setActiveInvestmentTypes(activeTypes));
+    yield put(actions.investmentFlow.setActiveInvestmentTypes(activeTypes));
 
-  // guarantee that current type is inside active types.
-  const currentType = selectInvestmentType(state);
-  if (currentType && !activeTypes.includes(currentType)) {
-    yield put(actions.investmentFlow.selectInvestmentType(activeTypes[0]));
+    // guarantee that current type is inside active types.
+    const currentType = selectInvestmentType(state);
+    if (currentType && !activeTypes.includes(currentType)) {
+      yield put(actions.investmentFlow.selectInvestmentType(activeTypes[0]));
+    }
   }
 }
 

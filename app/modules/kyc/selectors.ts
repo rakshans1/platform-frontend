@@ -1,13 +1,8 @@
 import { createSelector } from "reselect";
 
-import {
-  EKycRequestType,
-  ERequestOutsourcedStatus,
-  ERequestStatus,
-} from "../../lib/api/KycApi.interfaces";
 import { IAppState } from "../../store";
 import { DeepReadonly } from "../../types";
-import { IKycState } from "./reducer";
+import { IKycState, EKycRequestType, ERequestStatus, ERequestOutsourcedStatus } from "./interfaces";
 
 export const selectKycRequestStatus = (state: IAppState): ERequestStatus | undefined => {
   const userKycType = selectKycRequestType(state.kyc);

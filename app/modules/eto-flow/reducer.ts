@@ -1,6 +1,6 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
-import { IEtoFlowState } from "./types";
+import { IEtoFlowState } from "./interfaces";
 
 export const etoFlowInitialState: IEtoFlowState = {
   etoPreviewCode: undefined,

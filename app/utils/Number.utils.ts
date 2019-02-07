@@ -2,7 +2,6 @@ import BigNumber from "bignumber.js";
 import { curry } from "lodash/fp";
 
 import { Q18 } from "../config/constants";
-import { TBigNumberVariant } from "../lib/web3/types";
 import { invariant } from "./invariant";
 
 export function isZero(value: string): boolean {
@@ -27,7 +26,7 @@ export function formatThousands(value?: string): string {
   }
   return formattedBeforeDot;
 }
-//FIXME find out what it does
+//FIXME find out what it does and rename it to be understandable
 export function convertToBigInt(value: BigNumber, currencyDecimals?: number): BigNumber {
   const q = currencyDecimals ? new BigNumber(10).pow(currencyDecimals) : Q18;
   // const moneyInWei = q.mul(value);

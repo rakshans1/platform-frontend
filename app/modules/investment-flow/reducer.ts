@@ -2,42 +2,7 @@ import { cryptoRandomString } from "../../lib/dependencies/cryptoRandomString";
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 
-export enum EInvestmentType {
-  InvestmentWallet = "INVESTMENT_WALLET",
-  ICBMEth = "ICBM_ETH",
-  ICBMnEuro = "ICBM_NEURO",
-  BankTransfer = "BANK_TRANSFER",
-}
-
-export enum EInvestmentCurrency {
-  Ether = "ETH",
-  Euro = "EUR",
-}
-
-export enum EInvestmentErrorState {
-  AboveMaximumTicketSize = "above_maximum_ticket_size",
-  BelowMinimumTicketSize = "below_minimum_ticket_size",
-  ExceedsTokenAmount = "exceeds_token_amount",
-  ExceedsWalletBalance = "exceeds_wallet_balance",
-}
-
-export enum EBankTransferFlowState {
-  Details = "details",
-  Summary = "summary",
-}
-
-export interface IInvestmentFlowState {
-  etoId: string | null;
-  euroValueUlps: string | null;
-  ethValueUlps: string | null;
-  investmentType?: EInvestmentType;
-  activeInvestmentTypes: EInvestmentType[];
-  errorState?: EInvestmentErrorState;
-  isValidatedInput: boolean;
-  bankTransferFlowState?: EBankTransferFlowState;
-  bankTransferGasStipend?: boolean;
-  bankTransferReference: string | null;
-}
+import {IInvestmentFlowState, EInvestmentType} from './interfaces'
 
 export const investmentFlowInitialState: IInvestmentFlowState = {
   etoId: null,

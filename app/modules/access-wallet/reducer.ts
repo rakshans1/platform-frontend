@@ -1,13 +1,6 @@
-import { TMessage } from "../../components/translatedMessages/utils";
 import { AppReducer } from "../../store";
-import { DeepReadonly } from "../../types";
+import { ISignMessageModalState } from './interfaces'
 
-export interface ISignMessageModalState {
-  isModalOpen: boolean;
-  errorMessage?: DeepReadonly<TMessage>;
-  modalTitle?: DeepReadonly<TMessage>;
-  modalMessage?: DeepReadonly<TMessage>;
-}
 
 const initialState: ISignMessageModalState = {
   isModalOpen: false,

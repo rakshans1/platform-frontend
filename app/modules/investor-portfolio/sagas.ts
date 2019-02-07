@@ -1,5 +1,6 @@
 import { filter, map } from "lodash/fp";
 import { all, fork, put, select } from "redux-saga/effects";
+import BigNumber from "bignumber.js";
 
 import { ECurrency } from "../../components/shared/Money";
 import { InvestorPortfolioMessage } from "../../components/translatedMessages/messages";
@@ -10,7 +11,6 @@ import { IUser } from "../../lib/api/users/interfaces";
 import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
 import { promisify } from "../../lib/contracts/typechain-runtime";
 import { IAppState } from "../../store";
-import { convertToBigInt } from "../../utils/Number.utils";
 import { actions, TAction } from "../actions";
 import { selectUser } from "../auth/selectors";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
@@ -70,7 +70,7 @@ export function* loadInvestorTicket(
 export function* loadComputedContributionFromContract(
   { contractsService }: TGlobalDependencies,
   eto: TPublicEtoData,
-  amountEuroUlps?: string,
+  amountEuroUlps?: BigNumber,
   isICBM = false,
 ): any {
   if (eto.state !== EEtoState.ON_CHAIN) return;
@@ -80,7 +80,7 @@ export function* loadComputedContributionFromContract(
 
   if (etoContract) {
     const newInvestorContributionEurUlps =
-      amountEuroUlps || convertToBigInt((eto.minTicketEur && eto.minTicketEur.toString()) || "0");
+      amountEuroUlps || eto.minTicketEur && eto.minTicketEur.toString() || new BigNumber("0"); //fixme <--------------
 
     const from = selectEthereumAddressWithChecksum(state);
 

@@ -1,7 +1,7 @@
 import { createAction } from "../actionsUtils";
-import { IPlatformTermsConstants } from "./reducer";
+import { IPlatformTermsConstantsState } from "./interfaces";
 
 export const contractsActions = {
-  setPlatformTermConstants: (platformTermsConstants: IPlatformTermsConstants) =>
+  setPlatformTermConstants: (platformTermsConstants: IPlatformTermsConstantsState) =>
     createAction("CONTRACTS_SET_PLATFORM_TERM_CONSTANTS", { platformTermsConstants }),
 };
