@@ -1,14 +1,14 @@
 import { AppReducer } from "../../../store";
-import {ITxSenderState, ETxSenderState} from './interfaces'
+import {IStateTxSender, ETxSenderState} from './interfaces'
 
-const initialState: ITxSenderState = {
+const initialState: IStateTxSender = {
   state: ETxSenderState.UNINITIALIZED,
 };
 
-export const txSenderReducer: AppReducer<ITxSenderState> = (
+export const txSenderReducer: AppReducer<IStateTxSender> = (
   state = initialState,
   action,
-): ITxSenderState => {
+): IStateTxSender => {
   switch (action.type) {
     // Modal related Actions
     case "TX_SENDER_SHOW_MODAL":

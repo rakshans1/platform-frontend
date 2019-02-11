@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 
-import { TClaims } from "./types";
+import { TClaims } from "./interfaces";
 
 export function deserializeClaims(claims: string): TClaims {
   const claimsN = new BigNumber(claims, 16);

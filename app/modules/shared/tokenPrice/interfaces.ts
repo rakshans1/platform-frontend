@@ -1,12 +1,12 @@
 import {NumericString} from "../../../types";
 
-export interface ITokenPriceState {
+export interface IStateTokenPrice {
   loading: boolean;
   error?: string;
-  tokenPriceData?: ITokenPriceDataState;
+  tokenPriceData?: IStateTokenPriceData;
 }
 
-export interface ITokenPriceDataState {
+export interface IStateTokenPriceData {
   etherPriceEur: NumericString;
   neuPriceEur: NumericString;
   eurPriceEther: NumericString;

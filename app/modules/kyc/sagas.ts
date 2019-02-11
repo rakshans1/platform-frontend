@@ -16,15 +16,15 @@ import {
   IKycIndividualData,
   IKycLegalRepresentative,
   IKycRequestState,
-} from "../../lib/api/KycApi.interfaces";
-import { IUser } from "../../lib/api/users/interfaces";
+} from "./interfaces";
+import { IStateUser } from "../auth/interfaces";
 import { IdentityRegistry } from "../../lib/contracts/IdentityRegistry";
 import { IAppAction, IAppState } from "../../store";
 import { actions, TAction } from "../actions";
 import { ensurePermissionsArePresent } from "../auth/jwt/sagas";
 import { selectUser } from "../auth/selectors";
 import { displayErrorModalSaga } from "../generic-modal/sagas";
-import { EInitType } from "../init/reducer";
+import { EInitType } from "../init/interfaces";
 import { selectIsSmartContractInitDone } from "../init/selectors";
 import { neuCall, neuTakeEvery, neuTakeOnly } from "../sagasUtils";
 import {
@@ -117,7 +117,7 @@ function* kycRefreshWidgetSagaWatcherStop(): any {
 function* loadIdentityClaim({ contractsService }: TGlobalDependencies): Iterator<any> {
   const identityRegistry: IdentityRegistry = contractsService.identityRegistry;
 
-  const loggedInUser: IUser = yield select<IAppState>(state => selectUser(state.auth));
+  const loggedInUser: IStateUser = yield select<IAppState>(state => selectUser(state.auth));
 
   const claims: string = yield identityRegistry.getClaims(loggedInUser.userId);
 

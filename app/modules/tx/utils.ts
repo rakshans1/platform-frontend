@@ -15,7 +15,7 @@ export const calculateGasPriceWithOverhead = (gasPrice: BigNumber):BigNumber =>
 export const calculateGasLimitWithOverhead = (gasLimit: BigNumber):BigNumber =>
   gasLimit.mul(GAS_LIMIT_MULTIPLIER);
 
-export const encodeTransaction = (txData: Partial<TxData>) => { //FIXME todo
+export const encodeTransaction = (txData: Partial<TxData>) => {
   return {
     from: addHexPrefix(txData.from!),
     to: addHexPrefix(txData.to!),

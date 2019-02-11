@@ -12,6 +12,7 @@ import {
   selectTotalEuroBalance,
   selectTotalEuroTokenBalance,
 } from "./selectors";
+import {NumericString} from "../../types";
 
 describe("Wallet > selectors", () => {
   it("should calculate total value correctly", () => {
@@ -20,36 +21,36 @@ describe("Wallet > selectors", () => {
         loading: false,
         data: {
           etherTokenLockedWallet: {
-            LockedBalance: Q18.mul(23.11).toString(),
-            neumarksDue: "0",
+            LockedBalance: Q18.mul(23.11).toString() as NumericString,
+            neumarksDue: "0" as NumericString,
             unlockDate: "0",
           },
           euroTokenLockedWallet: {
-            LockedBalance: Q18.mul(18.11).toString(),
-            neumarksDue: "0",
+            LockedBalance: Q18.mul(18.11).toString() as NumericString,
+            neumarksDue: "0" as NumericString,
             unlockDate: "0",
           },
 
           etherTokenICBMLockedWallet: {
-            LockedBalance: Q18.mul(50).toString(),
-            neumarksDue: "0",
+            LockedBalance: Q18.mul(50).toString() as NumericString,
+            neumarksDue: "0" as NumericString,
             unlockDate: "0",
           },
           euroTokenICBMLockedWallet: {
-            LockedBalance: Q18.mul(5).toString(),
-            neumarksDue: "0",
+            LockedBalance: Q18.mul(5).toString() as NumericString,
+            neumarksDue: "0" as NumericString,
             unlockDate: "0",
           },
-          etherTokenBalance: Q18.mul(10).toString(),
-          euroTokenBalance: Q18.mul(10.12).toString(),
-          etherBalance: Q18.mul(100).toString(),
-          neuBalance: Q18.mul(1000).toString(),
+          etherTokenBalance: Q18.mul(10).toString() as NumericString,
+          euroTokenBalance: Q18.mul(10.12).toString() as NumericString,
+          etherBalance: Q18.mul(100).toString() as NumericString,
+          neuBalance: Q18.mul(1000).toString() as NumericString,
         },
       },
       tokenPrice: {
         tokenPriceData: {
-          etherPriceEur: "10",
-          neuPriceEur: "10000",
+          etherPriceEur: "10" as NumericString,
+          neuPriceEur: "10000" as NumericString,
         },
       },
     };
@@ -89,7 +90,7 @@ describe("Wallet > selectors", () => {
         .toString(),
     );
 
-    expect(selectNeuBalance(state.wallet)).to.eq(Q18.mul(1000).toString());
+    expect(selectNeuBalance(state.wallet)).to.eq(Q18.mul(1000));
     expect(selectNeuBalanceEuroAmount(fullStateMock)).to.eq(
       Q18.mul(1000)
         .mul(10000)

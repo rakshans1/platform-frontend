@@ -25,7 +25,7 @@ export enum EBankTransferFlowState {
   Summary = "summary",
 }
 
-export interface IInvestmentFlowState {
+export interface IStateInvestmentFlow {
   etoId: string | null;
   euroValueUlps: NumericString | null;
   ethValueUlps: NumericString | null;

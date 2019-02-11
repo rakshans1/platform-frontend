@@ -1,4 +1,3 @@
-import { BigNumber } from "bignumber.js";
 import { addHexPrefix } from "ethereumjs-util";
 import { call, put, race, select, take } from "redux-saga/effects";
 
@@ -7,7 +6,7 @@ import { TPendingTxs, TxWithMetadata } from "../../../lib/api/users/interfaces";
 import { BrowserWalletError } from "../../../lib/web3/BrowserWallet";
 import { LedgerContractsDisabledError, LedgerError } from "../../../lib/web3/LedgerWallet";
 import { LightError } from "../../../lib/web3/LightWallet";
-import { ITxData } from "../../../lib/web3/types";
+import { IBlTxData } from "../../../lib/web3/types";
 import {
   InvalidChangeIdError,
   InvalidRlpDataError,
@@ -21,7 +20,7 @@ import { SignerError, SignerRejectConfirmationError } from "../../../lib/web3/We
 import { IAppState } from "../../../store";
 import { connectWallet } from "../../access-wallet/sagas";
 import { actions } from "../../actions";
-import { IGasState } from "../../gas/reducer";
+import { IBlGasModel } from "../../gas/interfaces";
 import { selectGasPrice } from "../../gas/selectors";
 import { neuCall, neuRepeatIf } from "../../sagasUtils";
 import { ETxSenderType } from "../interfaces";
@@ -32,7 +31,7 @@ import {
   updatePendingTxs,
 } from "../monitor/sagas";
 import { validateGas } from "../validator/sagas";
-import { ETransactionErrorType } from "./reducer";
+import { ETransactionErrorType } from "./interfaces";
 import { selectTxDetails, selectTxType } from "./selectors";
 
 export interface ITxSendParams {
@@ -44,7 +43,7 @@ export interface ITxSendParams {
 }
 
 export function* txSendSaga({ type, transactionFlowGenerator, extraParam }: ITxSendParams): any {
-  const gasPrice: IGasState = yield select(selectGasPrice);
+  const gasPrice: IBlGasModel = yield select(selectGasPrice);
 
   if (!gasPrice) {
     yield take("GAS_API_LOADED");
@@ -147,7 +146,7 @@ function* ensureNoPendingTx({ logger }: TGlobalDependencies, type: ETxSenderType
 }
 
 function* sendTxSubSaga({ web3Manager, apiUserService }: TGlobalDependencies): any {
-  const txData: ITxData = yield select(selectTxDetails);
+  const txData: IBlTxData = yield select(selectTxDetails);
   const type = yield select(selectTxType);
   if (!txData) {
     throw new Error("Tx data is not defined");
@@ -161,13 +160,13 @@ function* sendTxSubSaga({ web3Manager, apiUserService }: TGlobalDependencies): a
     const txWithMetadata: TxWithMetadata = {
       transaction: {
         from: addHexPrefix(txData.from),
-        gas: addHexPrefix(new BigNumber(txData.gas).toString(16)),
-        gasPrice: addHexPrefix(new BigNumber(txData.gasPrice).toString(16)),
+        gas: addHexPrefix(txData.gas.toString(16)),
+        gasPrice: addHexPrefix(txData.gasPrice.toString(16)),
         hash: addHexPrefix(txHash),
         input: addHexPrefix(txData.data || "0x0"),
         nonce: addHexPrefix("0"),
         to: addHexPrefix(txData.to),
-        value: addHexPrefix(new BigNumber(txData.value).toString(16)),
+        value: addHexPrefix(txData.value.toString(16)),
         blockHash: undefined,
         blockNumber: undefined,
         chainId: undefined,

@@ -5,7 +5,7 @@ import * as Web3 from "web3";
 import { EventEmitter } from "events";
 import { symbols } from "../../di/symbols";
 import { calculateGasLimitWithOverhead, encodeTransaction } from "../../modules/tx/utils";
-import { EthereumNetworkId } from "../../types";
+import {EthereumNetworkId, NumericString} from "../../types";
 import {
   AsyncIntervalScheduler,
   AsyncIntervalSchedulerFactoryType,
@@ -124,8 +124,8 @@ export class Web3Manager extends EventEmitter {
     return this.internalWeb3Adapter.estimateGas(encodedTxData);
   }
 
-  public async estimateGasWithOverhead(txData: Partial<Web3.TxData>): Promise<string> {
-    const gas = await this.estimateGas(txData);
+  public async estimateGasWithOverhead(txData: Partial<Web3.TxData>): Promise<NumericString> {
+    const gas = await this.estimateGas(txData); //FIXME shouldn't this be a BN?
     if (gas < DEFAULT_LOWER_GAS_LIMIT || gas > DEFAULT_UPPER_GAS_LIMIT) {
       this.logger.error(
         new Error(
@@ -135,10 +135,10 @@ export class Web3Manager extends EventEmitter {
         ),
       );
       // No need for overhead in this case
-      return DEFAULT_UPPER_GAS_LIMIT.toString();
+      return DEFAULT_UPPER_GAS_LIMIT.toString() as NumericString;
     }
 
-    return calculateGasLimitWithOverhead(gas);
+    return calculateGasLimitWithOverhead(new BigNumber(gas)).toString() as NumericString;
   }
 
   private watchConnection = async () => {

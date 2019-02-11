@@ -1,10 +1,10 @@
 import BigNumber from "bignumber.js";
 import { put, select, take } from "redux-saga/effects";
-import { Q18 } from "./../../../../config/constants";
-import { TAction } from "./../../../actions";
+import { Q18 } from "../../../../config/constants";
+import { TAction } from "../../../actions";
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
-import { ITxData } from "../../../../lib/web3/types";
+import { IStateTxData} from "../../../../lib/web3/types";
 import { actions } from "../../../actions";
 import { selectStandardGasPriceWithOverHead } from "../../../gas/selectors";
 import { neuCall } from "../../../sagasUtils";
@@ -12,8 +12,9 @@ import { selectEtherTokenBalanceAsBigNumber } from "../../../wallet/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 import { IWithdrawDraftType } from "../../interfaces";
 import { calculateGasLimitWithOverhead, EMPTY_DATA } from "../../utils";
+import {NumericString} from "../../../../types";
 
-const SIMPLE_WITHDRAW_TRANSACTION = "21000";
+const SIMPLE_WITHDRAW_TRANSACTION = new BigNumber("21000");
 
 export function* generateEthWithdrawTransaction(
   { contractsService, web3Manager }: TGlobalDependencies,
@@ -29,13 +30,13 @@ export function* generateEthWithdrawTransaction(
 
   if (etherTokenBalance.isZero()) {
     // transaction can be fully covered ether balance
-    const txDetails: Partial<ITxData> = {
+    const txDetails: Partial<IStateTxData> = {
       to,
       from,
       data: EMPTY_DATA,
-      value: weiValue.toString(),
+      value: weiValue.toString() as NumericString,
       gasPrice: gasPriceWithOverhead,
-      gas: calculateGasLimitWithOverhead(SIMPLE_WITHDRAW_TRANSACTION),
+      gas: calculateGasLimitWithOverhead(SIMPLE_WITHDRAW_TRANSACTION).toString() as NumericString,
     };
     return txDetails;
   } else {
@@ -44,11 +45,11 @@ export function* generateEthWithdrawTransaction(
 
     const difference = weiValue.sub(etherTokenBalance);
 
-    const txDetails: Partial<ITxData> = {
+    const txDetails: Partial<IStateTxData> = {
       to: contractsService.etherToken.address,
       from,
       data: txInput,
-      value: difference.comparedTo(0) > 0 ? difference.toString() : "0",
+      value: (difference.comparedTo(0) > 0 ? difference.toString() : "0") as NumericString,
       gasPrice: gasPriceWithOverhead,
     };
     const estimatedGasWithOverhead = yield web3Manager.estimateGasWithOverhead(txDetails);
@@ -66,7 +67,7 @@ export function* ethWithdrawFlow(_: TGlobalDependencies): any {
     actions.txSender.txSenderContinueToSummary({
       txData: {
         ...txDataFromUser,
-        value: Q18.mul(txDataFromUser.value!).toString(),
+        value: Q18.mul(txDataFromUser.value!).toString() as NumericString,
       },
     }),
   );

@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import { symbols } from "../../di/symbols";
 import { invariant } from "../../utils/invariant";
-import { EUserType } from "../api/users/interfaces";
+import { EUserType } from "../../modules/auth/interfaces";
 import { ILogger } from "../dependencies/logger";
 import { ObjectStorage } from "./ObjectStorage";
 import { Storage } from "./Storage";

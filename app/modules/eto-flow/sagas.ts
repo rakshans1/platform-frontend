@@ -8,17 +8,19 @@ import { TGlobalDependencies } from "../../di/setupBindings";
 import { IHttpResponse } from "../../lib/api/client/IHttpClient";
 import {
   EEtoState,
-  TCompanyEtoData,
-  TEtoSpecsData,
+  // TEtoSpecsData,
   TPartialEtoSpecData,
 } from "../../lib/api/eto/EtoApi.interfaces";
 import { IAppState } from "../../store";
 import { actions, TAction } from "../actions";
 import { ensurePermissionsArePresent } from "../auth/jwt/sagas";
-import { loadEtoContact } from "../public-etos/sagas";
+import { loadEtoContract } from "../public-etos/sagas";
 import { neuCall, neuTakeEvery, neuTakeLatest } from "../sagasUtils";
 import { selectIsNewPreEtoStartDateValid, selectIssuerCompany, selectIssuerEto } from "./selectors";
 import { bookBuildingStatsToCsvString, createCsvDataUri, downloadFile } from "./utils";
+import * as companyEtoDataInterfaces from "../eto-flow/interfaces/CompanyEtoData";
+import * as publicEtoInterfaces from '../eto-flow/interfaces/PublicEtoData';
+import {convert} from "../../components/eto/utils";
 
 export function* loadIssuerEto({
   apiEtoService,
@@ -26,13 +28,14 @@ export function* loadIssuerEto({
   logger,
 }: TGlobalDependencies): any {
   try {
-    const companyResponse: IHttpResponse<TCompanyEtoData> = yield apiEtoService.getCompany();
-    const company = companyResponse.body;
-    const etoResponse: IHttpResponse<TEtoSpecsData> = yield apiEtoService.getMyEto();
-    const eto = etoResponse.body;
+    const companyResponse: IHttpResponse<companyEtoDataInterfaces.IApiCompanyEtoData> = yield apiEtoService.getCompany();
+    const company = convert(companyResponse.body, companyEtoDataInterfaces.apiToStateConversionSpec);
+
+    const etoResponse: IHttpResponse<publicEtoInterfaces.IApiPublicEtoData> = yield apiEtoService.getMyEto();
+    const eto = convert(etoResponse.body, publicEtoInterfaces.apiToStateConversionSpec);
 
     if (eto.state === EEtoState.ON_CHAIN) {
-      yield neuCall(loadEtoContact, eto);
+      yield neuCall(loadEtoContract, eto);
     }
 
     yield put(actions.publicEtos.setPublicEto({ eto, company }));

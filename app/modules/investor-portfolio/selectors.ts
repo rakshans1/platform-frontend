@@ -5,7 +5,7 @@ import { Q18 } from "../../config/constants";
 import { getShareAndTokenPrice } from "../../lib/api/eto/EtoUtils";
 import { IAppState } from "../../store";
 import { selectPublicEtoById, selectPublicEtos, selectTokenData } from "../public-etos/selectors";
-import { EETOStateOnChain } from "../public-etos/types";
+import { EETOStateOnChain } from "../public-etos/interfaces";
 import { isOnChain } from "../public-etos/utils";
 import { selectLockedWalletConnected } from "../wallet/selectors";
 import { ICalculatedContribution, TETOWithInvestorTicket, TETOWithTokenData } from "./interfaces";
@@ -38,7 +38,7 @@ export const selectEtoWithInvestorTickets = (
   if (etos) {
     return etos
       .filter(isOnChain)
-      .filter(eto => eto.contract.timedState !== EETOStateOnChain.Setup)
+      .filter(eto => eto.contract && eto.contract.timedState !== EETOStateOnChain.Setup)
       .filter(eto => selectHasInvestorTicket(state, eto.etoId))
       .map(eto => ({
         ...eto,

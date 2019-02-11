@@ -1,11 +1,11 @@
 import { createSelector } from "reselect";
 
 import { ERequestStatus } from "../../lib/api/KycApi.interfaces";
-import { EUserType, IUser } from "../../lib/api/users/interfaces";
+import { EUserType, IStateUser } from "./interfaces";
 import { IAppState } from "../../store";
 import { selectKycRequestStatus } from "../kyc/selectors";
 import { selectIsLightWallet } from "../web3/selectors";
-import { IAuthState } from "./reducer";
+import { IAuthState } from "./interfaces";
 
 export const selectIsAuthorized = (state: IAuthState): boolean => !!(state.jwt && state.user);
 export const selectUserType = (state: IAppState): EUserType | undefined =>
@@ -20,7 +20,7 @@ export const selectVerifiedUserEmail = (state: IAuthState): string | undefined =
 export const selectUnverifiedUserEmail = (state: IAuthState): string | undefined =>
   state.user && state.user.unverifiedEmail;
 
-export const selectUser = (state: IAuthState): IUser | undefined => state.user;
+export const selectUser = (state: IAuthState): IStateUser | undefined => state.user;
 
 export const selectBackupCodesVerified = (state: IAppState): boolean =>
   (!!state.auth.user && !!state.auth.user.backupCodesVerified) || !selectIsLightWallet(state.web3);

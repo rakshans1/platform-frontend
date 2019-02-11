@@ -1,9 +1,10 @@
 import {TPendingTxs} from "../../lib/api/users/interfaces";
+import {NumericString} from "../../types";
 
 export interface IWithdrawDraftType {
   type: ETxSenderType.WITHDRAW;
   to: string;
-  value: string;
+  value: NumericString;
 }
 export interface IInvestmentDraftType {
   type: ETxSenderType.INVEST;

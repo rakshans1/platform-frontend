@@ -1,13 +1,19 @@
 import { find } from "lodash/fp";
+import BigNumber from "bignumber.js";
 
 import { IAppState } from "../../store";
-import { DeepReadonly } from "../../types";
-import { IPublicEtoState, EETOStateOnChain, IEtoTokenData, TEtoWithCompanyAndContract } from "./interfaces";
-import BigNumber from "bignumber.js";
+import {
+  IStatePublicEto,
+  EETOStateOnChain,
+  TStateEtoWithCompanyAndContract,
+  ICalcEtoTokenData
+} from "./interfaces";
+import {IStatePublicEtoData} from "../eto-flow/interfaces/PublicEtoData";
+import {DeepReadonly} from "../../types";
 
 const selectPublicEtosState = (state: IAppState) => state.publicEtos;
 
-const selectEtoPreviewCode = (state: IAppState, etoId: string) => {
+const selectEtoPreviewCode = (state: IAppState, etoId: string):string | undefined => {
   const eto = find(eto => eto!.etoId === etoId, state.publicEtos.publicEtos);
 
   if (eto) {
@@ -27,17 +33,18 @@ export const selectEtoTokenName = (state: IAppState, etoId: string) => {
   return undefined;
 };
 
-export const selectPublicEto = (state: IAppState, previewCode: string) =>
+export const selectPublicEto = (state: IAppState, previewCode: string):IStatePublicEtoData | undefined =>
   state.publicEtos.publicEtos[previewCode];
 
-export const selectPublicEtoById = (state: IAppState, etoId: string):IPublicEtoState | undefined => {
-  return state.publicEtos.publicEtos[selectEtoPreviewCode(state, etoId)!];
+export const selectPublicEtoById = (state: IAppState, etoId: string):DeepReadonly<IStatePublicEtoData> | undefined => {
+  const previewId = selectEtoPreviewCode(state, etoId);
+  return previewId ? state.publicEtos.publicEtos[previewId] : undefined; //previewId may be an empty string too
 };
 
 export const selectEtoWithCompanyAndContract = (
   state: IAppState,
   previewCode: string,
-): TEtoWithCompanyAndContract | undefined => {
+): TStateEtoWithCompanyAndContract | undefined => {
   const publicEtosState = selectPublicEtosState(state);
   const eto = publicEtosState.publicEtos[previewCode];
 
@@ -55,7 +62,7 @@ export const selectEtoWithCompanyAndContract = (
 export const selectEtoWithCompanyAndContractById = (
   state: IAppState,
   etoId: string,
-): TEtoWithCompanyAndContract | undefined => {
+): TStateEtoWithCompanyAndContract | undefined => {
   const previewCode = selectEtoPreviewCode(state, etoId);
 
   if (previewCode) {
@@ -65,7 +72,7 @@ export const selectEtoWithCompanyAndContractById = (
   return undefined;
 };
 
-export const selectPublicEtos = (state: IAppState): TEtoWithCompanyAndContract[] | undefined => {
+export const selectPublicEtos = (state: IAppState): TStateEtoWithCompanyAndContract[] | undefined => {
   const publicEtosState = selectPublicEtosState(state);
 
   if (publicEtosState.displayOrder) {
@@ -102,7 +109,7 @@ export const selectEtoOnChainNextStateStartDate = (
   return undefined;
 };
 
-export const selectEtoWidgetError = (state: DeepReadonly<IPublicEtoState>): boolean | undefined => {
+export const selectEtoWidgetError = (state: IStatePublicEto): boolean | undefined => {
   return state.etoWidgetError;
 };
 
@@ -115,9 +122,9 @@ export const selectEtoOnChainStateById = (
 };
 
 export const selectTokenData = (
-  state: DeepReadonly<IPublicEtoState>,
+  state: IStatePublicEto,
   previewCode: string,
-): IEtoTokenData | undefined => {
+): ICalcEtoTokenData | undefined => {
   const tokenData = state.tokenData[previewCode];
     return tokenData
     ? {

@@ -3,26 +3,27 @@ import {NumericString} from "../../types";
 export interface IWalletState {
   loading: boolean;
   error?: string;
-  data?: IWalletDataState;
+  data?: IStateWalletData;
 }
 
-export interface ILockedWalletState {
+export interface IStateLockedWallet {
   LockedBalance: NumericString;
   neumarksDue: NumericString;
   unlockDate: string;
 }
 
-export interface IWalletDataState {
-  euroTokenLockedWallet: ILockedWalletState;
-  etherTokenLockedWallet: ILockedWalletState;
+export interface IStateWalletData {
+  euroTokenLockedWallet: IStateLockedWallet;
+  etherTokenLockedWallet: IStateLockedWallet;
 
   etherTokenBalance: NumericString;
   euroTokenBalance: NumericString;
   etherBalance: NumericString;
   neuBalance: NumericString;
 
-  euroTokenICBMLockedWallet: ILockedWalletState;
-  etherTokenICBMLockedWallet: ILockedWalletState;
+  euroTokenICBMLockedWallet: IStateLockedWallet;
+  etherTokenICBMLockedWallet: IStateLockedWallet;
   etherTokenUpgradeTarget?: string;
   euroTokenUpgradeTarget?: string;
 }
+

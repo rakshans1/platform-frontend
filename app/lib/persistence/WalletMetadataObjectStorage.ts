@@ -1,4 +1,4 @@
-import { EWalletSubType, EWalletType } from "../../modules/web3/types";
+import { EWalletSubType, EWalletType } from "../../modules/web3/interfaces";
 import { EthereumAddress } from "../../types";
 
 export type TWalletMetadata = ILightWalletMetadata | IBrowserWalletMetadata | ILedgerWalletMetadata;

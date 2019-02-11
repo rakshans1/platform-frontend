@@ -10,7 +10,7 @@ import {
 import { createMessage } from "../../../components/translatedMessages/utils";
 import { CHANGE_EMAIL_PERMISSION } from "../../../config/constants";
 import { TGlobalDependencies } from "../../../di/setupBindings";
-import { IUser, IUserInput } from "../../../lib/api/users/interfaces";
+import { IStateUser, IApiUserInput } from "../../auth/interfaces";
 import { EmailAlreadyExists, UserNotExisting } from "../../../lib/api/users/UsersApi";
 import {
   ILightWalletMetadata,
@@ -43,7 +43,7 @@ import {
   selectLightWalletFromQueryString,
   selectPreviousConnectedWallet,
 } from "../../web3/selectors";
-import { EWalletSubType, EWalletType } from "../../web3/types";
+import { EWalletSubType, EWalletType } from "../../web3/interfaces";
 import { selectUrlUserType } from "../selectors";
 import { mapLightWalletErrorToErrorMessage } from "./errors";
 
@@ -209,7 +209,7 @@ export function* lightWalletRecoverWatch(
 
     yield put(actions.walletSelector.messageSigning());
     yield neuCall(obtainJWT, [CHANGE_EMAIL_PERMISSION]);
-    const userUpdate: IUserInput = {
+    const userUpdate: IApiUserInput = {
       salt: walletMetadata.salt,
       backupCodesVerified: true,
       type: userType,
@@ -218,7 +218,7 @@ export function* lightWalletRecoverWatch(
     };
     const isEmailAvailable = yield neuCall(checkEmailPromise, email);
     try {
-      const user: IUser = yield neuCall(loadUserPromise);
+      const user: IStateUser = yield neuCall(loadUserPromise);
       if (isEmailAvailable) {
         userUpdate.newEmail = walletMetadata.email;
         yield effects.call(updateUser, userUpdate);

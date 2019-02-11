@@ -1,14 +1,14 @@
 import { AppReducer } from "../../../store";
-import {ITokenPriceState} from './interfaces'
+import {IStateTokenPrice} from './interfaces'
 
-const walletInitialState: ITokenPriceState = {
+const walletInitialState: IStateTokenPrice = {
   loading: true,
 };
 
-export const tokenPriceReducer: AppReducer<ITokenPriceState> = (
+export const tokenPriceReducer: AppReducer<IStateTokenPrice> = (
   state = walletInitialState,
   action,
-): ITokenPriceState => {
+): IStateTokenPrice => {
   switch (action.type) {
     case "TOKEN_PRICE_LOAD_START":
       return {

@@ -1,4 +1,4 @@
-import { TGeneralEtoData } from "./interfaces";
+import { TGeneralEtoData } from "./interfaces/interfaces";
 import { createAction, createSimpleAction } from "../actionsUtils";
 import {DeepPartial} from "../../types";
 

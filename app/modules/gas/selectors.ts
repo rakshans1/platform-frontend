@@ -1,13 +1,13 @@
 import BigNumber from "bignumber.js";
 
 import { calculateGasPriceWithOverhead } from "../tx/utils";
-import { IAppState } from "./../../store";
-import {GasModelState} from "./interfaces";
+import { IAppState } from "../../store";
+import {IBlGasModel} from "./interfaces";
 
 export const selectIsGasPriceAlreadyLoaded = (state: IAppState): boolean =>
   !state.gas.loading && !!state.gas.gasPrice;
 
-export const selectGasPrice = (state: IAppState): GasModelState | undefined => {
+export const selectGasPrice = (state: IAppState): IBlGasModel | undefined => {
   return state.gas.gasPrice
     ? {
       fast: new BigNumber(state.gas.gasPrice.fast),

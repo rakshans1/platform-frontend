@@ -1,8 +1,8 @@
-export interface IVideoModalState {
+export interface IStateVideoModal {
   isOpen: boolean;
-  videoModalObj?: IVideoModalDataState;
+  videoModalObj?: IStateVideoModalData;
 }
 
-export interface IVideoModalDataState {
+export interface IStateVideoModalData {
   youTubeUrl: string;
 }

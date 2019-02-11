@@ -1,4 +1,4 @@
-import { ITxData } from "../../../lib/web3/types";
+import { IStateTxData} from "../../../lib/web3/types";
 import { createAction, createSimpleAction } from "../../actionsUtils";
 import { ETxSenderType } from "../interfaces";
 import { ETransactionErrorType, TSummaryData } from "./interfaces";
@@ -8,7 +8,7 @@ export const txSenderActions = {
   txSenderShowModal: (type: ETxSenderType) => createAction("TX_SENDER_SHOW_MODAL", { type }),
   txSenderHideModal: () => createSimpleAction("TX_SENDER_HIDE_MODAL"),
   // User awaiting actions
-  txSenderAcceptDraft: (txDraftData?: Partial<ITxData>) =>
+  txSenderAcceptDraft: (txDraftData?: Partial<IStateTxData>) =>
     createAction("TX_SENDER_ACCEPT_DRAFT", { txDraftData }),
   txSenderAccept: () => createSimpleAction("TX_SENDER_ACCEPT"),
   txSenderChange: (type: ETxSenderType) => createAction("TX_SENDER_CHANGE", { type }),
@@ -31,6 +31,6 @@ export const txSenderActions = {
     createAction("TX_SENDER_CONTINUE_TO_SUMMARY_WITH_DATA", { summaryData }),
 
   // reducer setters
-  setTransactionData: (txData?: ITxData) =>
+  setTransactionData: (txData?: IStateTxData) =>
     createAction("TX_SENDER_SET_TRANSACTION_DATA", { txData }),
 };

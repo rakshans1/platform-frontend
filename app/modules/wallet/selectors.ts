@@ -12,11 +12,11 @@ import { IWalletState } from "./interfaces";
 export const selectNeuBalanceEuroAmount = (state: IAppState): BigNumber =>
   selectNeuPriceEur(state).mul(selectNeuBalance(state.wallet));
 
-export const selectNeuBalance = (state: IWalletState): string =>
-  (state.data && state.data.neuBalance) || "0";
+export const selectNeuBalance = (state: IWalletState): BigNumber =>
+  new BigNumber((state.data && state.data.neuBalance) || "0");
 
-export const selectEtherTokenBalance = (state: IAppState): string =>
-  (state.wallet.data && state.wallet.data.etherTokenBalance) || "0";
+export const selectEtherTokenBalance = (state: IAppState): BigNumber =>
+  new BigNumber((state.wallet.data && state.wallet.data.etherTokenBalance) || "0");
 
 export const selectEtherTokenBalanceAsBigNumber = (state: IAppState): BigNumber =>
   new BigNumber((state.wallet.data && state.wallet.data.etherTokenBalance) || "0");
@@ -83,10 +83,10 @@ export const selectICBMLockedEuroTokenBalance = (state: IAppState):BigNumber =>
   "0");
 
 export const selectICBMLockedEuroTotalAmount = (state: IAppState): BigNumber =>
-    selectICBMLockedEtherBalanceEuroAmount(state).add(selectICBMLockedEuroTokenBalance(state))
+    selectICBMLockedEtherBalanceEuroAmount(state).add(selectICBMLockedEuroTokenBalance(state));
 
 export const selectICBMLockedWalletHasFunds = (state: IAppState): boolean =>
-  !selectICBMLockedEuroTokenBalance(state).isZero() || !selectICBMLockedEtherBalance(state).isZero()
+  !selectICBMLockedEuroTokenBalance(state).isZero() || !selectICBMLockedEtherBalance(state).isZero();
 
 /**
  * Total wallet assets value
@@ -125,13 +125,13 @@ export const selectEurNeumarksDue = (state: IWalletState): BigNumber =>
 
 export const selectIcbmWalletConnected = (state: IWalletState): boolean =>
   !!(
-    (state.data && state.data.etherTokenICBMLockedWallet.unlockDate !== "0") ||
+    (state.data && state.data.etherTokenICBMLockedWallet.unlockDate !== "0") || //todo invalid/zero value should be null
     (state.data && state.data.euroTokenICBMLockedWallet.unlockDate !== "0")
   );
 
 export const selectLockedWalletConnected = (state: IAppState): boolean =>
   !!(
-    (state.wallet.data && state.wallet.data.etherTokenLockedWallet.unlockDate !== "0") ||
+    (state.wallet.data && state.wallet.data.etherTokenLockedWallet.unlockDate !== "0") || //todo invalid/zero value should be null
     (state.wallet.data && state.wallet.data.euroTokenLockedWallet.unlockDate !== "0")
   );
 

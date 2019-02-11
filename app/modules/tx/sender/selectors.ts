@@ -1,18 +1,22 @@
-import { IAppState } from "../../../store";
-import { ETxSenderState, EValidationState } from "./reducer";
 import BigNumber from "bignumber.js";
-import {ITxData} from "../../../lib/web3/types";
+
+import { IAppState } from "../../../store";
+import { ETxSenderState, EValidationState } from "./interfaces";
+import * as txDataInterfaces from "../../../lib/web3/types";
 import {ETxSenderType} from "../interfaces";
+import {convert} from "../../../components/eto/utils";
 
 export const selectTxSenderModalOpened = (state: IAppState) =>
   state.txSender.state !== ETxSenderState.UNINITIALIZED;
 
-export const selectTxDetails = (state: IAppState):ITxData | undefined => state.txSender.txDetails;
+export const selectTxDetails = (state: IAppState):txDataInterfaces.IBlTxData | undefined =>
+  convert(state.txSender.txDetails, txDataInterfaces.stateToBlConversionSpec);
 
 export const selectTxType = (state: IAppState): ETxSenderType | undefined => state.txSender.type;
 
-export const selectTxSummaryData = (state: IAppState): Partial<ITxData> | ITxData | undefined =>
-  (state.txSender.summaryData && state.txSender.summaryData.txData) || state.txSender.txDetails;
+export const selectTxSummaryData = (state: IAppState): Partial<txDataInterfaces.IBlTxData> | txDataInterfaces.IBlTxData | undefined =>
+  (state.txSender.summaryData && convert(state.txSender.summaryData.txData, txDataInterfaces.stateToBlConversionSpec))
+  || convert(state.txSender.txDetails, txDataInterfaces.stateToBlConversionSpec);
 
 export const selectTxSummaryAdditionalData = (state: IAppState) =>
   state.txSender.summaryData && state.txSender.summaryData.additionalData;

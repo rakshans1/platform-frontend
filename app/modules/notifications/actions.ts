@@ -1,6 +1,6 @@
 import { AppActionTypes } from "../../store";
 import { createActionFactory } from "../actionsUtils";
-import { ENotificationText, ENotificationType } from "./reducer";
+import { ENotificationText, ENotificationType } from "./interfaces";
 
 export interface INewNotification {
   id?: number;

@@ -1,4 +1,4 @@
-import { TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
+import { TStateEtoWithCompanyAndContract } from "../../../modules/public-etos/interfaces";
 import { TEtoSpecsData, TPartialEtoSpecData } from "./EtoApi.interfaces";
 
 export const getInvestmentAmount = (eto: TPartialEtoSpecData) => {
@@ -73,7 +73,7 @@ export const getInvestmentCalculatedPercentage = (eto: TEtoSpecsData) => {
   return (eto.newSharesToIssue / eto.minimumNewSharesToIssue) * 100;
 };
 
-export const getCurrentInvestmentProgressPercentage = (eto: TEtoWithCompanyAndContract) => {
+export const getCurrentInvestmentProgressPercentage = (eto: TStateEtoWithCompanyAndContract) => {
   const totalTokensInt = eto.contract!.totalInvestment.totalTokensInt.toNumber();
 
   return (totalTokensInt / (eto.minimumNewSharesToIssue * eto.equityTokensPerShare)) * 100;

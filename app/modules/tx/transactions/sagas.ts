@@ -5,7 +5,7 @@ import { actions, TAction } from "../../actions";
 import { onInvestmentTxModalHide } from "../../investment-flow/sagas";
 import { neuTakeLatest } from "../../sagasUtils";
 import { ITxSendParams, txSendSaga } from "../sender/sagas";
-import { ETxSenderType } from "./../interfaces";
+import { ETxSenderType } from "../interfaces";
 import { startClaimGenerator } from "./claim/saga";
 import { etoSetDateGenerator } from "./eto-flow/saga";
 import { investmentFlowGenerator } from "./investment/sagas";

@@ -8,20 +8,14 @@ import { PublicEtosMessage } from "../../components/translatedMessages/messages"
 import { createMessage } from "../../components/translatedMessages/utils";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { IHttpResponse } from "../../lib/api/client/IHttpClient";
-import {
-  EEtoState,
-  TCompanyEtoData,
-  TEtoSpecsData,
-  TPublicEtoData,
-} from "../../lib/api/eto/EtoApi.interfaces";
+import {EEtoState} from "../../lib/api/eto/EtoApi.interfaces";
 import { IEtoDocument, immutableDocumentName } from "../../lib/api/eto/EtoFileApi.interfaces";
-import { EUserType } from "../../lib/api/users/interfaces";
+import { EUserType } from "../auth/interfaces";
 import { EtherToken } from "../../lib/contracts/EtherToken";
 import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
 import { EuroToken } from "../../lib/contracts/EuroToken";
 import { IAppState } from "../../store";
-import { Dictionary } from "../../types";
-import { divideBigNumbers } from "../../utils/BigNumberUtils";
+import { Dictionary} from "../../types";
 import { actions, TActionFromCreator } from "../actions";
 import { selectUserType } from "../auth/selectors";
 import { selectMyAssets } from "../investor-portfolio/selectors";
@@ -33,8 +27,13 @@ import {
   selectEtoWithCompanyAndContract,
   selectPublicEtoById,
 } from "./selectors";
-import { EETOStateOnChain, TEtoWithCompanyAndContract } from "./types";
-import { convertToEtoTotalInvestment, convertToStateStartDate } from "./utils";
+import {EETOStateOnChain, TApiPublicEtoData, TStateEtoWithCompanyAndContract} from "./interfaces";
+import * as publicEtoInterfaces from '../eto-flow/interfaces/PublicEtoData'
+import {convert} from "../../components/eto/utils";
+import * as companyEtoDataInterfaces from "../eto-flow/interfaces/CompanyEtoData";
+import {IStatePublicEtoData} from "../eto-flow/interfaces/PublicEtoData";
+import {convertToEtoTotalInvestment, convertToStateStartDate} from "./utils";
+import {IApiPublicEtoData} from "../eto-flow/interfaces/PublicEtoData";
 
 export function* loadEtoPreview(
   { apiEtoService, notificationCenter, logger }: TGlobalDependencies,
@@ -43,17 +42,20 @@ export function* loadEtoPreview(
   const previewCode = action.payload.previewCode;
 
   try {
-    const etoResponse: IHttpResponse<TEtoSpecsData> = yield apiEtoService.getEtoPreview(
+    const etoResponse: IHttpResponse<publicEtoInterfaces.IApiPublicEtoData> = yield apiEtoService.getEtoPreview(
       previewCode,
     );
-    const eto = etoResponse.body;
-    const companyResponse: IHttpResponse<TCompanyEtoData> = yield apiEtoService.getCompanyById(
+    const eto:publicEtoInterfaces.IStatePublicEtoData = convert(etoResponse.body, publicEtoInterfaces.apiToStateConversionSpec);
+
+    const companyResponse: IHttpResponse<companyEtoDataInterfaces.IApiCompanyEtoData> = yield apiEtoService.getCompanyById(
       eto.companyId,
     );
-    const company = companyResponse.body;
+    const company:companyEtoDataInterfaces.IStateCompanyEtoData = convert(companyResponse.body, companyEtoDataInterfaces.apiToStateConversionSpec);
 
     // Load contract data if eto is already on blockchain
     if (eto.state === EEtoState.ON_CHAIN) {
+
+
       // load investor tickets
       const userType: EUserType | undefined = yield select((state: IAppState) =>
         selectUserType(state),
@@ -62,7 +64,7 @@ export function* loadEtoPreview(
         yield put(actions.investorEtoTicket.loadEtoInvestorTicket(eto));
       }
 
-      yield neuCall(loadEtoContact, eto);
+      yield neuCall(loadEtoContract, eto);
     }
 
     yield put(actions.publicEtos.setPublicEto({ eto, company }));
@@ -87,13 +89,13 @@ export function* loadEto(
   try {
     const etoId = action.payload.etoId;
 
-    const etoResponse: IHttpResponse<TEtoSpecsData> = yield apiEtoService.getEto(etoId);
-    const eto = etoResponse.body;
+    const etoResponse: IHttpResponse<publicEtoInterfaces.IApiPublicEtoData> = yield apiEtoService.getEto(etoId);
+    const eto:publicEtoInterfaces.IStatePublicEtoData = convert(etoResponse.body,publicEtoInterfaces.apiToStateConversionSpec);
 
-    const companyResponse: IHttpResponse<TCompanyEtoData> = yield apiEtoService.getCompanyById(
+    const companyResponse: IHttpResponse<companyEtoDataInterfaces.IApiCompanyEtoData> = yield apiEtoService.getCompanyById(
       eto.companyId,
     );
-    const company = companyResponse.body;
+    const company:companyEtoDataInterfaces.IStateCompanyEtoData = convert(companyResponse.body, companyEtoDataInterfaces.apiToStateConversionSpec);
 
     // Load contract data if eto is already on blockchain
     if (eto.state === EEtoState.ON_CHAIN) {
@@ -105,7 +107,7 @@ export function* loadEto(
         yield put(actions.investorEtoTicket.loadEtoInvestorTicket(eto));
       }
 
-      yield neuCall(loadEtoContact, eto);
+      yield neuCall(loadEtoContract, eto);
     }
 
     yield put(actions.publicEtos.setPublicEto({ eto, company }));
@@ -124,9 +126,9 @@ export function* loadEto(
   }
 }
 
-export function* loadEtoContact(
+export function* loadEtoContract(
   { contractsService, logger }: TGlobalDependencies,
-  eto: TPublicEtoData,
+  eto: publicEtoInterfaces.IStatePublicEtoData,
 ): any {
   if (eto.state !== EEtoState.ON_CHAIN) {
     logger.error("Invalid eto state", new InvalidETOStateError(eto.state, EEtoState.ON_CHAIN), {
@@ -236,7 +238,7 @@ function* calculateNextStateDelay({ logger }: TGlobalDependencies, previewCode: 
 }
 
 function* watchEto(_: TGlobalDependencies, previewCode: string): any {
-  const eto: TEtoWithCompanyAndContract = yield select((state: IAppState) =>
+  const eto: TStateEtoWithCompanyAndContract = yield select((state: IAppState) =>
     selectEtoWithCompanyAndContract(state, previewCode),
   );
 
@@ -265,19 +267,21 @@ function* watchEto(_: TGlobalDependencies, previewCode: string): any {
 
 function* loadEtos({ apiEtoService, logger }: TGlobalDependencies): any {
   try {
-    const etosResponse: IHttpResponse<TPublicEtoData[]> = yield apiEtoService.getEtos();
+    const etosResponse: IHttpResponse<TApiPublicEtoData[]> = yield apiEtoService.getEtos();
     const etos = etosResponse.body;
 
     const companies = compose(
-      keyBy((eto: TCompanyEtoData) => eto.companyId),
-      map((eto: TPublicEtoData) => eto.company),
-    )(etos);
+      keyBy((eto: TApiPublicEtoData) => eto.companyId),
+      map((eto: TApiPublicEtoData) => eto.company),
+      map((company:companyEtoDataInterfaces.IApiCompanyEtoData) => convert(company, companyEtoDataInterfaces.apiToStateConversionSpec))
+    )(etos as any) as unknown as Dictionary<companyEtoDataInterfaces.IStateCompanyEtoData>;
 
-    const etosByPreviewCode = compose(
-      keyBy((eto: TEtoSpecsData) => eto.previewCode),
+    const etosByPreviewCode:Dictionary<IStatePublicEtoData> = compose(
+      keyBy((eto: IStatePublicEtoData) => eto.previewCode),
       // remove company prop from eto
       // it's saved separately for consistency with other endpoints
       map(omit("company")),
+      map((eto:IApiPublicEtoData) => convert(eto, publicEtoInterfaces.apiToStateConversionSpec)),
     )(etos);
 
     const order = etosResponse.body.map(eto => eto.previewCode);
@@ -286,7 +290,7 @@ function* loadEtos({ apiEtoService, logger }: TGlobalDependencies): any {
       order
         .map(id => etosByPreviewCode[id])
         .filter(eto => eto.state === EEtoState.ON_CHAIN)
-        .map(eto => neuCall(loadEtoContact, eto)),
+        .map(eto => neuCall(loadEtoContract, eto)),
     );
 
     // load investor tickets
@@ -362,10 +366,7 @@ export function* loadTokensData(
       ,
     ] = yield controllerGovernance.shareholderInformation();
 
-    const tokenPrice = divideBigNumbers(
-      divideBigNumbers(companyValuationEurUlps, totalCompanyShares),
-      tokensPerShare,
-    );
+    const tokenPrice = companyValuationEurUlps.div(totalCompanyShares).div(tokensPerShare);
 
     yield put(
       actions.publicEtos.setTokenData(eto.previewCode, {

@@ -6,7 +6,7 @@ import {
   getDummyLedgerWalletMetadata,
   getDummyLightWalletMetadata,
 } from "./fixtures";
-import { IWeb3State } from "./reducer";
+import { IWeb3State, EWalletSubType, EWalletType } from "./interfaces";
 import {
   selectActivationCodeFromQueryString,
   selectIsExternalWallet,
@@ -14,7 +14,6 @@ import {
   selectLightWalletEmailFromQueryString,
   selectLightWalletFromQueryString,
 } from "./selectors";
-import { EWalletSubType, EWalletType } from "./types";
 
 describe("web3 > selectors", () => {
   const salt = "salt";

@@ -3,7 +3,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Modal } from "reactstrap";
 
-import { ITxData } from "../../../lib/web3/types";
+import { IBlTxData } from "../../../lib/web3/types";
 import { actions } from "../../../modules/actions";
 import { ETxSenderType } from "../../../modules/tx/interfaces";
 import { ETransactionErrorType, ETxSenderState } from "../../../modules/tx/sender/reducer";
@@ -31,7 +31,7 @@ interface IStateProps {
   isOpen: boolean;
   state: ETxSenderState;
   type?: ETxSenderType;
-  details?: ITxData;
+  details?: IBlTxData;
   blockId?: number;
   txHash?: string;
   error?: ETransactionErrorType;

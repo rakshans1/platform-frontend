@@ -1,8 +1,9 @@
 import {IEtoDocument, EEtoDocumentType} from '../eto-documents/interfaces'
 import { Dictionary } from "../../types";
 import { createActionFactory } from "../actionsUtils";
-import { IEtoContractData, IEtoTokenStateData } from "./interfaces";
-import {TCompanyEtoDataState, TPublicEtoDataState} from "../eto-flow/interfaces";
+import { IEtoContractDataState, IStateEtoTokenData } from "./interfaces";
+import { IStatePublicEtoData} from "../eto-flow/interfaces/PublicEtoData";
+import {IStateCompanyEtoData} from '../eto-flow/interfaces/CompanyEtoData';
 
 export const etoActions = {
   // public actions
@@ -31,7 +32,7 @@ export const etoActions = {
   })),
   setTokenData: createActionFactory(
     "PORTFOLIO_SET_TOKEN_DATA",
-    (previewCode: string, tokenData: IEtoTokenStateData) => ({
+    (previewCode: string, tokenData: IStateEtoTokenData) => ({
       previewCode,
       tokenData,
     }),
@@ -43,20 +44,20 @@ export const etoActions = {
       etos,
       companies,
     }: {
-      etos: Dictionary<TPublicEtoDataState>;
-      companies: Dictionary<TCompanyEtoDataState>;
+      etos: Dictionary<IStatePublicEtoData>;
+      companies: Dictionary<IStateCompanyEtoData>;
     }) => ({ etos, companies }),
   ),
   setPublicEto: createActionFactory(
     "PUBLIC_ETOS_SET_PUBLIC_ETO",
-    ({ eto, company }: { eto: TPublicEtoDataState; company: TCompanyEtoDataState }) => ({ eto, company }),
+    ({ eto, company }: { eto: IStatePublicEtoData; company: IStateCompanyEtoData }) => ({ eto, company }),
   ),
   setEtosDisplayOrder: createActionFactory("PUBLIC_ETOS_SET_DISPLAY_ORDER", (order: string[]) => ({
     order,
   })),
   setEtoDataFromContract: createActionFactory(
     "PUBLIC_ETOS_SET_ETO_DATA_FROM_CONTRACT",
-    (previewCode: string, data: IEtoContractData) => ({ previewCode, data }),
+    (previewCode: string, data: IEtoContractDataState) => ({ previewCode, data }),
   ),
   setEtoWidgetError: createActionFactory("PUBLIC_ETOS_SET_ETO_WIDGET_ERROR"),
 };

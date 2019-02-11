@@ -1,20 +1,17 @@
 import { inject, injectable } from "inversify";
 
 import { symbols } from "../../../di/symbols";
-import { EWalletSubType, EWalletType } from "../../../modules/web3/types";
+import { EWalletSubType, EWalletType } from "../../../modules/web3/interfaces";
 import { ILogger } from "../../dependencies/logger";
 import { IHttpClient } from "../client/IHttpClient";
 import {
   emailStatus,
-  IEmailStatus,
-  IUser,
-  IUserInput,
-  IVerifyEmailUser,
   TPendingTxs,
   TxWithMetadata,
   TxWithMetadataListValidator,
   UserValidator,
 } from "./interfaces";
+import {IApiUser, IApiEmailStatus, IApiUserInput, IVerifyEmailUser} from "../../../modules/auth/interfaces";
 
 const USER_API_ROOT = "/api/user";
 const OOO_TRANSACTION_TYPE = "mempool";
@@ -23,7 +20,7 @@ export class UserApiError extends Error {}
 export class UserNotExisting extends UserApiError {}
 export class EmailAlreadyExists extends UserApiError {}
 
-const ensureWalletTypesInUser = (userApiResponse: IUser): IUser => ({
+const ensureWalletTypesInUser = (userApiResponse: IApiUser): IApiUser => ({
   ...userApiResponse,
   walletType: userApiResponse.walletType
     ? (userApiResponse.walletType.toUpperCase() as EWalletType)
@@ -40,7 +37,7 @@ export class UsersApi {
     @inject(symbols.logger) private logger: ILogger,
   ) {}
 
-  public async createAccount(newUser?: IUserInput): Promise<IUser> {
+  public async createAccount(newUser?: IApiUserInput): Promise<IApiUser> {
     this.logger.info("Creating account");
     // Backend expects walletType and walletSubType values as lower case
     const modifiedNewUser = newUser
@@ -50,7 +47,7 @@ export class UsersApi {
           walletSubtype: newUser.walletSubtype.toLowerCase(),
         }
       : {};
-    const response = await this.httpClient.post<IUser>({
+    const response = await this.httpClient.post<IApiUser>({
       baseUrl: USER_API_ROOT,
       url: "/user/",
       responseSchema: UserValidator,
@@ -63,8 +60,8 @@ export class UsersApi {
     return ensureWalletTypesInUser(response.body);
   }
 
-  public async me(): Promise<IUser> {
-    const response = await this.httpClient.get<IUser>({
+  public async me(): Promise<IApiUser> {
+    const response = await this.httpClient.get<IApiUser>({
       baseUrl: USER_API_ROOT,
       url: "/user/me",
       responseSchema: UserValidator,
@@ -78,7 +75,7 @@ export class UsersApi {
   }
 
   public async emailStatus(userEmail: string): Promise<any> {
-    const response = await this.httpClient.get<IEmailStatus>({
+    const response = await this.httpClient.get<IApiEmailStatus>({
       baseUrl: USER_API_ROOT,
       url: `/email/status/${userEmail}`,
       responseSchema: emailStatus,
@@ -86,8 +83,8 @@ export class UsersApi {
     return response.body;
   }
 
-  public async verifyUserEmail(userCode: IVerifyEmailUser): Promise<IUser> {
-    const response = await this.httpClient.put<IUser>({
+  public async verifyUserEmail(userCode: IVerifyEmailUser): Promise<IApiUser> {
+    const response = await this.httpClient.put<IApiUser>({
       baseUrl: USER_API_ROOT,
       url: "/user/me/email-verification",
       responseSchema: UserValidator,
@@ -105,7 +102,7 @@ export class UsersApi {
     return ensureWalletTypesInUser(response.body);
   }
 
-  public async updateUser(updatedUser: IUserInput): Promise<IUser> {
+  public async updateUser(updatedUser: IApiUserInput): Promise<IApiUser> {
     const modifiedUpdatedUser = updatedUser
       ? {
           ...updatedUser,
@@ -113,7 +110,7 @@ export class UsersApi {
           walletSubtype: updatedUser.walletSubtype.toLocaleLowerCase(),
         }
       : {};
-    const response = await this.httpClient.put<IUser>({
+    const response = await this.httpClient.put<IApiUser>({
       baseUrl: USER_API_ROOT,
       url: "/user/me",
       responseSchema: UserValidator,
@@ -131,8 +128,8 @@ export class UsersApi {
     return ensureWalletTypesInUser(response.body);
   }
 
-  public async setLatestAcceptedTos(agreementHash: string): Promise<IUser> {
-    const response = await this.httpClient.put<IUser>({
+  public async setLatestAcceptedTos(agreementHash: string): Promise<IApiUser> {
+    const response = await this.httpClient.put<IApiUser>({
       baseUrl: USER_API_ROOT,
       url: "/user/me/tos",
       responseSchema: UserValidator,

@@ -2,7 +2,7 @@ import { put, select } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { ETOCommitment } from "../../../../lib/contracts/ETOCommitment";
-import { ITxData } from "../../../../lib/web3/types";
+import { IStateTxData} from "../../../../lib/web3/types";
 import { IAppState } from "../../../../store";
 import { actions } from "../../../actions";
 import {
@@ -13,6 +13,7 @@ import {
 import { selectStandardGasPriceWithOverHead } from "../../../gas/selectors";
 import { neuCall } from "../../../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
+import {NumericString} from "../../../../types";
 
 export function* generateSetStartDateTransaction({
   contractsService,
@@ -38,13 +39,13 @@ export function* generateSetStartDateTransaction({
     to: contract.address,
     from: userAddress,
     data: txData,
-    value: "0",
-    gasPrice: gasPriceWithOverhead,
+    value: "0" as NumericString,
+    gasPrice: gasPriceWithOverhead.toString() as NumericString,
   };
 
   const estimatedGasWithOverhead = yield web3Manager.estimateGasWithOverhead(txInitialDetails);
 
-  const txDetails: ITxData = {
+  const txDetails: IStateTxData = {
     ...txInitialDetails,
     gas: estimatedGasWithOverhead,
   };

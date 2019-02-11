@@ -5,7 +5,7 @@ import { Web3Message } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
 import { LIGHT_WALLET_PASSWORD_CACHE_TIME } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
-import { EUserType } from "../../lib/api/users/interfaces";
+import { EUserType } from "../auth/interfaces";
 import { TWalletMetadata } from "../../lib/persistence/WalletMetadataObjectStorage";
 import { LightWallet, LightWalletWrongPassword } from "../../lib/web3/LightWallet";
 import { EWeb3ManagerEvents } from "../../lib/web3/Web3Manager";
@@ -14,7 +14,7 @@ import { actions, TAction } from "../actions";
 import { selectUserType } from "../auth/selectors";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { selectWalletType } from "./selectors";
-import { EWalletType } from "./types";
+import { EWalletType } from "./interfaces";
 
 let lockWalletTask: Task | undefined;
 

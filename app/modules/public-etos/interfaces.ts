@@ -1,26 +1,33 @@
-import {TPublicEtoDataState, TCompanyEtoDataState} from '../eto-flow/interfaces'
-import {DeepReadonly, NumericString} from "../../types";
+import BigNumber from "bignumber.js";
 
-export interface IPublicEtoState {
-  publicEtos: { [previewCode: string]: TPublicEtoDataState | undefined };
-  companies: { [companyId: string]: TCompanyEtoDataState | undefined };
-  contracts: { [previewCode: string]: IEtoContractData };
+import {DeepReadonly, NumericString} from "../../types";
+import {IApiPublicEtoData, IStatePublicEtoData} from "../eto-flow/interfaces/PublicEtoData";
+import {IApiCompanyEtoData, IStateCompanyEtoData} from "../eto-flow/interfaces/CompanyEtoData";
+
+export type TApiPublicEtoData =
+  IApiPublicEtoData & { company: IApiCompanyEtoData };
+
+
+export interface IStatePublicEto {
+  publicEtos: { [previewCode: string]: IStatePublicEtoData | undefined };
+  companies: { [companyId: string]: IStateCompanyEtoData | undefined };
+  contracts: { [previewCode: string]: IEtoContractDataState };
   displayOrder: string[] | undefined;
   maxCapExceeded: { [previewCode: string]: boolean | undefined };
   etoWidgetError: boolean | undefined;
-  tokenData: { [previewCode: string]: IEtoTokenStateData | undefined };
+  tokenData: { [previewCode: string]: IStateEtoTokenData | undefined };
 }
 
-export interface IEtoContractData {
+export interface IEtoContractDataState {
   timedState: EETOStateOnChain;
-  totalInvestment: IEtoTotalInvestment;
+  totalInvestment: IEtoTotalInvestmentState;
   startOfStates: TEtoStartOfStates;
   equityTokenAddress: string;
   etoTermsAddress: string;
   etoCommitmentAddress: string;
 }
 
-export interface IEtoTokenStateData {
+export interface IStateEtoTokenData {
   balance: NumericString;
   tokensPerShare: NumericString;
   totalCompanyShares: NumericString;
@@ -28,15 +35,15 @@ export interface IEtoTokenStateData {
   tokenPrice: NumericString;
 }
 
-export interface IEtoTokenData {
-  balance: NumericString;
-  tokensPerShare: NumericString;
-  totalCompanyShares: NumericString;
-  companyValuationEurUlps: NumericString;
-  tokenPrice: NumericString;
+export interface ICalcEtoTokenData {
+  balance: BigNumber;
+  tokensPerShare: BigNumber;
+  totalCompanyShares: BigNumber;
+  companyValuationEurUlps: BigNumber;
+  tokenPrice: BigNumber;
 }
 
-export interface IEtoTotalInvestment {
+export interface IEtoTotalInvestmentState {
   totalEquivEurUlps: NumericString;
   totalTokensInt: NumericString;
   totalInvestors: NumericString;
@@ -57,10 +64,10 @@ export enum EETOStateOnChain {
   Refund = 6, // Terminal state
 }
 
-export type TEtoWithCompanyAndContract = DeepReadonly<
-  TPublicEtoDataState & {
+export type TStateEtoWithCompanyAndContract = DeepReadonly<
+  IStatePublicEtoData & {
     // contract is undefined when ETO is not on blockchain
-    contract?: IEtoContractData;
-    company: TCompanyEtoDataState;
+    contract?: IEtoContractDataState;
+    company: IStateCompanyEtoData;
   }
 >;

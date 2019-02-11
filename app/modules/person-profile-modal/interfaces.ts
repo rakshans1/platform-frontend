@@ -1,11 +1,11 @@
 import {IEtoSocialProfile} from "../../components/shared/SocialProfilesList";
 
-export interface IPersonProfileModalState {
+export interface IStatePersonProfileModal {
   isOpen: boolean;
-  personProfileModalObj?: IPersonProfileModalObjectState;
+  personProfileModalObj?: IStatePersonProfileModalObject;
 }
 
-export interface IPersonProfileModalObjectState {
+export interface IStatePersonProfileModalObject {
   image: string;
   name: string;
   role: string;

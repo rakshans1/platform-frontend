@@ -4,7 +4,7 @@ import { put, select, take, takeEvery, takeLatest } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
-import { ITxData } from "../../lib/web3/types";
+import { IBlTxData } from "../../lib/web3/types";
 import { IAppState } from "../../store";
 import { compareBigNumbers } from "../../utils/BigNumberUtils";
 import { isLessThanNHours } from "../../utils/Date.utils";
@@ -21,7 +21,7 @@ import {
   selectEtoWithCompanyAndContractById,
   selectPublicEtoById,
 } from "../public-etos/selectors";
-import { EETOStateOnChain } from "../public-etos/types";
+import { EETOStateOnChain } from "../public-etos/interfaces";
 import { neuCall } from "../sagasUtils";
 import { selectEtherPriceEur, selectEurPriceEther } from "../shared/tokenPrice/selectors";
 import { ETxSenderType } from "../tx/interfaces";
@@ -38,8 +38,8 @@ import {
   EInvestmentCurrency,
   EInvestmentErrorState,
   EInvestmentType,
-  IInvestmentFlowState,
-} from "./reducer";
+  IStateInvestmentFlow,
+} from "./interfaces";
 import {
   selectCurrencyByInvestmentType,
   selectInvestmentEthValueUlps,
@@ -49,7 +49,8 @@ import {
   selectIsBankTransferModalOpened,
   selectIsICBMInvestment,
 } from "./selectors";
-import {ICalculatedContribution} from "../investor-portfolio/types";
+import {ICalculatedContribution} from "../investor-portfolio/interfaces";
+import {NumericString} from "../../types";
 
 // default: 3 days
 const HOURS_TO_DISABLE_BANK_TRANSFER = parseInt(
@@ -91,13 +92,13 @@ function* computeAndSetCurrencies(value: BigNumber, currency: EInvestmentCurrenc
     switch (currency) {
       case EInvestmentCurrency.Ether:
         const eurVal = value.mul(etherPriceEur);
-        yield put(actions.investmentFlow.setEthValue(value.toFixed(0, BigNumber.ROUND_UP)));
-        yield put(actions.investmentFlow.setEurValue(eurVal.toFixed(0, BigNumber.ROUND_UP)));
+        yield put(actions.investmentFlow.setEthValue(value.toFixed(0, BigNumber.ROUND_UP) as NumericString));
+        yield put(actions.investmentFlow.setEurValue(eurVal.toFixed(0, BigNumber.ROUND_UP) as NumericString));
         return;
       case EInvestmentCurrency.Euro:
         const ethVal = value.mul(eurPriceEther);
-        yield put(actions.investmentFlow.setEthValue(ethVal.toFixed(0, BigNumber.ROUND_UP)));
-        yield put(actions.investmentFlow.setEurValue(value.toFixed(0, BigNumber.ROUND_UP)));
+        yield put(actions.investmentFlow.setEthValue(ethVal.toFixed(0, BigNumber.ROUND_UP) as NumericString));
+        yield put(actions.investmentFlow.setEurValue(value.toFixed(0, BigNumber.ROUND_UP) as NumericString));
         return;
     }
   }
@@ -207,7 +208,7 @@ function* validateAndCalculateInputs({ contractsService }: TGlobalDependencies):
 
       // validate and set transaction if not on bank transfer
       if (state.investmentFlow.investmentType !== EInvestmentType.BankTransfer) {
-        const txData: ITxData = yield neuCall(
+        const txData: IBlTxData = yield neuCall(
           txValidateSaga,
           actions.txValidator.txSenderValidateDraft({ type: ETxSenderType.INVEST }),
         );
@@ -313,14 +314,14 @@ function* recalculateCurrencies(): any {
 }
 
 function* showBankTransferDetails(): any {
-  const state: IInvestmentFlowState = yield select((s: IAppState) => s.investmentFlow);
+  const state: IStateInvestmentFlow = yield select((s: IAppState) => s.investmentFlow);
   if (state.investmentType !== EInvestmentType.BankTransfer) return;
   yield put(actions.investmentFlow.setBankTransferFlowState(EBankTransferFlowState.Details));
   yield put(actions.txSender.txSenderHideModal());
 }
 
 function* showBankTransferSummary(): any {
-  const state: IInvestmentFlowState = yield select((s: IAppState) => s.investmentFlow);
+  const state: IStateInvestmentFlow = yield select((s: IAppState) => s.investmentFlow);
   if (state.investmentType !== EInvestmentType.BankTransfer) return;
   yield put(actions.investmentFlow.setBankTransferFlowState(EBankTransferFlowState.Summary));
   yield put(actions.txSender.txSenderHideModal());

@@ -2,11 +2,11 @@ import { storiesOf } from "@storybook/react";
 import * as React from "react";
 import { Container } from "reactstrap";
 
-import { ITxData } from "../../../../lib/web3/types";
+import { IBlTxData } from "../../../../lib/web3/types";
 import { ETokenType } from "../../../../modules/tx/interfaces";
 import { UpgradeSummaryComponent } from "./Summary";
 
-const txData: ITxData = {
+const txData: IBlTxData = {
   to: "0xfb6916095ca1df60bb79ce92ce3ea74c37c5d359",
   value: "5500000000000000000",
   gas: "12000",

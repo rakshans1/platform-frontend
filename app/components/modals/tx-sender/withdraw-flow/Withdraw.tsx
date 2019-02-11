@@ -5,7 +5,7 @@ import { Col, Container, Row } from "reactstrap";
 import { compose, withHandlers } from "recompose";
 import { NumberSchema } from "yup";
 
-import { ITxData } from "../../../../lib/web3/types";
+import { IBlTxData } from "../../../../lib/web3/types";
 import * as YupTS from "../../../../lib/yup-ts";
 import { actions } from "../../../../modules/actions";
 import { ETxSenderType, IDraftType } from "../../../../modules/tx/interfaces";
@@ -40,7 +40,7 @@ interface IHandlersProps {
 
 interface IDispatchProps {
   onValidate: (txDraft: IDraftType) => any;
-  onAccept: (tx: Partial<ITxData>) => any;
+  onAccept: (tx: Partial<IBlTxData>) => any;
 }
 
 type TProps = IStateProps & OmitKeys<IDispatchProps, "onValidate"> & IHandlersProps;
@@ -148,7 +148,7 @@ const Withdraw = compose<TProps & IIntlProps, {}>(
       validationState: selectTxValidationState(state),
     }),
     dispatchToProps: d => ({
-      onAccept: (tx: Partial<ITxData>) => d(actions.txSender.txSenderAcceptDraft(tx)),
+      onAccept: (tx: Partial<IBlTxData>) => d(actions.txSender.txSenderAcceptDraft(tx)),
       onValidate: (txDraft: IDraftType) => d(actions.txValidator.txSenderValidateDraft(txDraft)),
     }),
   }),

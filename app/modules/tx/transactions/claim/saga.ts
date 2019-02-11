@@ -2,11 +2,12 @@ import { put, select } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { ETOCommitment } from "../../../../lib/contracts/ETOCommitment";
-import { ITxData } from "../../../../lib/web3/types";
+import {IStateTxData} from "../../../../lib/web3/types";
 import { actions } from "../../../actions";
 import { selectStandardGasPriceWithOverHead } from "../../../gas/selectors";
 import { neuCall } from "../../../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
+import {NumericString} from "../../../../types";
 
 export function* generateGetClaimTransaction(
   { contractsService, web3Manager }: TGlobalDependencies,
@@ -22,22 +23,22 @@ export function* generateGetClaimTransaction(
     to: etoContract.address,
     from: userAddress,
     data: txInput,
-    value: "0",
-    gasPrice: gasPriceWithOverhead,
+    value: "0" as NumericString,
+    gasPrice: gasPriceWithOverhead.toString() as NumericString,
   };
 
-  const estimatedGasWithOverhead = yield web3Manager.estimateGasWithOverhead(txInitialDetails);
+  const estimatedGasWithOverhead:string = yield web3Manager.estimateGasWithOverhead(txInitialDetails);
 
-  const txDetails: ITxData = {
+  const txDetails: IStateTxData = {
     ...txInitialDetails,
-    gas: estimatedGasWithOverhead,
+    gas: estimatedGasWithOverhead as NumericString,
   };
 
   return txDetails;
 }
 
 export function* startClaimGenerator(_: TGlobalDependencies, etoId: string): any {
-  const generatedTxDetails: ITxData = yield neuCall(generateGetClaimTransaction, etoId);
+  const generatedTxDetails: IStateTxData = yield neuCall(generateGetClaimTransaction, etoId);
   yield put(actions.txSender.setTransactionData(generatedTxDetails));
   yield put(
     actions.txSender.txSenderContinueToSummary({

@@ -4,7 +4,7 @@ import { getMessageTranslation, ToSMessage } from "../../components/translatedMe
 import { createMessage } from "../../components/translatedMessages/utils";
 import { SIGN_TOS } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
-import { IUser } from "../../lib/api/users/interfaces";
+import {IApiUser, IStateUser} from "../auth/interfaces";
 import { actions } from "../actions";
 import { ensurePermissionsArePresent } from "../auth/jwt/sagas";
 import { selectCurrentAgreementHash } from "../auth/selectors";
@@ -51,8 +51,8 @@ function* handleAcceptCurrentAgreement({
     createMessage(ToSMessage.TOS_ACCEPT_PERMISSION_TEXT),
   );
   try {
-    const user: IUser = yield apiUserService.setLatestAcceptedTos(currentAgreementHash);
-    yield put(actions.auth.setUser(user));
+    const user: IApiUser = yield apiUserService.setLatestAcceptedTos(currentAgreementHash);
+    yield put(actions.auth.setUser(user as IStateUser));
   } catch (e) {
     notificationCenter.error(createMessage(AuthMessage.AUTH_TOC_ACCEPT_ERROR));
     logger.error("Could not accept Terms and Conditions", e);

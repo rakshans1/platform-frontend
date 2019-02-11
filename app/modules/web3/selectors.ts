@@ -3,11 +3,10 @@ import { isString } from "lodash";
 import * as queryString from "query-string";
 import { createSelector } from "reselect";
 
-import { TWalletMetadata } from "../../lib/persistence/WalletMetadataObjectStorage";
+import {ILightWalletMetadata, TWalletMetadata} from "../../lib/persistence/WalletMetadataObjectStorage";
 import { IAppState } from "../../store";
 import { EthereumAddress } from "../../types";
-import { IConnectedWeb3State, IWalletPrivateData, IWeb3State } from "./interfaces";
-import { EWalletSubType, EWalletType } from "./types";
+import { IConnectedWeb3State, IWalletPrivateData, IWeb3State, EWalletSubType, EWalletType } from "./interfaces";
 import { makeEthereumAddressChecksummed } from "./utils";
 
 export const selectConnectedWeb3State = (state: IWeb3State): IConnectedWeb3State => {
@@ -40,9 +39,9 @@ export const isLightWalletReadyToLogin = (state: IWeb3State): boolean =>
     !state.connected &&
     state.previousConnectedWallet &&
     state.previousConnectedWallet.walletType === EWalletType.LIGHT &&
-    state.previousConnectedWallet.email &&
-    state.previousConnectedWallet.salt &&
-    state.previousConnectedWallet.vault
+    (state.previousConnectedWallet as ILightWalletMetadata).email &&
+    (state.previousConnectedWallet as ILightWalletMetadata).salt &&
+    (state.previousConnectedWallet as ILightWalletMetadata).vault
   );
 
 /**
@@ -78,7 +77,7 @@ export const selectLightWalletSalt = (state: IWeb3State): string | undefined =>
   (state.connected &&
     state.wallet &&
     state.wallet.walletType === EWalletType.LIGHT &&
-    state.wallet.salt) ||
+    (state.wallet as ILightWalletMetadata).salt) ||
   undefined;
 
 export const selectIsUnlocked = (state: IWeb3State): boolean => {
@@ -89,14 +88,14 @@ export const selectPreviousLightWalletEmail = (state: IWeb3State): string | unde
   (!state.connected &&
     state.previousConnectedWallet &&
     state.previousConnectedWallet.walletType === EWalletType.LIGHT &&
-    state.previousConnectedWallet.email) ||
+    (state.previousConnectedWallet as ILightWalletMetadata).email) ||
   undefined;
 
 export const selectPreviousLightWalletSalt = (state: IWeb3State): string | undefined =>
   (!state.connected &&
     state.previousConnectedWallet &&
     state.previousConnectedWallet.walletType === EWalletType.LIGHT &&
-    state.previousConnectedWallet.salt) ||
+    (state.previousConnectedWallet as ILightWalletMetadata).salt) ||
   undefined;
 
 export const selectPreviousConnectedWallet = (state: IWeb3State): TWalletMetadata | undefined =>

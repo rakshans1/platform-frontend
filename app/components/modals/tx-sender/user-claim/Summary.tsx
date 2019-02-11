@@ -9,7 +9,7 @@ import {
   immutableDocumentName,
 } from "../../../../lib/api/eto/EtoFileApi.interfaces";
 import { ImmutableFileId } from "../../../../lib/api/ImmutableStorage.interfaces";
-import { ITxData } from "../../../../lib/web3/types";
+import { IBlTxData } from "../../../../lib/web3/types";
 import { actions } from "../../../../modules/actions";
 import { selectIsPendingDownload } from "../../../../modules/immutable-file/selectors";
 import { selectMyInvestorTicketByEtoId } from "../../../../modules/investor-portfolio/selectors";
@@ -33,7 +33,7 @@ import * as iconDownload from "../../../../assets/img/inline_icons/download.svg"
 import * as styles from "./Summary.module.scss";
 
 interface IStateProps {
-  txData: Partial<ITxData>;
+  txData: Partial<IBlTxData>;
   txCost: string;
   etoData: TETOWithInvestorTicket;
   etoId: string;

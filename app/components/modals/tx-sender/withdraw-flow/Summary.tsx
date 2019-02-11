@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Container, Row } from "reactstrap";
 
-import { ITxData } from "../../../../lib/web3/types";
+import { IBlTxData } from "../../../../lib/web3/types";
 import { actions } from "../../../../modules/actions";
 import {
   selectTxGasCostEthUlps,
@@ -16,7 +16,7 @@ import { InfoList } from "../shared/InfoList";
 import { InfoRow } from "../shared/InfoRow";
 
 interface IStateProps {
-  txData: Partial<ITxData>;
+  txData: Partial<IBlTxData>;
   txCost: string;
 }
 

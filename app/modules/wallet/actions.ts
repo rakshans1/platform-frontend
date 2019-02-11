@@ -1,9 +1,9 @@
 import { createAction, createSimpleAction } from "../actionsUtils";
-import { IWalletDataState } from "./interfaces";
+import { IStateWalletData } from "./interfaces";
 
 export const walletActions = {
   loadWalletData: () => createSimpleAction("WALLET_LOAD_WALLET_DATA"),
-  saveWalletData: (data: IWalletDataState) => createAction("WALLET_SAVE_WALLET_DATA", { data }),
+  saveWalletData: (data: IStateWalletData) => createAction("WALLET_SAVE_WALLET_DATA", { data }),
   loadWalletDataError: (errorMsg: string) =>
     createAction("WALLET_LOAD_WALLET_DATA_ERROR", { errorMsg }),
   getWalletData: (ethAddress: string) =>

@@ -4,7 +4,7 @@ import { call, put, race, select, take } from "redux-saga/effects";
 import { GenericErrorMessage } from "../../components/translatedMessages/messages";
 import { TMessage } from "../../components/translatedMessages/utils";
 import { TGlobalDependencies } from "../../di/setupBindings";
-import { EUserType } from "../../lib/api/users/interfaces";
+import { EUserType } from "../auth/interfaces";
 import {
   ILedgerWalletMetadata,
   ILightWalletRetrieveMetadata,
@@ -22,7 +22,7 @@ import { selectUserType } from "../auth/selectors";
 import { neuCall } from "../sagasUtils";
 import { unlockWallet } from "../web3/sagas";
 import { selectIsLightWallet, selectIsUnlocked } from "../web3/selectors";
-import { EWalletType } from "../web3/types";
+import { EWalletType } from "../web3/interfaces";
 import { mapSignMessageErrorToErrorMessage, MismatchedWalletAddressError } from "./errors";
 import { selectIsSigning } from "./reducer";
 

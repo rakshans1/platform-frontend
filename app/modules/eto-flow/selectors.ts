@@ -1,8 +1,5 @@
 import {
   EEtoState,
-  TCompanyEtoData, TEtoSpecsData,
-  TPartialCompanyEtoData,
-  TPartialEtoSpecData,
 } from "../../lib/api/eto/EtoApi.interfaces";
 import { TEtoDocumentTemplates } from "../../lib/api/eto/EtoFileApi.interfaces";
 import { ERequestStatus } from "../../lib/api/KycApi.interfaces";
@@ -12,13 +9,16 @@ import { selectPlatformTermsConstants } from "../contracts/selectors";
 import { selectEtoDocumentLoading } from "../eto-documents/selectors";
 import { selectKycRequestStatus } from "../kyc/selectors";
 import { selectEtoWithCompanyAndContract, selectPublicEto } from "../public-etos/selectors";
-import {EETOStateOnChain, TEtoWithCompanyAndContract} from "../public-etos/types";
+import {EETOStateOnChain} from "../public-etos/interfaces";
 import { isValidEtoStartDate } from "./utils";
-import {DeepReadonly} from "../../types";
+import {DeepPartial, DeepReadonly} from "../../types";
+import {IStateCompanyEtoData} from "./interfaces/CompanyEtoData";
+import {TStateEtoWithCompanyAndContract} from "../public-etos/interfaces";
+import {IStatePublicEtoData} from "./interfaces/PublicEtoData";
 
 export const selectIssuerEtoPreviewCode = (state: IAppState):string | undefined => state.etoFlow.etoPreviewCode;
 
-export const selectIssuerEto = (state: IAppState): DeepReadonly<TEtoSpecsData> | undefined => {
+export const selectIssuerEto = (state: IAppState): DeepReadonly<IStatePublicEtoData> | undefined => {
   const issuerEtoPreviewCode = selectIssuerEtoPreviewCode(state);
 
   if (issuerEtoPreviewCode) {
@@ -28,7 +28,7 @@ export const selectIssuerEto = (state: IAppState): DeepReadonly<TEtoSpecsData> |
   return undefined;
 };
 
-export const selectIssuerEtoWithCompanyAndContract = (state: IAppState):TEtoWithCompanyAndContract | undefined => {
+export const selectIssuerEtoWithCompanyAndContract = (state: IAppState):TStateEtoWithCompanyAndContract | undefined => {
   const issuerEtoPreviewCode = selectIssuerEtoPreviewCode(state);
 
   if (issuerEtoPreviewCode) {
@@ -92,7 +92,7 @@ export const selectIssuerEtoIsRetail = (state: IAppState): boolean => {
   return false;
 };
 
-export const selectIssuerCompany = (state: IAppState): TCompanyEtoData | undefined => {
+export const selectIssuerCompany = (state: IAppState): DeepReadonly<IStateCompanyEtoData> | undefined => {
   const eto = selectIssuerEtoWithCompanyAndContract(state);
 
   if (eto) {
@@ -106,7 +106,7 @@ export const selectIssuerEtoLoading = (state: IAppState): boolean => state.etoFl
 
 export const selectCombinedEtoCompanyData = (
   state: IAppState,
-): TPartialEtoSpecData & TPartialCompanyEtoData => ({
+): DeepPartial<DeepReadonly<IStatePublicEtoData> & DeepReadonly<IStateCompanyEtoData>> => ({
   ...selectIssuerCompany(state),
   ...selectIssuerEto(state),
 });

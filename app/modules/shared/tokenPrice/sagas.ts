@@ -4,17 +4,17 @@ import { put, select, takeLatest } from "redux-saga/effects";
 import { Q18 } from "../../../config/constants";
 import { TGlobalDependencies } from "../../../di/setupBindings";
 import { actions } from "../../actions";
-import { numericValuesToString } from "../../contracts/utils";
 import { selectIsSmartContractInitDone } from "../../init/selectors";
 import { neuCall } from "../../sagasUtils";
-import { ITokenPriceStateData } from "./reducer";
+import { IStateTokenPriceData } from "./interfaces";
+import {NumericString} from "../../../types";
 
 const TOKEN_PRICE_MONITOR_DELAY = 120000;
 const TOKEN_PRICE_MONITOR_SHORT_DELAY = 1000;
 
 export async function loadTokenPriceDataAsync({
   contractsService,
-}: TGlobalDependencies): Promise<ITokenPriceStateData> {
+}: TGlobalDependencies): Promise<IStateTokenPriceData> {
   return contractsService.rateOracle
     .getExchangeRates(
       [
@@ -29,15 +29,13 @@ export async function loadTokenPriceDataAsync({
       ],
     )
     .then(r =>
-      Object.assign(
-        numericValuesToString({
-          etherPriceEur: r[0][0].div(Q18),
-          neuPriceEur: r[0][1].div(Q18),
-          eurPriceEther: r[0][2].div(Q18),
-        }),
-        { priceOutdated: false },
-      ),
-    );
+      ({
+          etherPriceEur: r[0][0].div(Q18).toString() as NumericString,
+          neuPriceEur: r[0][1].div(Q18).toString() as NumericString,
+          eurPriceEther: r[0][2].div(Q18).toString() as NumericString,
+          priceOutdated: false
+        })
+    )
 }
 
 function* tokenPriceMonitor({ logger }: TGlobalDependencies): any {

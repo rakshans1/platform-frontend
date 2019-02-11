@@ -2,9 +2,9 @@ import { cryptoRandomString } from "../../lib/dependencies/cryptoRandomString";
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 
-import {IInvestmentFlowState, EInvestmentType} from './interfaces'
+import {IStateInvestmentFlow, EInvestmentType} from './interfaces'
 
-export const investmentFlowInitialState: IInvestmentFlowState = {
+export const investmentFlowInitialState: IStateInvestmentFlow = {
   etoId: null,
   euroValueUlps: null,
   ethValueUlps: null,
@@ -15,10 +15,10 @@ export const investmentFlowInitialState: IInvestmentFlowState = {
   bankTransferReference: null,
 };
 
-export const investmentFlowReducer: AppReducer<IInvestmentFlowState> = (
+export const investmentFlowReducer: AppReducer<IStateInvestmentFlow> = (
   state = investmentFlowInitialState,
   action,
-): DeepReadonly<IInvestmentFlowState> => {
+): DeepReadonly<IStateInvestmentFlow> => {
   switch (action.type) {
     case "INVESTMENT_FLOW_RESET":
       return {

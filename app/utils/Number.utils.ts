@@ -27,7 +27,7 @@ export function formatThousands(value?: string): string {
   return formattedBeforeDot;
 }
 //FIXME find out what it does and rename it to be understandable
-export function convertToBigInt(value: BigNumber, currencyDecimals?: number): BigNumber {
+export function convertToBigInt(value: string, currencyDecimals?: number): BigNumber {
   const q = currencyDecimals ? new BigNumber(10).pow(currencyDecimals) : Q18;
   // const moneyInWei = q.mul(value);
   return q.mul(value);

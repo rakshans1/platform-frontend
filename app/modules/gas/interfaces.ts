@@ -1,14 +1,23 @@
+import BigNumber from "bignumber.js";
+
 import {NumericString} from "../../types";
 
 export interface IGasState {
   loading: boolean;
-  gasPrice?: GasModelState;
+  gasPrice?: IStateGasModel;
   error?: string;
 }
 
-export interface GasModelState {
+export interface IStateGasModel {
   fast: NumericString;
   fastest: NumericString;
   safeLow: NumericString;
   standard: NumericString;
+}
+
+export interface IBlGasModel {
+  fast: BigNumber;
+  fastest: BigNumber;
+  safeLow: BigNumber;
+  standard: BigNumber;
 }

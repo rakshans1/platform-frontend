@@ -1,4 +1,4 @@
-import {ITxData} from "../../../lib/web3/types";
+import { IStateTxData} from "../../../lib/web3/types";
 import {ETxSenderType} from "../interfaces";
 
 export enum ETransactionErrorType {
@@ -35,12 +35,12 @@ export enum ETxSenderState {
   ERROR_SIGN = "ERROR_SIGN",
 }
 
-export type TSummaryData = { txData: Partial<ITxData>; additionalData?: any };
+export type TSummaryData = { txData: Partial<IStateTxData>; additionalData?: any };
 
-export interface ITxSenderState {
+export interface IStateTxSender {
   state: ETxSenderState;
   type?: ETxSenderType;
-  txDetails?: ITxData;
+  txDetails?: IStateTxData;
   summaryData?: TSummaryData;
   blockId?: number;
   txHash?: string;

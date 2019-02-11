@@ -8,7 +8,8 @@ import {
   selectIsUserEmailVerified,
 } from "../auth/selectors";
 import { selectKycRequestStatus, selectWidgetLoading } from "../kyc/selectors";
-import { INotification, settingsNotification, settingsNotificationInvestor } from "./reducer";
+import { INotification} from "./interfaces";
+import {settingsNotification, settingsNotificationInvestor } from './reducer'
 
 export const selectNotifications = (state: IAppState): ReadonlyArray<INotification> =>
   state.notifications.notifications;

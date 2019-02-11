@@ -1,7 +1,7 @@
 import { RouterState } from "connected-react-router";
 import { isString } from "lodash";
 import * as queryString from "query-string";
-import { EWalletType } from "../web3/types";
+import { EWalletType } from "../web3/interfaces";
 
 export const selectRedirectURLFromQueryString = (state: RouterState): string | undefined => {
   if (!(state.location && state.location.search)) {

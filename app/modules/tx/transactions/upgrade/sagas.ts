@@ -2,8 +2,8 @@ import { addHexPrefix } from "ethereumjs-util";
 import { put, select } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
-import { ITxData } from "../../../../lib/web3/types";
-import { EthereumAddress } from "../../../../types";
+import {IStateTxData} from "../../../../lib/web3/types";
+import {EthereumAddress, NumericString} from "../../../../types";
 import { actions } from "../../../actions";
 import { selectStandardGasPriceWithOverHead } from "../../../gas/selectors";
 import { neuCall } from "../../../sagasUtils";
@@ -13,14 +13,15 @@ import {
 } from "../../../wallet/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 import { ETokenType } from "../../interfaces";
+import BigNumber from "bignumber.js";
 
 export function* generateEuroUpgradeTransaction({
   contractsService,
   web3Manager,
 }: TGlobalDependencies): any {
-  const userAddress = yield select(selectEthereumAddressWithChecksum);
-  const gasPriceWithOverhead = yield select(selectStandardGasPriceWithOverHead);
-  const migrationTarget = yield select(selectIsEuroUpgradeTargetSet);
+  const userAddress:EthereumAddress = yield select(selectEthereumAddressWithChecksum);
+  const gasPriceWithOverhead:BigNumber = yield select(selectStandardGasPriceWithOverHead);
+  const migrationTarget:boolean = yield select(selectIsEuroUpgradeTargetSet);
 
   if (!migrationTarget) {
     throw new Error();
@@ -33,15 +34,15 @@ export function* generateEuroUpgradeTransaction({
     to: contractsService.icbmEuroLock.address,
     from: userAddress,
     data: txData,
-    value: addHexPrefix("0"),
-    gasPrice: gasPriceWithOverhead,
+    value: addHexPrefix("0") as NumericString,
+    gasPrice: gasPriceWithOverhead.toString() as NumericString,
   };
 
-  const estimatedGasWithOverhead = yield web3Manager.estimateGasWithOverhead(txInitialDetails);
+  const estimatedGasWithOverhead:BigNumber = yield web3Manager.estimateGasWithOverhead(txInitialDetails);
 
-  const txDetails: ITxData = {
+  const txDetails: IStateTxData = {
     ...txInitialDetails,
-    gas: addHexPrefix(estimatedGasWithOverhead),
+    gas: addHexPrefix(estimatedGasWithOverhead.toString()) as NumericString,
   };
   return txDetails;
 }
@@ -51,7 +52,7 @@ export function* generateEtherUpgradeTransaction({
   web3Manager,
 }: TGlobalDependencies): any {
   const userAddress: EthereumAddress = yield select(selectEthereumAddressWithChecksum);
-  const gasPriceWithOverhead = yield select(selectStandardGasPriceWithOverHead);
+  const gasPriceWithOverhead:BigNumber = yield select(selectStandardGasPriceWithOverHead);
   const migrationTarget: boolean = yield select(selectIsEtherUpgradeTargetSet);
 
   if (!migrationTarget) {
@@ -64,15 +65,15 @@ export function* generateEtherUpgradeTransaction({
     to: contractsService.icbmEtherLock.address,
     from: userAddress,
     data: txInput,
-    value: "0",
-    gasPrice: gasPriceWithOverhead,
+    value: "0" as NumericString,
+    gasPrice: gasPriceWithOverhead.toString() as NumericString,
   };
 
   const estimatedGasWithOverhead = yield web3Manager.estimateGasWithOverhead(txInitialDetails);
 
-  const txDetails: ITxData = {
+  const txDetails: IStateTxData = {
     ...txInitialDetails,
-    gas: addHexPrefix(estimatedGasWithOverhead),
+    gas: addHexPrefix(estimatedGasWithOverhead) as NumericString,
   };
 
   return txDetails;
@@ -83,7 +84,7 @@ export function* upgradeTransactionFlow(_: TGlobalDependencies, tokenType: EToke
     tokenType === ETokenType.ETHER
       ? generateEtherUpgradeTransaction
       : generateEuroUpgradeTransaction;
-  const generatedTxDetails: ITxData = yield neuCall(transactionGenerator);
+  const generatedTxDetails: IStateTxData = yield neuCall(transactionGenerator);
   yield put(actions.txSender.setTransactionData(generatedTxDetails));
   yield put(
     actions.txSender.txSenderContinueToSummary({

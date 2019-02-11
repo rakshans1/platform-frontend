@@ -1,24 +1,24 @@
 import BigNumber from "bignumber.js";
 
 import { EEtoState } from "../../lib/api/eto/EtoApi.interfaces";
-import { Overwrite } from "../../types";
+import {NumericString, Overwrite} from "../../types";
 import {
   EETOStateOnChain,
-  IEtoTotalInvestment,
+  IEtoTotalInvestmentState,
   TEtoStartOfStates,
-  TEtoWithCompanyAndContract,
-} from "./types";
+  TStateEtoWithCompanyAndContract,
+} from "./interfaces";
 
 export const convertToEtoTotalInvestment = (
   [totalEquivEurUlps, totalTokensInt, totalInvestors]: [BigNumber, BigNumber, BigNumber],
   euroTokenBalance: BigNumber,
   etherTokenBalance: BigNumber,
-): IEtoTotalInvestment => ({
-  totalEquivEurUlps,
-  totalTokensInt,
-  totalInvestors,
-  euroTokenBalance,
-  etherTokenBalance,
+): IEtoTotalInvestmentState => ({
+  totalEquivEurUlps: totalEquivEurUlps.toString() as NumericString,
+  totalTokensInt: totalTokensInt.toString() as NumericString,
+  totalInvestors: totalInvestors.toString()as NumericString,
+  euroTokenBalance: euroTokenBalance.toString()as NumericString,
+  etherTokenBalance: etherTokenBalance.toString() as NumericString,
 });
 
 const convertToDate = (startOf: BigNumber): Date | undefined => {
@@ -54,10 +54,10 @@ export const convertToStateStartDate = (
 };
 
 export function isOnChain(
-  eto: TEtoWithCompanyAndContract,
+  eto: TStateEtoWithCompanyAndContract,
 ): eto is Overwrite<
-  TEtoWithCompanyAndContract,
-  { contract: Exclude<TEtoWithCompanyAndContract["contract"], undefined> }
+  TStateEtoWithCompanyAndContract,
+  { contract: Exclude<TStateEtoWithCompanyAndContract["contract"], undefined> }
 > {
   return eto.state === EEtoState.ON_CHAIN && eto.contract !== undefined;
 }
