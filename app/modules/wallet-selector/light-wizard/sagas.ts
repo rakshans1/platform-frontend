@@ -13,6 +13,10 @@ import { IUser, IUserInput } from "../../../lib/api/users/interfaces";
 import { EmailAlreadyExists, UserNotExisting } from "../../../lib/api/users/UsersApi";
 import { ILightWalletMetadata } from "../../../lib/persistence/WalletMetadataObjectStorage";
 import { LightError, LightWallet, LightWalletLocked } from "../../../lib/web3/LightWallet";
+import {
+  createLightWalletVault,
+  deserializeLightWalletVault,
+} from "../../../lib/web3/LightWalletUtils";
 import { IAppState } from "../../../store";
 import { invariant } from "../../../utils/invariant";
 import { connectLightWallet } from "../../access-wallet/sagas";
@@ -34,9 +38,46 @@ import { EWalletSubType } from "../../web3/types";
 import { selectUrlUserType } from "../selectors";
 import { mapLightWalletErrorToErrorMessage } from "./errors";
 import { getWalletMetadataByURL } from "./metadata/sagas";
-import { setupLightWalletPromise } from "./utils";
+import { getVaultKey } from "./utils";
 
 export const DEFAULT_HD_PATH = "m/44'/60'/0'";
+
+export async function setupLightWalletPromise(
+  { vaultApi, lightWalletConnector, web3Manager, logger }: TGlobalDependencies,
+  email: string,
+  password: string,
+  seed: string,
+): Promise<ILightWalletMetadata> {
+  try {
+    const lightWalletVault = await createLightWalletVault({
+      password,
+      hdPathString: DEFAULT_HD_PATH,
+      recoverSeed: seed,
+    });
+    const walletInstance = await deserializeLightWalletVault(
+      lightWalletVault.walletInstance,
+      lightWalletVault.salt,
+    );
+
+    const vaultKey = await getVaultKey(lightWalletVault.salt, password);
+    await vaultApi.store(vaultKey, lightWalletVault.walletInstance);
+
+    const lightWallet = await lightWalletConnector.connect(
+      {
+        walletInstance,
+        salt: lightWalletVault.salt,
+      },
+      email,
+      password,
+    );
+
+    await web3Manager.plugPersonalWallet(lightWallet);
+    return lightWallet.getMetadata() as ILightWalletMetadata;
+  } catch (e) {
+    logger.warn("Error while trying to connect with light wallet: ", e);
+    throw e;
+  }
+}
 
 export function* lightWalletBackupWatch({ logger }: TGlobalDependencies): Iterator<any> {
   try {
