@@ -7,15 +7,15 @@ import { compose, lifecycle, withState } from "recompose";
 
 import { externalRoutes } from "../../config/externalRoutes";
 import { actions } from "../../modules/actions";
-import { selectMyAssetsWithTokenData } from "../../modules/investor-tickets/selectors";
-import { TETOWithTokenData } from "../../modules/investor-tickets/types";
+import { selectMyAssetsWithTokenData } from "../../modules/investor-portfolio/selectors";
+import { TETOWithTokenData } from "../../modules/investor-portfolio/types";
 import { selectNeuPriceEur } from "../../modules/shared/tokenPrice/selectors";
 import { selectNeuBalance } from "../../modules/wallet/selectors";
 import { appConnect } from "../../store";
 import { multiplyBigNumbers } from "../../utils/BigNumberUtils";
 import { withParams } from "../../utils/withParams";
-import { Button, ButtonLink, EButtonLayout } from "../shared/buttons";
-import { ECurrency, ECurrencySymbol, Money } from "../shared/Money";
+import { Button, ButtonLink, ButtonSize, EButtonLayout } from "../shared/buttons";
+import { ECurrency, ECurrencySymbol, EMoneyFormat, Money } from "../shared/Money";
 import { ENewTableCellLayout, NewTable, NewTableRow } from "../shared/NewTable";
 import { NumberFormat } from "../shared/NumberFormat";
 import { SectionHeader } from "../shared/SectionHeader";
@@ -59,7 +59,7 @@ const PortfolioMyAssetsComponent: React.FunctionComponent<TComponentProps> = ({
 }) => (
   <>
     <SectionHeader
-      layoutHasDecorator={false}
+      decorator={false}
       className="mb-4"
       description={<FormattedMessage id="portfolio.section.your-assets.description" />}
     >
@@ -97,6 +97,7 @@ const PortfolioMyAssetsComponent: React.FunctionComponent<TComponentProps> = ({
               <Money
                 value={neuPrice}
                 currency={ECurrency.EUR}
+                format={EMoneyFormat.FLOAT}
                 currencySymbol={ECurrencySymbol.SYMBOL}
                 isPrice={true}
               />
@@ -105,7 +106,7 @@ const PortfolioMyAssetsComponent: React.FunctionComponent<TComponentProps> = ({
                 layout={EButtonLayout.SECONDARY}
                 iconPosition="icon-after"
                 svgIcon={arrowRight}
-                innerClassName={cn(styles.actionButton, "p-0")}
+                size={ButtonSize.SMALL}
               >
                 <FormattedMessage id="portfolio.section.my-assets.download-agreements" />
               </ButtonLink>
@@ -142,7 +143,7 @@ const PortfolioMyAssetsComponent: React.FunctionComponent<TComponentProps> = ({
                       layout={EButtonLayout.SECONDARY}
                       iconPosition="icon-after"
                       svgIcon={arrowRight}
-                      innerClassName={cn(styles.actionButton, "p-0")}
+                      size={ButtonSize.SMALL}
                     >
                       <FormattedMessage id="portfolio.section.my-assets.download-agreements" />
                     </Button>

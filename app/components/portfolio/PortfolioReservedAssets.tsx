@@ -5,8 +5,8 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { Link } from "react-router-dom";
 import { Col, Row } from "reactstrap";
 
-import { TETOWithInvestorTicket } from "../../modules/investor-tickets/types";
-import { getNeuReward } from "../../modules/investor-tickets/utils";
+import { TETOWithInvestorTicket } from "../../modules/investor-portfolio/types";
+import { getNeuReward } from "../../modules/investor-portfolio/utils";
 import { EETOStateOnChain } from "../../modules/public-etos/types";
 import { withParams } from "../../utils/withParams";
 import { appRoutes } from "../appRoutes";
@@ -27,7 +27,7 @@ interface IExternalProps {
 const PortfolioReservedAssets: React.FunctionComponent<IExternalProps> = ({ pendingAssets }) => (
   <>
     <SectionHeader
-      layoutHasDecorator={false}
+      decorator={false}
       className="mb-4"
       description={<FormattedMessage id="portfolio.section.reserved-assets.description" />}
     >
