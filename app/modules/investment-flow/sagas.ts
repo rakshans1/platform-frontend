@@ -4,7 +4,7 @@ import { put, select, take, takeEvery, takeLatest } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
-import { IBlTxData } from "../../lib/web3/types";
+import * as txInterfaces from "../../lib/web3/types";
 import { IAppState } from "../../store";
 import { compareBigNumbers } from "../../utils/BigNumberUtils";
 import { isLessThanNHours } from "../../utils/Date.utils";
@@ -21,7 +21,7 @@ import {
   selectEtoWithCompanyAndContractById,
   selectPublicEtoById,
 } from "../public-etos/selectors";
-import { EETOStateOnChain } from "../public-etos/interfaces";
+import { EETOStateOnChain } from "../public-etos/interfaces/interfaces";
 import { neuCall } from "../sagasUtils";
 import { selectEtherPriceEur, selectEurPriceEther } from "../shared/tokenPrice/selectors";
 import { ETxSenderType } from "../tx/interfaces";
@@ -49,8 +49,9 @@ import {
   selectIsBankTransferModalOpened,
   selectIsICBMInvestment,
 } from "./selectors";
-import {ICalculatedContribution} from "../investor-portfolio/interfaces";
+import {IBlCalculatedContribution, IStateCalculatedContribution} from "../investor-portfolio/interfaces/interfaces";
 import {NumericString} from "../../types";
+import {convert} from "../../components/eto/utils";
 
 // default: 3 days
 const HOURS_TO_DISABLE_BANK_TRANSFER = parseInt(
@@ -142,7 +143,7 @@ function calculateInvestmentError(state: IAppState): EInvestmentErrorState | und
     const euroValue = investmentFlow.euroValueUlps !== null ? new BigNumber(investmentFlow.euroValueUlps) : null;
     const etherValue = investmentFlow.ethValueUlps !== null ? new BigNumber(investmentFlow.ethValueUlps) : null;
     const wallet = state.wallet.data;
-    const contribs:ICalculatedContribution | undefined = selectCalculatedContribution(state, investmentFlow.etoId);
+    const contribs:IStateCalculatedContribution | undefined = selectCalculatedContribution(state, investmentFlow.etoId);
     const ticketSizes = selectCalculatedEtoTicketSizesUlpsById(state, investmentFlow.etoId); //{bignumber, bignumber}
 
     if (!contribs || !euroValue || !etherValue || !wallet || !ticketSizes) return;
@@ -195,7 +196,7 @@ function* validateAndCalculateInputs({ contractsService }: TGlobalDependencies):
     const etoContract: ETOCommitment = yield contractsService.getETOCommitmentContract(eto.etoId);
     if (etoContract) {
       const isICBM = selectIsICBMInvestment(state);
-      const contribution = yield neuCall(loadComputedContributionFromContract, eto, value, isICBM);
+      const contribution:IBlCalculatedContribution = yield neuCall(loadComputedContributionFromContract, eto, value, isICBM);
 
       yield put(actions.investorEtoTicket.setCalculatedContribution(eto.etoId, contribution));
 
@@ -208,11 +209,11 @@ function* validateAndCalculateInputs({ contractsService }: TGlobalDependencies):
 
       // validate and set transaction if not on bank transfer
       if (state.investmentFlow.investmentType !== EInvestmentType.BankTransfer) {
-        const txData: IBlTxData = yield neuCall(
+        const txData: txInterfaces.IBlTxData = yield neuCall(
           txValidateSaga,
           actions.txValidator.txSenderValidateDraft({ type: ETxSenderType.INVEST }),
         );
-        yield put(actions.txSender.setTransactionData(txData));
+        yield put(actions.txSender.setTransactionData(convert(txData, txInterfaces.stateToBlConversionSpec)));
       }
 
       yield put(actions.investmentFlow.setIsInputValidated(true));

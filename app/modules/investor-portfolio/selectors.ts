@@ -5,10 +5,10 @@ import { Q18 } from "../../config/constants";
 import { getShareAndTokenPrice } from "../../lib/api/eto/EtoUtils";
 import { IAppState } from "../../store";
 import { selectPublicEtoById, selectPublicEtos, selectTokenData } from "../public-etos/selectors";
-import { EETOStateOnChain } from "../public-etos/interfaces";
+import { EETOStateOnChain } from "../public-etos/interfaces/interfaces";
 import { isOnChain } from "../public-etos/utils";
 import { selectLockedWalletConnected } from "../wallet/selectors";
-import { ICalculatedContribution, TETOWithInvestorTicket, TETOWithTokenData } from "./interfaces";
+import { IStateCalculatedContribution, TETOWithInvestorTicket, TETOWithTokenData } from "./interfaces/interfaces";
 
 const selectInvestorTicketsState = (state: IAppState) => state.investorTickets;
 
@@ -85,7 +85,7 @@ export const selectMyInvestorTicketByEtoId = (
   return undefined;
 };
 
-export const selectCalculatedContribution = (state: IAppState, etoId: string):ICalculatedContribution | undefined => {
+export const selectCalculatedContribution = (state: IAppState, etoId: string):IStateCalculatedContribution | undefined => {
   const investorState = selectInvestorTicketsState(state);
 
   return (
@@ -97,7 +97,7 @@ export const selectCalculatedContribution = (state: IAppState, etoId: string):IC
 export const selectInitialCalculatedContribution = (
   etoId: string,
   state: IAppState,
-): ICalculatedContribution | undefined => {
+): IStateCalculatedContribution | undefined => {
   const investorState = selectInvestorTicketsState(state);
 
   return investorState.initialCalculatedContributions[etoId];

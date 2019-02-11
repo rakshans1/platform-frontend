@@ -1,6 +1,6 @@
 import { fork, put, select } from "redux-saga/effects";
 import { TGlobalDependencies } from "../../../di/setupBindings";
-import { IBlTxData } from "../../../lib/web3/types";
+import {IBlTxData} from "../../../lib/web3/types";
 import { NotEnoughEtherForGasError } from "../../../lib/web3/Web3Adapter";
 import { actions, TAction } from "../../actions";
 import { neuCall, neuTakeEvery } from "../../sagasUtils";
@@ -16,7 +16,7 @@ export function* txValidateSaga({ logger }: TGlobalDependencies, action: TAction
   // reset validation
   yield put(actions.txValidator.setValidationState());
 
-  let validationGenerator: any;
+  let validationGenerator:any;
   switch (action.payload.type) {
     case ETxSenderType.WITHDRAW:
       validationGenerator = generateEthWithdrawTransaction;
@@ -26,12 +26,14 @@ export function* txValidateSaga({ logger }: TGlobalDependencies, action: TAction
       break;
   }
 
-  let generatedTxDetails: IBlTxData | undefined;
+  let generatedTxDetails: IBlTxData;
 
   try {
     generatedTxDetails = yield neuCall(validationGenerator, action.payload);
-    yield validateGas(generatedTxDetails as IBlTxData);
+    yield validateGas(generatedTxDetails);
     yield put(actions.txValidator.setValidationState(EValidationState.VALIDATION_OK));
+
+    return generatedTxDetails
   } catch (error) {
     if (error instanceof NotEnoughEtherForGasError) {
       logger.info(error);
@@ -40,8 +42,6 @@ export function* txValidateSaga({ logger }: TGlobalDependencies, action: TAction
       logger.error(error);
     }
   }
-
-  return generatedTxDetails;
 }
 
 export function* validateGas(txDetails: IBlTxData): any {

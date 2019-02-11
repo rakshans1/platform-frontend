@@ -20,7 +20,7 @@ const createInvestmentTxData = (
   txData: string,
   contractAddress: string,
   value = new BigNumber("0"),
-) => ({
+):IBlTxData => ({
   to: contractAddress,
   from: selectEthereumAddressWithChecksum(state),
   data: txData,
@@ -33,7 +33,7 @@ const getEtherLockTransaction = (
   state: IAppState,
   contractsService: ContractsService,
   etoId: string,
-) => {
+):IBlTxData => {
   const txData = contractsService.etherLock
     .transferTx(etoId, new BigNumber(state.investmentFlow.ethValueUlps || "0"), [""])
     .getData();
@@ -44,7 +44,7 @@ const getEuroLockTransaction = (
   state: IAppState,
   contractsService: ContractsService,
   etoId: string,
-) => {
+):IBlTxData => {
   const txData = contractsService.euroLock
     .transferTx(etoId, new BigNumber(state.investmentFlow.euroValueUlps || "0"), [""])
     .getData();

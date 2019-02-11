@@ -1,5 +1,7 @@
+import BigNumber from "bignumber.js";
+
 import {NumericString} from "../../../types";
-import {numberToNumericString} from "../../../utils/numericStringUtils";
+import {numberToNumericString, numericStringToBigNumber} from "../../../utils/numericStringUtils";
 
 export interface IStateShareholderData {
   fullName: string;
@@ -11,6 +13,15 @@ export interface IApiShareholderData {
   shares: number;
 }
 
+export interface IBlShareholderData {
+  fullName: string;
+  shares: BigNumber;
+}
+
 export const apiToStateConversionSpec = {
   shares: numberToNumericString()
+};
+
+export const stateToBlConversionSpec = {
+  shares: numericStringToBigNumber()
 };

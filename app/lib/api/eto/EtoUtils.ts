@@ -1,4 +1,4 @@
-import { TStateEtoWithCompanyAndContract } from "../../../modules/public-etos/interfaces";
+import { TStateEtoWithCompanyAndContract } from "../../../modules/public-etos/interfaces/interfaces";
 import { TEtoSpecsData, TPartialEtoSpecData } from "./EtoApi.interfaces";
 
 export const getInvestmentAmount = (eto: TPartialEtoSpecData) => {

@@ -1,17 +1,17 @@
 import { find } from "lodash/fp";
-import BigNumber from "bignumber.js";
 
 import { IAppState } from "../../store";
 import {
-  IStatePublicEto,
-  EETOStateOnChain,
-  TStateEtoWithCompanyAndContract,
-  ICalcEtoTokenData
-} from "./interfaces";
-import {IStatePublicEtoData} from "../eto-flow/interfaces/PublicEtoData";
-import {DeepReadonly} from "../../types";
+  EETOStateOnChain, TBlEtoWithCompanyAndContract, stateToBlConversionSpec,
+} from "./interfaces/interfaces";
+import * as publicEtoDataInterfaces from "../eto-flow/interfaces/PublicEtoData";
+import {convert} from "../../components/eto/utils";
+import * as tokenDataInterfaces from "./interfaces/EtoTokenData";
+import * as publicEtoInterfaces from "./interfaces/PublicEto";
+import {IStatePublicEto} from "./interfaces/PublicEto";
 
-const selectPublicEtosState = (state: IAppState) => state.publicEtos;
+const selectPublicEtosState = (state: IAppState):publicEtoInterfaces.IBlPublicEto =>
+  convert(state.publicEtos, publicEtoInterfaces.stateToBlConversionSpec);
 
 const selectEtoPreviewCode = (state: IAppState, etoId: string):string | undefined => {
   const eto = find(eto => eto!.etoId === etoId, state.publicEtos.publicEtos);
@@ -23,7 +23,7 @@ const selectEtoPreviewCode = (state: IAppState, etoId: string):string | undefine
   return undefined;
 };
 
-export const selectEtoTokenName = (state: IAppState, etoId: string) => {
+export const selectEtoTokenName = (state: IAppState, etoId: string):string | undefined => {
   const eto = find(eto => eto!.etoId === etoId, state.publicEtos.publicEtos);
 
   if (eto) {
@@ -33,27 +33,31 @@ export const selectEtoTokenName = (state: IAppState, etoId: string) => {
   return undefined;
 };
 
-export const selectPublicEto = (state: IAppState, previewCode: string):IStatePublicEtoData | undefined =>
-  state.publicEtos.publicEtos[previewCode];
+export const selectPublicEto = (state: IAppState, previewCode: string):publicEtoDataInterfaces.IBlPublicEtoData | undefined =>
+  convert(state.publicEtos.publicEtos[previewCode], publicEtoDataInterfaces.stateToBlConversionSpec);
 
-export const selectPublicEtoById = (state: IAppState, etoId: string):DeepReadonly<IStatePublicEtoData> | undefined => {
+export const selectPublicEtoById = (state: IAppState, etoId: string):publicEtoDataInterfaces.IBlPublicEtoData | undefined => {
   const previewId = selectEtoPreviewCode(state, etoId);
-  return previewId ? state.publicEtos.publicEtos[previewId] : undefined; //previewId may be an empty string too
+  return previewId
+    ? convert(state.publicEtos.publicEtos[previewId], publicEtoDataInterfaces.stateToBlConversionSpec)
+    : undefined; //previewId may be an empty string too
 };
 
 export const selectEtoWithCompanyAndContract = (
   state: IAppState,
   previewCode: string,
-): TStateEtoWithCompanyAndContract | undefined => {
+): TBlEtoWithCompanyAndContract | undefined => {
   const publicEtosState = selectPublicEtosState(state);
   const eto = publicEtosState.publicEtos[previewCode];
 
   if (eto) {
-    return {
+    return convert({
       ...eto,
       company: publicEtosState.companies[eto.companyId]!,
       contract: publicEtosState.contracts[previewCode],
-    };
+    },
+      stateToBlConversionSpec
+    );
   }
 
   return undefined;
@@ -62,7 +66,7 @@ export const selectEtoWithCompanyAndContract = (
 export const selectEtoWithCompanyAndContractById = (
   state: IAppState,
   etoId: string,
-): TStateEtoWithCompanyAndContract | undefined => {
+): TBlEtoWithCompanyAndContract | undefined => {
   const previewCode = selectEtoPreviewCode(state, etoId);
 
   if (previewCode) {
@@ -72,7 +76,7 @@ export const selectEtoWithCompanyAndContractById = (
   return undefined;
 };
 
-export const selectPublicEtos = (state: IAppState): TStateEtoWithCompanyAndContract[] | undefined => {
+export const selectPublicEtos = (state: IAppState): TBlEtoWithCompanyAndContract[] | undefined => {
   const publicEtosState = selectPublicEtosState(state);
 
   if (publicEtosState.displayOrder) {
@@ -95,7 +99,7 @@ export const selectEtoOnChainState = (
 export const selectEtoOnChainNextStateStartDate = (
   state: IAppState,
   previewCode: string,
-): Date | undefined => {
+): Date | undefined => { //FIXME dates shouldn't be in state
   const eto = selectEtoWithCompanyAndContract(state, previewCode);
 
   if (eto) {
@@ -124,15 +128,9 @@ export const selectEtoOnChainStateById = (
 export const selectTokenData = (
   state: IStatePublicEto,
   previewCode: string,
-): ICalcEtoTokenData | undefined => {
+): tokenDataInterfaces.IBlEtoTokenData | undefined => {
   const tokenData = state.tokenData[previewCode];
     return tokenData
-    ? {
-      balance: new BigNumber(tokenData.balance),
-      tokensPerShare: new BigNumber(tokenData.tokensPerShare),
-      totalCompanyShares: new BigNumber(tokenData.totalCompanyShares),
-      companyValuationEurUlps: new BigNumber(tokenData.companyValuationEurUlps),
-      tokenPrice: new BigNumber(tokenData.tokenPrice),
-    }
+    ? convert(tokenData, tokenDataInterfaces.stateToBlConversionSpec)
     : undefined
 };

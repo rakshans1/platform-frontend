@@ -9,11 +9,11 @@ import { selectPlatformTermsConstants } from "../contracts/selectors";
 import { selectEtoDocumentLoading } from "../eto-documents/selectors";
 import { selectKycRequestStatus } from "../kyc/selectors";
 import { selectEtoWithCompanyAndContract, selectPublicEto } from "../public-etos/selectors";
-import {EETOStateOnChain} from "../public-etos/interfaces";
+import {EETOStateOnChain} from "../public-etos/interfaces/interfaces";
 import { isValidEtoStartDate } from "./utils";
 import {DeepPartial, DeepReadonly} from "../../types";
 import {IStateCompanyEtoData} from "./interfaces/CompanyEtoData";
-import {TStateEtoWithCompanyAndContract} from "../public-etos/interfaces";
+import {TStateEtoWithCompanyAndContract} from "../public-etos/interfaces/interfaces";
 import {IStatePublicEtoData} from "./interfaces/PublicEtoData";
 
 export const selectIssuerEtoPreviewCode = (state: IAppState):string | undefined => state.etoFlow.etoPreviewCode;

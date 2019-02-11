@@ -7,7 +7,7 @@ import {
   IEtoTotalInvestmentState,
   TEtoStartOfStates,
   TStateEtoWithCompanyAndContract,
-} from "./interfaces";
+} from "./interfaces/interfaces";
 
 export const convertToEtoTotalInvestment = (
   [totalEquivEurUlps, totalTokensInt, totalInvestors]: [BigNumber, BigNumber, BigNumber],

@@ -2,7 +2,7 @@ import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 import { actions } from "../actions";
 
-import {IStatePublicEto} from './interfaces'
+import {IStatePublicEto} from './interfaces/interfaces'
 
 export const etoFlowInitialState: IStatePublicEto = {
   publicEtos: {},

@@ -27,7 +27,7 @@ import {
   selectEtoWithCompanyAndContract,
   selectPublicEtoById,
 } from "./selectors";
-import {EETOStateOnChain, TApiPublicEtoData, TStateEtoWithCompanyAndContract} from "./interfaces";
+import {EETOStateOnChain, TApiPublicEtoData, TStateEtoWithCompanyAndContract} from "./interfaces/interfaces";
 import * as publicEtoInterfaces from '../eto-flow/interfaces/PublicEtoData'
 import {convert} from "../../components/eto/utils";
 import * as companyEtoDataInterfaces from "../eto-flow/interfaces/CompanyEtoData";

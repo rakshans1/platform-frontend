@@ -17,3 +17,12 @@ export interface IApiKeyIndividual {
   website: string;
   socialChannels: socialChannelInterfaces.IApiSocialChannel[]
 }
+
+export interface IBlKeyIndividual {
+  name: string;
+  role: string;
+  image: string;
+  description: string;
+  website: string;
+  socialChannels: socialChannelInterfaces.IBlSocialChannel[]
+}

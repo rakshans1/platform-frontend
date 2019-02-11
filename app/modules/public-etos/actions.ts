@@ -1,7 +1,7 @@
 import {IEtoDocument, EEtoDocumentType} from '../eto-documents/interfaces'
 import { Dictionary } from "../../types";
 import { createActionFactory } from "../actionsUtils";
-import { IEtoContractDataState, IStateEtoTokenData } from "./interfaces";
+import { IStateEtoContractData, IStateEtoTokenData } from "./interfaces/interfaces";
 import { IStatePublicEtoData} from "../eto-flow/interfaces/PublicEtoData";
 import {IStateCompanyEtoData} from '../eto-flow/interfaces/CompanyEtoData';
 
@@ -57,7 +57,7 @@ export const etoActions = {
   })),
   setEtoDataFromContract: createActionFactory(
     "PUBLIC_ETOS_SET_ETO_DATA_FROM_CONTRACT",
-    (previewCode: string, data: IEtoContractDataState) => ({ previewCode, data }),
+    (previewCode: string, data: IStateEtoContractData) => ({ previewCode, data }),
   ),
   setEtoWidgetError: createActionFactory("PUBLIC_ETOS_SET_ETO_WIDGET_ERROR"),
 };

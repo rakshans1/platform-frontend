@@ -4,7 +4,7 @@ import { Q18 } from "../../../../config/constants";
 import { TAction } from "../../../actions";
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
-import { IStateTxData} from "../../../../lib/web3/types";
+import * as txInterfaces from "../../../../lib/web3/types";
 import { actions } from "../../../actions";
 import { selectStandardGasPriceWithOverHead } from "../../../gas/selectors";
 import { neuCall } from "../../../sagasUtils";
@@ -13,6 +13,7 @@ import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 import { IWithdrawDraftType } from "../../interfaces";
 import { calculateGasLimitWithOverhead, EMPTY_DATA } from "../../utils";
 import {NumericString} from "../../../../types";
+import {convert} from "../../../../components/eto/utils";
 
 const SIMPLE_WITHDRAW_TRANSACTION = new BigNumber("21000");
 
@@ -25,18 +26,18 @@ export function* generateEthWithdrawTransaction(
 
   const etherTokenBalance: BigNumber = yield select(selectEtherTokenBalanceAsBigNumber);
   const from: string = yield select(selectEthereumAddressWithChecksum);
-  const gasPriceWithOverhead = yield select(selectStandardGasPriceWithOverHead);
+  const gasPriceWithOverhead:BigNumber = yield select(selectStandardGasPriceWithOverHead);
   const weiValue = Q18.mul(value);
 
   if (etherTokenBalance.isZero()) {
     // transaction can be fully covered ether balance
-    const txDetails: Partial<IStateTxData> = {
+    const txDetails: Partial<txInterfaces.IBlTxData> = {
       to,
       from,
       data: EMPTY_DATA,
-      value: weiValue.toString() as NumericString,
+      value: weiValue,
       gasPrice: gasPriceWithOverhead,
-      gas: calculateGasLimitWithOverhead(SIMPLE_WITHDRAW_TRANSACTION).toString() as NumericString,
+      gas: calculateGasLimitWithOverhead(SIMPLE_WITHDRAW_TRANSACTION),
     };
     return txDetails;
   } else {
@@ -45,11 +46,11 @@ export function* generateEthWithdrawTransaction(
 
     const difference = weiValue.sub(etherTokenBalance);
 
-    const txDetails: Partial<IStateTxData> = {
+    const txDetails: Partial<txInterfaces.IBlTxData> = {
       to: contractsService.etherToken.address,
       from,
       data: txInput,
-      value: (difference.comparedTo(0) > 0 ? difference.toString() : "0") as NumericString,
+      value: (difference.comparedTo(0) > 0 ? difference : new BigNumber("0")),
       gasPrice: gasPriceWithOverhead,
     };
     const estimatedGasWithOverhead = yield web3Manager.estimateGasWithOverhead(txDetails);
@@ -61,8 +62,8 @@ export function* ethWithdrawFlow(_: TGlobalDependencies): any {
   const action: TAction = yield take("TX_SENDER_ACCEPT_DRAFT");
   if (action.type !== "TX_SENDER_ACCEPT_DRAFT" || !action.payload.txDraftData) return;
   const txDataFromUser = action.payload.txDraftData;
-  const generatedTxDetails = yield neuCall(generateEthWithdrawTransaction, txDataFromUser);
-  yield put(actions.txSender.setTransactionData(generatedTxDetails));
+  const generatedTxDetails:txInterfaces.IBlTxData = yield neuCall(generateEthWithdrawTransaction, txDataFromUser);
+  yield put(actions.txSender.setTransactionData(convert(generatedTxDetails, txInterfaces.stateToBlConversionSpec)));
   yield put(
     actions.txSender.txSenderContinueToSummary({
       txData: {

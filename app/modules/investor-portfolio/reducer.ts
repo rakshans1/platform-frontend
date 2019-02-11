@@ -1,19 +1,19 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 import { actions } from "../actions";
-import {IInvestorTicketsState} from './interfaces'
+import {IStateInvestorTickets} from './interfaces/interfaces'
 
-export const etoFlowInitialState: IInvestorTicketsState = {
+export const etoFlowInitialState: IStateInvestorTickets = {
   calculatedContributions: {},
   initialCalculatedContributions: {},
   investorEtoTickets: {},
   tokensDisbursal: undefined,
 };
 
-export const investorTicketsReducer: AppReducer<IInvestorTicketsState> = (
+export const investorTicketsReducer: AppReducer<IStateInvestorTickets> = (
   state = etoFlowInitialState,
   action,
-): DeepReadonly<IInvestorTicketsState> => {
+): DeepReadonly<IStateInvestorTickets> => {
   switch (action.type) {
     case "INVESTOR_TICKET_SET":
       return {

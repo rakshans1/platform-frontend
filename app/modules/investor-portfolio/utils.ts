@@ -2,7 +2,8 @@ import BigNumber from "bignumber.js";
 
 import { ECurrency } from "../../components/shared/Money";
 import { Q18 } from "../../config/constants";
-import { ICalculatedContribution, IInvestorTicket, ITokenDisbursal } from "./types";
+import { IBlCalculatedContribution, IStateTokenDisbursal } from "./interfaces/interfaces";
+import {IBlInvestorTicket} from './interfaces/InvestorTicket'
 
 export const convertToCalculatedContribution = ([
   isWhitelisted,
@@ -20,7 +21,7 @@ export const convertToCalculatedContribution = ([
   BigNumber,
   BigNumber,
   boolean
-]): ICalculatedContribution => ({
+]): IBlCalculatedContribution => ({
   isWhitelisted,
   isEligible,
   minTicketEurUlps,
@@ -52,7 +53,7 @@ export const convertToInvestorTicket = ([
   BigNumber,
   boolean,
   boolean
-]): IInvestorTicket => ({
+]): IBlInvestorTicket => ({
   equivEurUlps,
   rewardNmkUlps,
   equityTokenInt,
@@ -73,7 +74,7 @@ export const convertToTokenDisbursal = (
     BigNumber,
     BigNumber
   ],
-): ITokenDisbursal => ({
+): IStateTokenDisbursal => ({
   currency,
   amountToBeClaimed: amountToBeClaimed.toString(),
   totalDisbursedAmount: totalDisbursedAmount.toString(),

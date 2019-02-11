@@ -3,10 +3,9 @@ import * as moment from "moment";
 
 import { IAppState } from "../../store";
 import { compareBigNumbers } from "../../utils/BigNumberUtils";
-import { convertToBigInt } from "../../utils/Number.utils";
 import { selectIsAccountFrozen, selectIsClaimsVerified } from "../kyc/selectors";
 import { selectEtoOnChainStateById } from "../public-etos/selectors";
-import { EETOStateOnChain } from "../public-etos/interfaces";
+import { EETOStateOnChain } from "../public-etos/interfaces/interfaces";
 import { EValidationState } from "../tx/sender/interfaces";
 import { selectTxValidationState } from "../tx/sender/selectors";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
@@ -102,7 +101,7 @@ export const selectBankTransferReferenceCode = (state: IAppState):string | null 
   }
 };
 
-export const GAS_STIPEND_PRICE:BigNumber = convertToBigInt(new BigNumber(10));
+export const GAS_STIPEND_PRICE:BigNumber = new BigNumber(10);
 
 export const selectBankTransferAmount = (state: IAppState):BigNumber | null => {
   const eur = selectInvestmentEurValueUlps(state);

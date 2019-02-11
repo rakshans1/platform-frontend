@@ -1,10 +1,11 @@
 import {NumericString} from "../../../types";
 import {EEtoState} from "../../../lib/api/eto/EtoApi.interfaces";
 import {TEtoDocumentTemplates} from "../../eto-documents/interfaces";
-import {numberToNumericString} from "../../../utils/numericStringUtils";
+import {numberToNumericString, numericStringToBigNumber} from "../../../utils/numericStringUtils";
+import BigNumber from "bignumber.js";
 
 export interface IStatePublicEtoData {
-  currencies: ReadonlyArray<string>;//fixme should be an enum?
+  currencies: Array<string>;//fixme should be an enum?
   prospectusLanguage: string,
   minTicketEur:NumericString;
   maxTicketEur: NumericString;
@@ -53,7 +54,7 @@ export interface IStatePublicEtoData {
 
 
 export interface IApiPublicEtoData {
-  currencies: ReadonlyArray<string>;//fixme should be an enum?
+  currencies: Array<string>;//fixme should be an enum?
   prospectusLanguage: string,
   minTicketEur:number;
   maxTicketEur: number;
@@ -99,6 +100,54 @@ export interface IApiPublicEtoData {
   canEnableBookbuilding: boolean;
 }
 
+export interface IBlPublicEtoData {
+  currencies: Array<string>;//fixme should be an enum?
+  prospectusLanguage: string,
+  minTicketEur:BigNumber;
+  maxTicketEur: BigNumber;
+  enableTransferOnSuccess: boolean,
+  notUnderCrowdfundingRegulations: boolean;
+  allowRetailInvestors: boolean;
+  whitelistDurationDays: number;
+  publicDurationDays: number;
+  signingDurationDays: number;
+  additionalTerms?: string;
+
+  equityTokenName: string;
+  equityTokenSymbol: string;
+  equityTokenImage: string;
+
+  nominee: string;
+  liquidationPreferenceMultiplier: BigNumber;
+  generalVotingRule: string;
+
+  equityTokensPerShare: BigNumber;
+  shareNominalValueEur: BigNumber;
+  preMoneyValuationEur: BigNumber;
+  existingCompanyShares: BigNumber;
+  authorizedCapitalShares: BigNumber;
+  newSharesToIssue: BigNumber;
+  minimumNewSharesToIssue: BigNumber;
+  newSharesToIssueInWhitelist: BigNumber;
+  whitelistDiscountFraction: BigNumber;
+  publicDiscountFraction: BigNumber;
+  newSharesToIssueInFixedSlots: BigNumber;
+  fixedSlotsMaximumDiscountFraction: BigNumber;
+  discountScheme: BigNumber;
+
+  etoId: string;
+  companyId: string;
+  previewCode: string;
+  state: EEtoState;
+  isBookbuilding: boolean;
+  templates: TEtoDocumentTemplates;
+  startDate: string;
+  documents: TEtoDocumentTemplates;
+  maxPledges: number;
+  canEnableBookbuilding: boolean;
+}
+
+
 export const apiToStateConversionSpec = {
   minTicketEur:numberToNumericString(),
   maxTicketEur: numberToNumericString(),
@@ -116,4 +165,23 @@ export const apiToStateConversionSpec = {
   newSharesToIssueInFixedSlots: numberToNumericString(),
   fixedSlotsMaximumDiscountFraction: numberToNumericString(),
   discountScheme: numberToNumericString(),
+};
+
+export const stateToBlConversionSpec = {
+  minTicketEur:numericStringToBigNumber(),
+  maxTicketEur: numericStringToBigNumber(),
+  liquidationPreferenceMultiplier:numericStringToBigNumber(),
+  equityTokensPerShare: numericStringToBigNumber(),
+  shareNominalValueEur: numericStringToBigNumber(),
+  preMoneyValuationEur: numericStringToBigNumber(),
+  existingCompanyShares: numericStringToBigNumber(),
+  authorizedCapitalShares: numericStringToBigNumber(),
+  newSharesToIssue: numericStringToBigNumber(),
+  minimumNewSharesToIssue: numericStringToBigNumber(),
+  newSharesToIssueInWhitelist: numericStringToBigNumber(),
+  whitelistDiscountFraction: numericStringToBigNumber(),
+  publicDiscountFraction: numericStringToBigNumber(),
+  newSharesToIssueInFixedSlots: numericStringToBigNumber(),
+  fixedSlotsMaximumDiscountFraction: numericStringToBigNumber(),
+  discountScheme: numericStringToBigNumber(),
 };

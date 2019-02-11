@@ -1,7 +1,8 @@
 import { Dictionary } from "../../types";
 import { createAction, createActionFactory } from "../actionsUtils";
-import { ICalculatedContribution, IInvestorTicket, ITokenDisbursal } from "./interfaces";
-import {IStatePublicEtoData} from "../eto-flow/interfaces/interfaces";
+import { IStateCalculatedContribution, IStateTokenDisbursal } from "./interfaces/interfaces";
+import {IStateInvestorTicket} from './interfaces/InvestorTicket'
+import {IStatePublicEtoData} from "../eto-flow/interfaces/PublicEtoData";
 
 export const investorEtoTicketActions = {
   // public actions
@@ -12,14 +13,14 @@ export const investorEtoTicketActions = {
   loadClaimables: createActionFactory("INVESTOR_CLAIMABLES_LOAD"),
 
   // state mutations
-  setEtoInvestorTicket: (etoId: string, ticket: IInvestorTicket) =>
+  setEtoInvestorTicket: (etoId: string, ticket: IStateInvestorTicket) =>
     createAction("INVESTOR_TICKET_SET", { etoId, ticket }),
-  setCalculatedContribution: (etoId: string, contribution: ICalculatedContribution) =>
+  setCalculatedContribution: (etoId: string, contribution: IStateCalculatedContribution) =>
     createAction("INVESTOR_TICKET_SET_CALCULATED_CONTRIBUTION", { etoId, contribution }),
-  setInitialCalculatedContribution: (etoId: string, contribution: ICalculatedContribution) =>
+  setInitialCalculatedContribution: (etoId: string, contribution: IStateCalculatedContribution) =>
     createAction("INVESTOR_TICKET_SET_INITIAL_CALCULATED_CONTRIBUTION", { etoId, contribution }),
   setTokensDisbursal: createActionFactory(
     "SET_TOKENS_DISBURSAL",
-    (tokensDisbursal: ITokenDisbursal[]) => ({ tokensDisbursal }),
+    (tokensDisbursal: IStateTokenDisbursal[]) => ({ tokensDisbursal }),
   ),
 };

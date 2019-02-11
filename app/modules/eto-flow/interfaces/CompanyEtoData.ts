@@ -1,9 +1,15 @@
+import BigNumber from "bignumber.js";
+
 import {NumericString} from "../../../types";
 import * as etoCapitalListInterfaces from "./EtoCapitalList";
 import * as shareholderDataInterfaces from "./ShareholderData";
 import * as keyIndividualInterfaces from "./KeyIndividual";
+import * as companySlideshareInterfaces from './CompanySlideshare'
 import * as socialChannelInterfaces from "./SocialChannel";
-import {numberToNumericString} from "../../../utils/numericStringUtils";
+import * as companyVideoInterfaces from "./CompanyVideo";
+import * as companyNewsInterfaces from "./CompanyNews";
+import * as companyMarketingLinks from "./CompanyMarketingLinks";
+import {numberToNumericString, numericStringToBigNumber} from "../../../utils/numericStringUtils";
 import {convertInArray} from "../../../components/eto/utils";
 
 export interface IStateCompanyEtoData {
@@ -66,11 +72,11 @@ export interface IStateCompanyEtoData {
   partners: keyIndividualInterfaces.IStateKeyIndividual[];
   keyAlliances: keyIndividualInterfaces.IStateKeyIndividual[];
 
-  companyVideo: IStateCompanyVideo;
-  companySlideshare: IStateCompanySlideshare;
+  companyVideo: companyVideoInterfaces.IStateCompanyVideo;
+  companySlideshare: companySlideshareInterfaces.IStateCompanySlideshare;
   socialChannels: socialChannelInterfaces.IStateSocialChannel[];
-  companyNews: IStateCompanyNews[];
-  marketingLinks:IStateMarketingLinks[]
+  companyNews: companyNewsInterfaces.IStateCompanyNews[];
+  marketingLinks:companyMarketingLinks.IStateMarketingLinks[]
   disableTwitterFeed: boolean;
 }
 
@@ -134,15 +140,81 @@ export interface IApiCompanyEtoData {
   partners: keyIndividualInterfaces.IApiKeyIndividual[],
   keyAlliances: keyIndividualInterfaces.IApiKeyIndividual[],
 
-  companyVideo: IApiCompanyVideo,
-  companySlideshare:IApiCompanySlideshare,
+  companyVideo: companyVideoInterfaces.IApiCompanyVideo,
+  companySlideshare:companySlideshareInterfaces.IApiCompanySlideshare,
   socialChannels: socialChannelInterfaces.IApiSocialChannel[],
-  companyNews: IApiCompanyNews[],
-  marketingLinks: IApiMarketingLinks[],
+  companyNews: companyNewsInterfaces.IApiCompanyNews[],
+  marketingLinks: companyMarketingLinks.IApiMarketingLinks[],
   disableTwitterFeed: boolean,
 }
 
+export interface IBlCompanyEtoData {
+  companyId: string;
 
+  brandName: string;
+  companyWebsite: string;
+  companyOneliner: string;
+  companyDescription: string;
+  keyQuoteFounder: string;
+  keyQuoteInvestor: string;
+  categories: string; //fixme ??
+  companyLogo: string;
+  companyBanner: string;
+
+  name: string;
+  legalForm: string;
+  street: string;
+  country: string;
+  vatNumber: string;
+  registrationNumber: string;
+  foundingDate: string;
+  numberOfEmployees: number;
+  companyStage: string;
+  numberOfFounders: number;
+  lastFundingSizeEur: BigNumber;
+  companyShares: BigNumber;
+  shareholders: shareholderDataInterfaces.IBlShareholderData[]
+
+  problemSolved: string;
+  productVision: string;
+  inspiration: string;
+  roadmap: string;
+  useOfCapital: string;
+  useOfCapitalList: etoCapitalListInterfaces.IBlEtoCapitalList[]
+  customerGroup: string;
+  sellingProposition: string;
+  marketingApproach: string;
+  companyMission: string;
+  targetMarketAndIndustry: string;
+  keyBenefitsForInvestors: string;
+  keyCompetitors: string;
+  marketTraction: string;
+  businessModel: string;
+
+  riskNotRegulatedBusiness: boolean;
+  riskNoThirdPartyDependency: boolean;
+  riskNoLoansExist: boolean;
+  riskLiquidityDescription: string;
+  riskThirdPartyDescription: string;
+  riskThirdPartySharesFinancing: string;
+  riskBusinessModelDescription: string;
+  riskMaxDescription: string;
+
+  team: keyIndividualInterfaces.IBlKeyIndividual[];
+  advisors: keyIndividualInterfaces.IBlKeyIndividual[];
+  boardMembers: keyIndividualInterfaces.IBlKeyIndividual[];
+  notableInvestors: keyIndividualInterfaces.IBlKeyIndividual[];
+  keyCustomers: keyIndividualInterfaces.IBlKeyIndividual[];
+  partners: keyIndividualInterfaces.IBlKeyIndividual[];
+  keyAlliances: keyIndividualInterfaces.IBlKeyIndividual[];
+
+  companyVideo: companyVideoInterfaces.IBlCompanyVideo;
+  companySlideshare: companySlideshareInterfaces.IBlCompanySlideshare;
+  socialChannels: socialChannelInterfaces.IBlSocialChannel[];
+  companyNews: companyNewsInterfaces.IBlCompanyNews[];
+  marketingLinks:companyMarketingLinks.IBlMarketingLinks[]
+  disableTwitterFeed: boolean;
+}
 
 export const apiToStateConversionSpec= {
   lastFundingSizeEur: numberToNumericString(),
@@ -151,52 +223,14 @@ export const apiToStateConversionSpec= {
   useOfCapitalList:convertInArray(etoCapitalListInterfaces.apiToStateConversionSpec),
 };
 
+export const stateToBlConversionSpec= {
+  lastFundingSizeEur: numericStringToBigNumber(),
+  companyShares: numericStringToBigNumber(),
+  shareholders: convertInArray(shareholderDataInterfaces.stateToBlConversionSpec),
+  useOfCapitalList:convertInArray(etoCapitalListInterfaces.stateToBlConversionSpec),
+};
 
 
-//companyNews
-export interface IStateCompanyNews {
-  title:string;
-  url: string;
-  publication: string;
-}
-
-export interface IApiCompanyNews {
-  title:string;
-  url: string;
-  publication: string;
-}
 
 
-//marketingLinks
-export interface IStateMarketingLinks {
-  title: string;
-  url: string;
-}
-
-export interface IApiMarketingLinks {
-  title: string;
-  url: string;
-}
-
-//companyVideo
-export interface IStateCompanyVideo {
-  title: string;
-  url: string;
-}
-
-export interface IApiCompanyVideo {
-  title: string;
-  url: string;
-}
-
-//companySlideshare
-export interface IStateCompanySlideshare {
-  title:string;
-  url: string;
-}
-
-export interface IApiCompanySlideshare {
-  title:string;
-  url: string;
-}
 

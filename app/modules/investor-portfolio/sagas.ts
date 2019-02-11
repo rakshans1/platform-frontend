@@ -7,7 +7,7 @@ import { InvestorPortfolioMessage } from "../../components/translatedMessages/me
 import { createMessage } from "../../components/translatedMessages/utils";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { EEtoState, TPublicEtoData } from "../../lib/api/eto/EtoApi.interfaces";
-import { IUser } from "../../lib/api/users/interfaces";
+import { IStateUser } from "../auth/interfaces";
 import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
 import { promisify } from "../../lib/contracts/typechain-runtime";
 import { IAppState } from "../../store";
@@ -15,12 +15,15 @@ import { actions, TAction } from "../actions";
 import { selectUser } from "../auth/selectors";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
-import { ITokenDisbursal } from "./types";
+import { IStateTokenDisbursal } from "./interfaces/interfaces";
 import {
   convertToCalculatedContribution,
   convertToInvestorTicket,
   convertToTokenDisbursal,
 } from "./utils";
+import * as calculatedContributionInterfaces from "./interfaces/CalculatedContribution";
+import * as investorTicketInterfaces from "./interfaces/InvestorTicket";
+import {convert} from "../../components/eto/utils";
 
 export function* loadInvestorTickets({ logger }: TGlobalDependencies, action: TAction): any {
   if (action.type !== "INVESTOR_TICKET_ETOS_LOAD") return;
@@ -50,7 +53,7 @@ export function* loadInvestorTicket(
   }
 
   const etoId = action.payload.eto.etoId;
-  const user: IUser = yield select((state: IAppState) => selectUser(state.auth));
+  const user: IStateUser = yield select((state: IAppState) => selectUser(state.auth));
 
   const etoContract: ETOCommitment = yield contractsService.getETOCommitmentContract(etoId);
 
@@ -58,13 +61,13 @@ export function* loadInvestorTicket(
   yield put(
     actions.investorEtoTicket.setEtoInvestorTicket(
       etoId,
-      convertToInvestorTicket(investorTickerRaw),
+      convert(convertToInvestorTicket(investorTickerRaw),investorTicketInterfaces.blToStateConversionSpec),
     ),
   );
 
-  const contribution = yield neuCall(loadComputedContributionFromContract, action.payload.eto);
+  const contribution:calculatedContributionInterfaces.IBlCalculatedContribution = yield neuCall(loadComputedContributionFromContract, action.payload.eto);
 
-  yield put(actions.investorEtoTicket.setInitialCalculatedContribution(etoId, contribution));
+  yield put(actions.investorEtoTicket.setInitialCalculatedContribution(etoId, convert(contribution, calculatedContributionInterfaces.blToStateConversionSpec)));
 }
 
 export function* loadComputedContributionFromContract(
@@ -101,7 +104,7 @@ export function* loadClaimables({
   logger,
   notificationCenter,
 }: TGlobalDependencies): any {
-  const user: IUser = yield select((state: IAppState) => selectUser(state.auth));
+  const user: IStateUser = yield select((state: IAppState) => selectUser(state.auth));
 
   const { feeDisbursal, euroToken, etherToken, neumark } = contractsService;
 
@@ -117,7 +120,7 @@ export function* loadClaimables({
       user.userId,
     );
 
-    const tokensDisbursal: ITokenDisbursal[] = tokens.map(([token], i) =>
+    const tokensDisbursal: IStateTokenDisbursal[] = tokens.map(([token], i) =>
       // claimableMultipeByToken preserves tokens order so it's safe to get exact response by index
       convertToTokenDisbursal(token, tokensDisbursalRaw[i]),
     );

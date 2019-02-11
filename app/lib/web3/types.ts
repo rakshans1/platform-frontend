@@ -27,7 +27,7 @@ export const stateToBlConversionSpec = {
   value: numericStringToBigNumber(),
   gas: numericStringToBigNumber(),
   gasPrice: numericStringToBigNumber()
-}
+};
 
 export interface IRawTxData extends IBlTxData {
   nonce: string;

@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+
 import {NumericString} from "../../types";
 
 export enum EInvestmentType {
