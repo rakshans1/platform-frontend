@@ -68,10 +68,14 @@ const PortfolioMyAssetsComponent: React.FunctionComponent<TComponentProps> = ({
 
     <Row>
       <Col>
+        {/* TODO: Refactor during https://github.com/Neufund/platform-frontend/issues/2407*/}
         <NewTable
           placeholder={<FormattedMessage id="portfolio.section.your-assets.table.placeholder" />}
           titles={[
-            <FormattedMessage id="portfolio.section.my-assets.table.header.token" />,
+            {
+              title: <FormattedMessage id="portfolio.section.my-assets.table.header.token"/>,
+              width: "160px",
+            },
             <FormattedMessage id="portfolio.section.my-assets.table.header.quantity" />,
             <FormattedMessage id="portfolio.section.my-assets.table.header.current-value" />,
             <FormattedMessage id="portfolio.section.my-assets.table.header.current-price" />,

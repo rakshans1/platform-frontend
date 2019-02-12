@@ -114,14 +114,33 @@ const AssetPortfolioLayout: React.FunctionComponent<ILayoutProps & IDispatchToPr
         <FormattedMessage id="portfolio.asset.payouts-from-neu.title" />
       </SectionHeader>
 
+      {/* TODO: Refactor during https://github.com/Neufund/platform-frontend/issues/2407*/}
       <NewTable
         titles={[
-          "", // token icon
-          <FormattedMessage id="portfolio.asset.payouts-from-neu.your-share" />,
-          <FormattedMessage id="portfolio.asset.payouts-from-neu.total-payout" />,
-          <FormattedMessage id="portfolio.asset.payouts-from-neu.claim-by" />,
-          "", // reject payout
-          "", // accept payout
+          {
+            title: "",
+            width: "90px"
+          }, // token icon
+          {
+            title:<FormattedMessage id="portfolio.asset.payouts-from-neu.your-share" />,
+            width: "120px"
+          },
+          {
+            title:<FormattedMessage id="portfolio.asset.payouts-from-neu.total-payout" />,
+            width: "120px"
+          },
+          {
+            title: <FormattedMessage id="portfolio.asset.payouts-from-neu.claim-by"/>,
+            width: "80px"
+          },
+          {
+            title: "",
+            width: "100px"
+          }, // reject payout
+          {
+            title: "",
+            width: "140px"
+          }// accept payout
         ]}
       >
         {tokensDisbursal.map(tokenDisbursal => (
