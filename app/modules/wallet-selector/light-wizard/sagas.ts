@@ -166,7 +166,7 @@ export function* lightWalletRecoverWatch(
 
     yield put(actions.routing.goToSuccessfulRecovery());
   } catch (e) {
-    neuCall(handleLightWalletError, e);
+    yield neuCall(handleLightWalletError, e);
   }
 }
 
@@ -183,7 +183,7 @@ export function* lightWalletRegisterWatch(_: TGlobalDependencies, action: TActio
     yield neuCall(setupLightWalletPromise, email, password);
     yield neuCall(signInUser);
   } catch (e) {
-    neuCall(handleLightWalletError, e);
+    yield neuCall(handleLightWalletError, e);
   }
 }
 
@@ -199,7 +199,7 @@ function* handleLightWalletError({ logger }: TGlobalDependencies, e: Error): any
   } else {
     error = createMessage(SignInUserErrorMessage.MESSAGE_SIGNING_SERVER_CONNECTION_FAILURE);
   }
-
+  
   yield put(
     actions.genericModal.showErrorModal(createMessage(GenericModalMessage.ERROR_TITLE), error),
   );
