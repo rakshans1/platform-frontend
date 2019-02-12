@@ -1,7 +1,7 @@
 import { Formik, FormikConsumer } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import * as Web3Utils from "web3-utils";
+import { isAddress } from "web3-utils";
 
 import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
@@ -34,7 +34,7 @@ class FormContent extends React.Component {
               iconPosition="icon-after"
               svgIcon={arrowRight}
               type="submit"
-              disabled={!Web3Utils.isAddress(values.address.toUpperCase())}
+              disabled={isAddress(values.address.toUpperCase())}
             >
               <FormattedMessage id="check-your-icbm-wallet-widget.submit" />
             </Button>

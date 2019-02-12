@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import * as Web3Utils from "web3-utils";
+import { toWei } from "web3-utils";
 import * as YupTS from "../yup-ts";
 
 import { symbols } from "../../di/symbols";
@@ -27,10 +27,10 @@ export class GasApi {
 
   private transformBody(gas: GasModelShape): GasModelShape {
     return {
-      fast: Web3Utils.toWei(gas.fast, "gwei"),
-      fastest: Web3Utils.toWei(gas.fastest, "gwei"),
-      safeLow: Web3Utils.toWei(gas.safeLow, "gwei"),
-      standard: Web3Utils.toWei(gas.standard, "gwei"),
+      fast: toWei(gas.fast, "gwei"),
+      fastest: toWei(gas.fastest, "gwei"),
+      safeLow: toWei(gas.safeLow, "gwei"),
+      standard: toWei(gas.standard, "gwei"),
     };
   }
 }
