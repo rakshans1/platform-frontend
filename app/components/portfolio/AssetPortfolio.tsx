@@ -119,28 +119,28 @@ const AssetPortfolioLayout: React.FunctionComponent<ILayoutProps & IDispatchToPr
         titles={[
           {
             title: "",
-            width: "90px"
+            width: "90px",
           }, // token icon
           {
-            title:<FormattedMessage id="portfolio.asset.payouts-from-neu.your-share" />,
-            width: "120px"
+            title: <FormattedMessage id="portfolio.asset.payouts-from-neu.your-share" />,
+            width: "120px",
           },
           {
-            title:<FormattedMessage id="portfolio.asset.payouts-from-neu.total-payout" />,
-            width: "120px"
+            title: <FormattedMessage id="portfolio.asset.payouts-from-neu.total-payout" />,
+            width: "120px",
           },
           {
-            title: <FormattedMessage id="portfolio.asset.payouts-from-neu.claim-by"/>,
-            width: "80px"
+            title: <FormattedMessage id="portfolio.asset.payouts-from-neu.claim-by" />,
+            width: "80px",
           },
           {
             title: "",
-            width: "100px"
+            width: "100px",
           }, // reject payout
           {
             title: "",
-            width: "140px"
-          }// accept payout
+            width: "140px",
+          }, // accept payout
         ]}
       >
         {tokensDisbursal.map(tokenDisbursal => (

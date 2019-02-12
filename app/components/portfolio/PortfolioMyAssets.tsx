@@ -73,7 +73,7 @@ const PortfolioMyAssetsComponent: React.FunctionComponent<TComponentProps> = ({
           placeholder={<FormattedMessage id="portfolio.section.your-assets.table.placeholder" />}
           titles={[
             {
-              title: <FormattedMessage id="portfolio.section.my-assets.table.header.token"/>,
+              title: <FormattedMessage id="portfolio.section.my-assets.table.header.token" />,
               width: "160px",
             },
             <FormattedMessage id="portfolio.section.my-assets.table.header.quantity" />,
