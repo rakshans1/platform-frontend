@@ -1,6 +1,6 @@
-import {EtoStateToCamelcase} from "../../lib/api/eto/EtoApi.interfaces";
+import {EtoStateToCamelcase} from "../eto-flow/interfaces/interfaces";
 
-export interface IEtoDocumentsState {
+export interface IStateEtoDocuments {
   loading: boolean;
   saving: boolean;
   showIpfsModal: boolean;
@@ -14,14 +14,14 @@ export interface IEtoFilesState {
 }
 
 export type TStateInfo = { [key in TSimpleFileInfo]: EEtoDocumentType[] } &
-  { [key in TComplextFileInfo]: { [key in EtoStateToCamelcase]: EEtoDocumentType[] } };
+  { [key in TComplexFileInfo]: { [key in EtoStateToCamelcase]: EEtoDocumentType[] } };
 
 export interface IEtoFiles {
   allTemplates: TEtoDocumentTemplates;
   stateInfo?: TStateInfo;
 }
 
-type TComplextFileInfo = "canDeleteInStates" | "canUploadInStates"; //todo enum
+type TComplexFileInfo = "canDeleteInStates" | "canUploadInStates"; //todo enum
 
 type TSimpleFileInfo = "requiredTemplates" | "uploadableDocuments"; //todo enum
 
@@ -59,4 +59,18 @@ export interface IEtoDocument {
   language?: EEtoDocumentLanguage;
   asPdf?: boolean;
 }
-
+//todo move this to translations
+export const immutableDocumentNames: { [key in EEtoDocumentType]: string } = {
+  company_token_holder_agreement: "Company Token Holder Agreement",
+  reservation_and_acquisition_agreement: "Reservation and Acquisition Agreement",
+  investment_and_shareholder_agreement_template: "Investment and Shareholder Agreement Template",
+  pamphlet_template: "Pamphlet Template",
+  prospectus_template: "Prospectus Template",
+  termsheet_template: "Termsheet Template",
+  investment_memorandum_template: "Investment Memorandum Template",
+  // in document collection
+  investment_and_shareholder_agreement: "Investment and Shareholder Agreement",
+  approved_investor_offering_document: "Approved Offering Document",
+  signed_termsheet: "Signed Termsheet",
+  signed_investment_and_shareholder_agreement: "Signed Investment and Shareholder Agreement",
+};

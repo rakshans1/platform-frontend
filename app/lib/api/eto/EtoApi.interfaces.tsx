@@ -16,10 +16,8 @@ import {
   SIGNING_DURATION_DAYS,
   WHITELIST_DURATION_DAYS,
 } from "../../../config/constants";
-import { DeepPartial, DeepReadonly } from "../../../types";
 import * as YupTS from "../../yup-ts";
 import { dateSchema, percentage } from "../util/schemaHelpers";
-import { TEtoDocumentTemplates } from "./EtoFileApi.interfaces";
 
 /** COMPANY ETO RELATED INTERFACES
  *  only deals with "/companies/me"
@@ -52,7 +50,7 @@ export const EtoCompanyInformationType = YupTS.object({
   companyLogo: YupTS.string().optional(),
   companyBanner: YupTS.string().optional(),
 });
-type TEtoTeamData = YupTS.TypeOf<typeof EtoCompanyInformationType>;
+// type TEtoTeamData = YupTS.TypeOf<typeof EtoCompanyInformationType>;
 
 export const EtoPitchType = YupTS.object({
   problemSolved: YupTS.string().optional(),
@@ -72,7 +70,7 @@ export const EtoPitchType = YupTS.object({
   businessModel: YupTS.string().optional(),
 });
 
-type TEtoProductVision = YupTS.TypeOf<typeof EtoPitchType>;
+// type TEtoProductVision = YupTS.TypeOf<typeof EtoPitchType>;
 
 export const EtoRiskAssessmentType = YupTS.object({
   riskNotRegulatedBusiness: YupTS.onlyTrue(),
@@ -85,7 +83,7 @@ export const EtoRiskAssessmentType = YupTS.object({
   riskMaxDescription: YupTS.string().optional(),
 });
 
-type TEtoRiskAssessment = YupTS.TypeOf<typeof EtoRiskAssessmentType>;
+// type TEtoRiskAssessment = YupTS.TypeOf<typeof EtoRiskAssessmentType>;
 
 const socialChannelsType = YupTS.array(
   YupTS.object({
@@ -121,7 +119,7 @@ export const EtoKeyIndividualsType = YupTS.object({
   keyAlliances: EtoKeyIndividualType.optional(),
 });
 
-type TEtoKeyIndividualsType = YupTS.TypeOf<typeof EtoKeyIndividualsType>;
+// type TEtoKeyIndividualsType = YupTS.TypeOf<typeof EtoKeyIndividualsType>;
 
 export const EtoLegalInformationType = YupTS.object({
   name: YupTS.string(),
@@ -147,7 +145,7 @@ export const EtoLegalInformationType = YupTS.object({
   ).optional(),
 });
 
-type TEtoLegalData = YupTS.TypeOf<typeof EtoLegalInformationType>;
+// type TEtoLegalData = YupTS.TypeOf<typeof EtoLegalInformationType>;
 
 const marketingLinksType = YupTS.array(
   YupTS.object({
@@ -180,41 +178,41 @@ export const EtoMediaType = YupTS.object({
   disableTwitterFeed: YupTS.boolean().optional(),
 });
 
-type TEtoMediaData = YupTS.TypeOf<typeof EtoMediaType>;
+// type TEtoMediaData = YupTS.TypeOf<typeof EtoMediaType>;
+//
+// type TEtoCompanyBase = {
+//   companyId: string;
+// };
 
-type TEtoCompanyBase = {
-  companyId: string;
-};
-
-export type TCompanyEtoData = DeepReadonly<
-  TEtoCompanyBase &
-    TEtoTeamData &
-    TEtoLegalData &
-    TEtoProductVision &
-    TEtoRiskAssessment &
-    TEtoKeyIndividualsType &
-    TEtoMediaData
->;
+// export type TCompanyEtoData = DeepReadonly<
+//   TEtoCompanyBase &
+//     TEtoTeamData &
+//     TEtoLegalData &
+//     TEtoProductVision &
+//     TEtoRiskAssessment &
+//     TEtoKeyIndividualsType &
+//     TEtoMediaData
+// >;
 
 /** ETO SPEC RELATED INTERFACES
  *  only deals with "/etos/me"
  */
 
-export enum EEtoState {
-  PREVIEW = "preview",
-  PENDING = "pending",
-  LISTED = "listed",
-  PROSPECTUS_APPROVED = "prospectus_approved",
-  ON_CHAIN = "on_chain",
-}
-
-export enum EtoStateToCamelcase {
-  "preview" = "preview",
-  "pending" = "pending",
-  "listed" = "listed",
-  "prospectus_approved" = "prospectusApproved",
-  "on_chain" = "onChain",
-}
+// export enum EEtoState {
+//   PREVIEW = "preview",
+//   PENDING = "pending",
+//   LISTED = "listed",
+//   PROSPECTUS_APPROVED = "prospectus_approved",
+//   ON_CHAIN = "on_chain",
+// }
+//
+// export enum EtoStateToCamelcase {
+//   "preview" = "preview",
+//   "pending" = "pending",
+//   "listed" = "listed",
+//   "prospectus_approved" = "prospectusApproved",
+//   "on_chain" = "onChain",
+// }
 // Since only keys are transformed from snake case to camel case we have to manually map states
 // see@ swagger /api/eto-listing/ui/#!/ETO/api_eto_get_me
 // see@ swagger api/eto-listing/ui/#!/Documents/api_document_documents_state_info
@@ -304,47 +302,47 @@ export const EtoInvestmentTermsType = YupTS.object({
 
 export type TEtoInvestmentTermsType = YupTS.TypeOf<typeof EtoInvestmentTermsType>;
 
-interface IAdditionalEtoType {
-  etoId: string;
-  companyId: string;
-  previewCode: string;
-  state: EEtoState;
-  isBookbuilding: boolean;
-  templates: TEtoDocumentTemplates;
-  startDate: string;
-  documents: TEtoDocumentTemplates;
-  maxPledges: number;
-  canEnableBookbuilding: boolean;
-}
-
-export type TBookbuildingStatsType = {
-  amountEur: number;
-  consentToRevealEmail: boolean;
-  currency: string;
-  email?: string;
-  etoId?: string;
-  insertedAt: string;
-  updatedAt: string;
-  userId: string;
-};
-
-export type TEtoSpecsData = TEtoTermsType &
-  TEtoEquityTokenInfoType &
-  TEtoVotingRightsType &
-  TEtoInvestmentTermsType &
-  IAdditionalEtoType;
+// interface IAdditionalEtoType {
+//   etoId: string;
+//   companyId: string;
+//   previewCode: string;
+//   state: EEtoState;
+//   isBookbuilding: boolean;
+//   templates: TEtoDocumentTemplates;
+//   startDate: string;
+//   documents: TEtoDocumentTemplates;
+//   maxPledges: number;
+//   canEnableBookbuilding: boolean;
+// }
+//
+// export type TBookbuildingStatsType = {
+//   amountEur: number;
+//   consentToRevealEmail: boolean;
+//   currency: string;
+//   email?: string;
+//   etoId?: string;
+//   insertedAt: string;
+//   updatedAt: string;
+//   userId: string;
+// };
+//
+// export type TEtoSpecsData = TEtoTermsType &
+//   TEtoEquityTokenInfoType &
+//   TEtoVotingRightsType &
+//   TEtoInvestmentTermsType &
+//   IAdditionalEtoType;
 
 /*General Interfaces */
-export type TPartialEtoSpecData = DeepPartial<TEtoSpecsData>;
-export type TPartialCompanyEtoData = DeepPartial<TCompanyEtoData>;
-
-export type TGeneralEtoData = {
-  etoData: TPartialEtoSpecData;
-  companyData: TPartialCompanyEtoData;
-};
+// export type TPartialEtoSpecData = DeepPartial<TEtoSpecsData>;
+// export type TPartialCompanyEtoData = DeepPartial<TCompanyEtoData>;
+//
+// export type TGeneralEtoData = {
+//   etoData: TPartialEtoSpecData;
+//   companyData: TPartialCompanyEtoData;
+// };
 
 // this is coming from the /etos endpoint for investors dashboard
-export type TPublicEtoData = TEtoSpecsData & { company: TCompanyEtoData };
+// export type TPublicEtoData = TEtoSpecsData & { company: TCompanyEtoData };
 
 export const GeneralEtoDataType = YupTS.object({
   ...EtoTermsType.shape,

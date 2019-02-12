@@ -13,8 +13,8 @@ import {
   EtoTermsType,
   EtoVotingRightsType,
   GeneralEtoDataType,
-  TBookbuildingStatsType,
 } from "../../lib/api/eto/EtoApi.interfaces";
+import {IApiDetailedBookbuildingStats} from "../bookbuilding-flow/interfaces/DetailedBookbuildingStats";
 
 function getErrorsNumber(validator: Yup.Schema<any>, data?: any): number {
   try {
@@ -141,11 +141,11 @@ export function getFormFractionDoneCalculator(
   };
 }
 
-export const bookBuildingStatsToCsvString = (stats: TBookbuildingStatsType[]) =>
+export const bookBuildingStatsToCsvString = (stats: IApiDetailedBookbuildingStats[]):string =>
   [`email,amount,"submitted on","updated on"`]
     .concat(
       stats.map(
-        (el: TBookbuildingStatsType) =>
+        (el: IApiDetailedBookbuildingStats) =>
           `${el.email ? `"${el.email}"` : "(anonymous pledge)"},${
             el.amountEur
           },${el.insertedAt.slice(0, 10)},${el.updatedAt.slice(0, 10)}`,

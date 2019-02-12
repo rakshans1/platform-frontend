@@ -4,16 +4,16 @@ import { EEtoState } from "../../lib/api/eto/EtoApi.interfaces";
 import {NumericString, Overwrite} from "../../types";
 import {
   EETOStateOnChain,
-  IEtoTotalInvestmentState,
+  TBlEtoWithCompanyAndContract,
   TEtoStartOfStates,
-  TStateEtoWithCompanyAndContract,
 } from "./interfaces/interfaces";
+import {IStateEtoTotalInvestment} from "./interfaces/TotalInvestment";
 
 export const convertToEtoTotalInvestment = (
   [totalEquivEurUlps, totalTokensInt, totalInvestors]: [BigNumber, BigNumber, BigNumber],
   euroTokenBalance: BigNumber,
   etherTokenBalance: BigNumber,
-): IEtoTotalInvestmentState => ({
+): IStateEtoTotalInvestment => ({
   totalEquivEurUlps: totalEquivEurUlps.toString() as NumericString,
   totalTokensInt: totalTokensInt.toString() as NumericString,
   totalInvestors: totalInvestors.toString()as NumericString,
@@ -54,10 +54,10 @@ export const convertToStateStartDate = (
 };
 
 export function isOnChain(
-  eto: TStateEtoWithCompanyAndContract,
+  eto: TBlEtoWithCompanyAndContract,
 ): eto is Overwrite<
-  TStateEtoWithCompanyAndContract,
-  { contract: Exclude<TStateEtoWithCompanyAndContract["contract"], undefined> }
+  TBlEtoWithCompanyAndContract,
+  { contract: Exclude<TBlEtoWithCompanyAndContract["contract"], undefined> }
 > {
   return eto.state === EEtoState.ON_CHAIN && eto.contract !== undefined;
 }

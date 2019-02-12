@@ -1,8 +1,10 @@
-import { IPledge } from "../../lib/api/eto/EtoPledgeApi.interfaces";
 import { IAppState } from "../../store";
+import * as bookbuildingStatsInterfaces from "./interfaces/BookbuildingStats";
+import * as pledgeInterfaces from './interfaces/Pledge'
+import {convert} from "../../components/eto/utils";
 
-export const selectBookbuildingStats = (state: IAppState, etoId: string) =>
-  state.bookBuildingFlow.bookbuildingStats[etoId];
+export const selectBookbuildingStats = (state: IAppState, etoId: string):bookbuildingStatsInterfaces.IBlBookBuildingStats =>
+  convert(state.bookBuildingFlow.bookbuildingStats[etoId], bookbuildingStatsInterfaces.stateToBlConversionSpec);
 
-export const selectMyPledge = (state: IAppState, etoId: string): IPledge | undefined =>
-  state.bookBuildingFlow.pledges[etoId];
+export const selectMyPledge = (state: IAppState, etoId: string): pledgeInterfaces.IBlPledge | undefined =>
+  convert(state.bookBuildingFlow.pledges[etoId], pledgeInterfaces.stateToBlConversionSpec);

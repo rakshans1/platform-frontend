@@ -7,9 +7,9 @@ import { externalRoutes } from "../../../../config/externalRoutes";
 import {
   EInvestmentErrorState,
   EInvestmentType,
-} from "../../../../modules/investment-flow/reducer";
+} from "../../../../modules/investment-flow/interfaces";
 import { selectInvestmentActiveTypes } from "../../../../modules/investment-flow/selectors";
-import { EValidationState } from "../../../../modules/tx/sender/reducer";
+import { EValidationState } from "../../../../modules/tx/sender/interfaces";
 import {
   selectLiquidEtherBalance,
   selectLiquidEtherBalanceEuroAmount,
@@ -19,7 +19,6 @@ import {
 } from "../../../../modules/wallet/selectors";
 import { IAppState } from "../../../../store";
 import { Dictionary } from "../../../../types";
-import { divideBigNumbers } from "../../../../utils/BigNumberUtils";
 import { formatMoney } from "../../../../utils/Money.utils";
 import { formatThousands } from "../../../../utils/Number.utils";
 import { WalletSelectionData } from "./InvestmentTypeSelector";
@@ -113,36 +112,36 @@ export function getInvestmentTypeMessages(type?: EInvestmentType): React.ReactNo
   }
 }
 
-export function formatEur(val?: string | BigNumber): string | undefined {
+export function formatEur(val?: BigNumber): string | undefined {
   return val && formatMoney(val, MONEY_DECIMALS, 2);
 }
 
-export function formatEurTsd(val?: string | BigNumber): string | undefined {
+export function formatEurTsd(val?: BigNumber): string | undefined {
   return formatThousands(formatEur(val));
 }
 
-export function formatEth(val?: string | BigNumber): string | undefined {
+export function formatEth(val?: BigNumber): string | undefined {
   return val && formatMoney(val, MONEY_DECIMALS, 4);
 }
 
-export function formatEthTsd(val?: string | BigNumber): string | undefined {
+export function formatEthTsd(val?: BigNumber): string | undefined {
   return formatThousands(formatEth(val));
 }
 
-export function formatVaryingDecimals(val?: string | BigNumber): string | undefined {
+export function formatVaryingDecimals(val?: BigNumber): string | undefined {
   return val && formatMoney(val, MONEY_DECIMALS);
 }
 
-export function getActualTokenPriceEur(
-  investmentEurUlps: string,
-  equityTokenCount: string | number,
-): string {
-  return formatMoney(divideBigNumbers(investmentEurUlps, equityTokenCount), MONEY_DECIMALS, 8);
+export function getActualTokenPriceEur( //  // formatMoney(investmentEurUlps.div(equityTokenCount), MONEY_DECIMALS, 8)
+  investmentEurUlps: BigNumber,
+  equityTokenCount: BigNumber,
+): BigNumber {
+  return investmentEurUlps.div(equityTokenCount;
 }
 
-export const formatSummaryTokenPrice = (fullTokenPrice: string, actualTokenPrice: string) => {
+export const formatSummaryTokenPrice = (fullTokenPrice: BigNumber, actualTokenPrice: BigNumber):string => {
   const discount = new BigNumber(1)
-    .sub(new BigNumber(actualTokenPrice).div(new BigNumber(fullTokenPrice)))
+    .sub(actualTokenPrice.div(fullTokenPrice))
     .mul(100)
     .round(0, 4);
   let priceString = formatThousands(actualTokenPrice.toString());

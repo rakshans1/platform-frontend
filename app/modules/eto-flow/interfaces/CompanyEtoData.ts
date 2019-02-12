@@ -9,7 +9,12 @@ import * as socialChannelInterfaces from "./SocialChannel";
 import * as companyVideoInterfaces from "./CompanyVideo";
 import * as companyNewsInterfaces from "./CompanyNews";
 import * as companyMarketingLinks from "./CompanyMarketingLinks";
-import {numberToNumericString, numericStringToBigNumber} from "../../../utils/numericStringUtils";
+import {
+  bigNumberToNumber,
+  numberToNumericString,
+  numericStringToBigNumber,
+  numericStringToNumber
+} from "../../../utils/numericStringUtils";
 import {convertInArray} from "../../../components/eto/utils";
 
 export interface IStateCompanyEtoData {
@@ -230,7 +235,18 @@ export const stateToBlConversionSpec= {
   useOfCapitalList:convertInArray(etoCapitalListInterfaces.stateToBlConversionSpec),
 };
 
+export const blToApiConversionSpec = {
+  lastFundingSizeEur: bigNumberToNumber(),
+  companyShares: bigNumberToNumber(),
+  shareholders: convertInArray(shareholderDataInterfaces.blToApiConversionSpec),
+  useOfCapitalList:convertInArray(etoCapitalListInterfaces.blToApiConversionSpec),
+};
 
-
+export const stateToApiConversionSpec = {
+  lastFundingSizeEur: numericStringToNumber(),
+  companyShares: numericStringToNumber(),
+  shareholders: convertInArray(shareholderDataInterfaces.stateToApiConversionSpec),
+  useOfCapitalList:convertInArray(etoCapitalListInterfaces.stateToApiConversionSpec),
+};
 
 

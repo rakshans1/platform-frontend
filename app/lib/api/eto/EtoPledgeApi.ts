@@ -3,7 +3,8 @@ import { inject, injectable } from "inversify";
 import { symbols } from "../../../di/symbols";
 import { withParams } from "../../../utils/withParams";
 import { IHttpClient, IHttpResponse } from "../client/IHttpClient";
-import { IPledge } from "./EtoPledgeApi.interfaces";
+import {IApiPledge} from "../../../modules/bookbuilding-flow/interfaces/Pledge";
+
 
 const BASE_PATH = "/api/eto-listing/";
 const MY_PLEDGE_PATH = "/etos/:etoId/pledges/me";
@@ -17,8 +18,8 @@ export class EtoPledgeApi {
     @inject(symbols.authorizedJsonHttpClient) private authorizedHttpClient: IHttpClient,
   ) {}
 
-  public async getMyPledge(etoId: string): Promise<IHttpResponse<IPledge>> {
-    const response = await this.authorizedHttpClient.get<IPledge>({
+  public async getMyPledge(etoId: string): Promise<IHttpResponse<IApiPledge>> {
+    const response = await this.authorizedHttpClient.get<IApiPledge>({
       baseUrl: BASE_PATH,
       url: withParams(MY_PLEDGE_PATH, { etoId }),
       allowedStatusCodes: [404],
@@ -31,16 +32,16 @@ export class EtoPledgeApi {
     return response;
   }
 
-  public saveMyPledge(etoId: string, pledge: IPledge): Promise<IHttpResponse<IPledge>> {
-    return this.authorizedHttpClient.put<IPledge>({
+  public saveMyPledge(etoId: string, pledge: IApiPledge): Promise<IHttpResponse<IApiPledge>> {
+    return this.authorizedHttpClient.put<IApiPledge>({
       baseUrl: BASE_PATH,
       url: withParams(MY_PLEDGE_PATH, { etoId }),
       body: pledge,
     });
   }
 
-  public deleteMyPledge(etoId: string): Promise<IHttpResponse<IPledge>> {
-    return this.authorizedHttpClient.delete<IPledge>({
+  public deleteMyPledge(etoId: string): Promise<IHttpResponse<IApiPledge>> {
+    return this.authorizedHttpClient.delete<IApiPledge>({
       baseUrl: BASE_PATH,
       url: withParams(MY_PLEDGE_PATH, { etoId }),
     });

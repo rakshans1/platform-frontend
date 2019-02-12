@@ -13,7 +13,7 @@ export function isZero(value: string): boolean {
 /**
  * Assumes dot as decimal separator
  */
-export function formatThousands(value?: string): string {
+export function formatThousands(value?: BigNumber): string {
   if (!value) return "";
   const splitByDot = value.split(".");
 

@@ -1,31 +1,34 @@
-import {IBlPublicEtoData, IStatePublicEtoData} from "../../eto-flow/interfaces/PublicEtoData";
-import {IBlCompanyEtoData, IStateCompanyEtoData} from "../../eto-flow/interfaces/CompanyEtoData";
-import {IBlEtoContractData, IStateEtoContractData} from "./EtoContractData";
-import {IBlEtoTokenData, IStateEtoTokenData} from "./EtoTokenData";
+import {mapValues} from 'lodash/fp';
 
-export interface IStatePublicEto {
-  publicEtos: { [previewCode: string]: IStatePublicEtoData | undefined };
-  companies: { [companyId: string]: IStateCompanyEtoData | undefined };
-  contracts: { [previewCode: string]: IStateEtoContractData };
+import * as publicEtoDataInterfaces from "../../eto-flow/interfaces/PublicEtoData";
+import * as companyEtoDataInterfaces from "../../eto-flow/interfaces/CompanyEtoData";
+import * as etoContractData from "./EtoContractData";
+import * as etoTokenData from "./EtoTokenData";
+import {convert} from "../../../components/eto/utils";
+
+export interface IStatePublicEtos {
+  publicEtos: { [previewCode: string]: publicEtoDataInterfaces.IStatePublicEtoData | undefined };
+  companies: { [companyId: string]: companyEtoDataInterfaces.IStateCompanyEtoData | undefined };
+  contracts: { [previewCode: string]: etoContractData.IStateEtoContractData };
   displayOrder: string[] | undefined;
   maxCapExceeded: { [previewCode: string]: boolean | undefined };
   etoWidgetError: boolean | undefined;
-  tokenData: { [previewCode: string]: IStateEtoTokenData | undefined };
+  tokenData: { [previewCode: string]: etoTokenData.IStateEtoTokenData | undefined };
 }
 
-export interface IBlPublicEto {
-  publicEtos: { [previewCode: string]: IBlPublicEtoData | undefined };
-  companies: { [companyId: string]: IBlCompanyEtoData | undefined };
-  contracts: { [previewCode: string]: IBlEtoContractData };
+export interface IBlPublicEtos {
+  publicEtos: { [previewCode: string]: publicEtoDataInterfaces.IBlPublicEtoData | undefined };
+  companies: { [companyId: string]: companyEtoDataInterfaces.IBlCompanyEtoData | undefined };
+  contracts: { [previewCode: string]: etoContractData.IBlEtoContractData };
   displayOrder: string[] | undefined;
   maxCapExceeded: { [previewCode: string]: boolean | undefined };
   etoWidgetError: boolean | undefined;
-  tokenData: { [previewCode: string]: IBlEtoTokenData | undefined };
+  tokenData: { [previewCode: string]: etoTokenData.IBlEtoTokenData | undefined };
 }
 
-export const stateToBlConversionSpec = { //TODO
-  publicEtos: { [previewCode: string]: IStatePublicEtoData | undefined },
-  companies: { [companyId: string]: IStateCompanyEtoData | undefined },
-  contracts: { [previewCode: string]: IStateEtoContractData },
-  tokenData: { [previewCode: string]: IStateEtoTokenData | undefined }
-}
+export const stateToBlConversionSpec = {
+  publicEtos: mapValues(v => convert(v, publicEtoDataInterfaces.stateToBlConversionSpec)),
+  companies: mapValues(v => convert(v, companyEtoDataInterfaces.stateToBlConversionSpec)),
+  contracts: mapValues(v => convert(v, etoContractData.stateToBlConversionSpec)),
+  tokenData: mapValues(v => convert(v, etoTokenData.stateToBlConversionSpec)),
+};

@@ -20,7 +20,7 @@ export function* downloadFile(
     yield call(downloadLink, downloadedFile, action.payload.fileName, extension);
   } catch (e) {
     logger.error("Failed to download file from IPFS", e);
-    notificationCenter.error(createMessage(IpfsMessage.IPFS_FAILED_TO_DOWNLOAD_IPFS_FILE)); //Failed to download file from IPFS
+    notificationCenter.error(createMessage(IpfsMessage.IPFS_FAILED_TO_DOWNLOAD_IPFS_FILE));
   } finally {
     yield put(
       actions.immutableStorage.downloadImmutableFileDone(action.payload.immutableFileId.ipfsHash),

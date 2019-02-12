@@ -1,11 +1,11 @@
 import {DeepReadonly} from "../../types";
-import {IGenericModalObjectState, IGenericModalState} from "./interfaces";
+import {IStateGenericModalObject, IStateGenericModal} from "./interfaces";
 
-export const selectGenericModalIsOpen = (state: DeepReadonly<IGenericModalState>): boolean =>
+export const selectGenericModalIsOpen = (state: DeepReadonly<IStateGenericModal>): boolean =>
   state.isOpen;
 export const selectGenericModalObj = (
-  state: DeepReadonly<IGenericModalState>,
-): DeepReadonly<IGenericModalObjectState> | undefined => state.genericModalObj;
+  state: DeepReadonly<IStateGenericModal>,
+): DeepReadonly<IStateGenericModalObject> | undefined => state.genericModalObj;
 export const selectGenericModalComponent = (
-  state: DeepReadonly<IGenericModalState>,
+  state: DeepReadonly<IStateGenericModal>,
 ): React.ComponentType<any> | undefined => state.component;

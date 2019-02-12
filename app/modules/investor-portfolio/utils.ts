@@ -2,8 +2,11 @@ import BigNumber from "bignumber.js";
 
 import { ECurrency } from "../../components/shared/Money";
 import { Q18 } from "../../config/constants";
-import { IBlCalculatedContribution, IStateTokenDisbursal } from "./interfaces/interfaces";
+import {  IStateTokenDisbursal } from "./interfaces/TokenDisbursal";
+import { IBlCalculatedContribution, } from "./interfaces/CalculatedContribution";
 import {IBlInvestorTicket} from './interfaces/InvestorTicket'
+import {TContribution} from "../contracts/interfaces";
+import {NumericString} from "../../types";
 
 export const convertToCalculatedContribution = ([
   isWhitelisted,
@@ -13,15 +16,7 @@ export const convertToCalculatedContribution = ([
   equityTokenInt,
   neuRewardUlps,
   maxCapExceeded,
-]: [
-  boolean,
-  boolean,
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  boolean
-]): IBlCalculatedContribution => ({
+]: TContribution): IBlCalculatedContribution => ({
   isWhitelisted,
   isEligible,
   minTicketEurUlps,
@@ -76,8 +71,8 @@ export const convertToTokenDisbursal = (
   ],
 ): IStateTokenDisbursal => ({
   currency,
-  amountToBeClaimed: amountToBeClaimed.toString(),
-  totalDisbursedAmount: totalDisbursedAmount.toString(),
+  amountToBeClaimed: amountToBeClaimed.toString() as NumericString,
+  totalDisbursedAmount: totalDisbursedAmount.toString() as NumericString,
   // convert seconds timestamp to milliseconds
   timeToFirstDisbursalRecycle: timeToFirstDisbursalRecycle.mul(1000).toNumber(),
 });
@@ -88,5 +83,5 @@ export const getNeuReward = (equityTokenInt: BigNumber, equivEurUlps: BigNumber)
   }
 
   const equityToken = Q18.mul(equityTokenInt);
-  return equivEurUlps.div(equityToken).toFixed(8);
+  return equivEurUlps.div(equityToken).toFixed(8); //fixme string???
 };

@@ -1,9 +1,9 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
-import {IEtoDocumentsState} from './interfaces'
+import {IStateEtoDocuments} from './interfaces'
 
 
-export const etoFlowInitialState: IEtoDocumentsState = {
+export const etoFlowInitialState: IStateEtoDocuments = {
   loading: false,
   saving: false,
   etoFileData: {
@@ -12,10 +12,10 @@ export const etoFlowInitialState: IEtoDocumentsState = {
   showIpfsModal: false,
 };
 
-export const etoDocumentReducer: AppReducer<IEtoDocumentsState> = (
+export const etoDocumentReducer: AppReducer<IStateEtoDocuments> = (
   state = etoFlowInitialState,
   action,
-): DeepReadonly<IEtoDocumentsState> => {
+): DeepReadonly<IStateEtoDocuments> => {
   switch (action.type) {
     case "ETO_DOCUMENTS_LOAD_FILE_DATA_START":
       return {

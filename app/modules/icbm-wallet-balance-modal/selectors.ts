@@ -1,8 +1,13 @@
 import BigNumber from "bignumber.js";
 
 import { DeepReadonly } from "../../types";
-import { IAppState } from "./../../store";
-import { IIcbmWalletBalanceModal, IWalletMigrationData, TWalletMigrationSteps } from "./reducer";
+import { IAppState } from "../../store";
+import {
+  IStateIcbmWalletBalanceModal,
+  TWalletMigrationSteps
+} from "./interfaces/intefaces";
+import {convert} from "../../components/eto/utils";
+import * as walletMigrationDataInterfaces from './interfaces/WalletMigrationData'
 
 // ICBM Wallet Selectors
 export const selectIcbmWalletEthAddress = (state: IAppState): string | undefined =>
@@ -20,8 +25,9 @@ export const selectEtherBalanceIcbmModal = (state: IAppState): BigNumber =>
 
 // Migration Tool Selectors
 export const selectWalletMigrationData = (
-  state: DeepReadonly<IIcbmWalletBalanceModal>,
-): ReadonlyArray<IWalletMigrationData> | undefined => state.walletMigrationData;
+  state: DeepReadonly<IStateIcbmWalletBalanceModal>,
+): ReadonlyArray<walletMigrationDataInterfaces.IBlWalletMigrationData> | undefined =>
+  state.walletMigrationData.map(x => convert(x, walletMigrationDataInterfaces.stateToBlConversionSpec));
 
 export const selectWalletMigrationCurrentStep = (state: IAppState): TWalletMigrationSteps =>
   state.icbmWalletBalanceModal && state.icbmWalletBalanceModal.currentMigrationStep;

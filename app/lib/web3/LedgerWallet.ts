@@ -4,11 +4,11 @@ import * as Web3 from "web3";
 import * as Web3ProviderEngine from "web3-provider-engine";
 // tslint:disable-next-line
 import * as RpcSubprovider from "web3-provider-engine/subproviders/rpc";
-
 import { inject, injectable } from "inversify";
 import { delay } from "redux-saga";
+
 import { symbols } from "../../di/symbols";
-import { EWalletSubType, EWalletType } from "../../modules/web3/types";
+import { EWalletSubType, EWalletType } from "../../modules/web3/interfaces";
 import { EthereumAddress, EthereumNetworkId } from "../../types";
 import { ILedgerWalletMetadata } from "../persistence/WalletMetadataObjectStorage";
 import { IPersonalWallet, SignerType } from "./PersonalWeb3";

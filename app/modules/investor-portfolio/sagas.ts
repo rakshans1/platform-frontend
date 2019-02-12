@@ -6,7 +6,6 @@ import { ECurrency } from "../../components/shared/Money";
 import { InvestorPortfolioMessage } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
 import { TGlobalDependencies } from "../../di/setupBindings";
-import { EEtoState, TPublicEtoData } from "../../lib/api/eto/EtoApi.interfaces";
 import { IStateUser } from "../auth/interfaces";
 import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
 import { promisify } from "../../lib/contracts/typechain-runtime";
@@ -15,7 +14,7 @@ import { actions, TAction } from "../actions";
 import { selectUser } from "../auth/selectors";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
-import { IStateTokenDisbursal } from "./interfaces/interfaces";
+import { IStateTokenDisbursal } from "./interfaces/TokenDisbursal";
 import {
   convertToCalculatedContribution,
   convertToInvestorTicket,
@@ -24,6 +23,10 @@ import {
 import * as calculatedContributionInterfaces from "./interfaces/CalculatedContribution";
 import * as investorTicketInterfaces from "./interfaces/InvestorTicket";
 import {convert} from "../../components/eto/utils";
+import {EEtoState} from "../eto-flow/interfaces/interfaces";
+import {IStatePublicEtoData} from "../eto-flow/interfaces/PublicEtoData";
+import {IStateCompanyEtoData} from "../eto-flow/interfaces/CompanyEtoData";
+import {TContribution} from "../contracts/interfaces";
 
 export function* loadInvestorTickets({ logger }: TGlobalDependencies, action: TAction): any {
   if (action.type !== "INVESTOR_TICKET_ETOS_LOAD") return;
@@ -72,7 +75,7 @@ export function* loadInvestorTicket(
 
 export function* loadComputedContributionFromContract(
   { contractsService }: TGlobalDependencies,
-  eto: TPublicEtoData,
+  eto: IStatePublicEtoData & IStateCompanyEtoData,
   amountEuroUlps?: BigNumber,
   isICBM = false,
 ): any {
@@ -82,14 +85,14 @@ export function* loadComputedContributionFromContract(
   const etoContract: ETOCommitment = yield contractsService.getETOCommitmentContract(eto.etoId);
 
   if (etoContract) {
-    const newInvestorContributionEurUlps =
-      amountEuroUlps || eto.minTicketEur && eto.minTicketEur.toString() || new BigNumber("0"); //fixme <--------------
+    const newInvestorContributionEurUlps:BigNumber =
+      amountEuroUlps || (eto.minTicketEur && new BigNumber(eto.minTicketEur)) || new BigNumber("0");
 
     const from = selectEthereumAddressWithChecksum(state);
 
     // TODO: check whether typechain but still is not fixed
     // sorry no typechain, typechain has a bug with boolean casting
-    const contribution = yield promisify(etoContract.rawWeb3Contract.calculateContribution, [
+    const contribution:TContribution = yield promisify(etoContract.rawWeb3Contract.calculateContribution, [
       from,
       isICBM,
       newInvestorContributionEurUlps,

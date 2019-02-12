@@ -1,15 +1,15 @@
 import { AppReducer } from "../../store";
 
-import {IWalletState} from './interfaces'
+import {IStateWallet} from './interfaces'
 
-const walletInitialState: IWalletState = {
+const walletInitialState: IStateWallet = {
   loading: true,
 };
 
-export const walletReducer: AppReducer<IWalletState> = (
+export const walletReducer: AppReducer<IStateWallet> = (
   state = walletInitialState,
   action,
-): IWalletState => {
+): IStateWallet => {
   switch (action.type) {
     case "WALLET_SAVE_WALLET_DATA":
       return {

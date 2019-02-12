@@ -1,15 +1,17 @@
 import { fork, put } from "redux-saga/effects";
+
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { IHttpResponse } from "../../lib/api/client/IHttpClient";
-import { GasModelShape } from "../../lib/api/GasApi";
 import { actions } from "../actions";
 import { neuTakeEvery } from "../sagasUtils";
+import * as gasModelInterfaces from './interfaces'
+import {convert} from "../../components/eto/utils";
 
 function* ensureGasApiDataSaga({ gasApi, logger }: TGlobalDependencies): any {
   try {
-    const gasValue: IHttpResponse<GasModelShape> = yield gasApi.getGas();
+    const gasValue: IHttpResponse<gasModelInterfaces.IApiGasModel> = yield gasApi.getGas();
 
-    yield put(actions.gas.gasApiLoaded({ data: gasValue.body }));
+    yield put(actions.gas.gasApiLoaded({ data: convert(gasValue.body, gasModelInterfaces.apiToStateConversionSpec) }));
   } catch (e) {
     logger.error("Error while loading GAS api data.", e);
     yield put(actions.gas.gasApiLoaded({ error: e }));

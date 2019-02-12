@@ -1,24 +1,21 @@
-import {
-  EEtoState,
-} from "../../lib/api/eto/EtoApi.interfaces";
-import { TEtoDocumentTemplates } from "../../lib/api/eto/EtoFileApi.interfaces";
-import { ERequestStatus } from "../../lib/api/KycApi.interfaces";
-import { IAppState } from "../../store";
-import { selectIsUserEmailVerified } from "../auth/selectors";
-import { selectPlatformTermsConstants } from "../contracts/selectors";
-import { selectEtoDocumentLoading } from "../eto-documents/selectors";
-import { selectKycRequestStatus } from "../kyc/selectors";
-import { selectEtoWithCompanyAndContract, selectPublicEto } from "../public-etos/selectors";
-import {EETOStateOnChain} from "../public-etos/interfaces/interfaces";
-import { isValidEtoStartDate } from "./utils";
-import {DeepPartial, DeepReadonly} from "../../types";
-import {IStateCompanyEtoData} from "./interfaces/CompanyEtoData";
-import {TStateEtoWithCompanyAndContract} from "../public-etos/interfaces/interfaces";
-import {IStatePublicEtoData} from "./interfaces/PublicEtoData";
+import {EEtoState} from "./interfaces/interfaces";
+import {TEtoDocumentTemplates} from "../eto-documents/interfaces";
+import {ERequestStatus} from "../kyc/interfaces";
+import {IAppState} from "../../store";
+import {selectIsUserEmailVerified} from "../auth/selectors";
+import {selectPlatformTermsConstants} from "../contracts/selectors";
+import {selectEtoDocumentLoading} from "../eto-documents/selectors";
+import {selectKycRequestStatus} from "../kyc/selectors";
+import {selectEtoWithCompanyAndContract, selectPublicEto} from "../public-etos/selectors";
+import {EETOStateOnChain, TBlEtoWithCompanyAndContract} from "../public-etos/interfaces/interfaces";
+import {isValidEtoStartDate} from "./utils";
+import {DeepPartial} from "../../types";
+import {IBlCompanyEtoData} from "./interfaces/CompanyEtoData";
+import {IBlPublicEtoData} from "./interfaces/PublicEtoData";
 
-export const selectIssuerEtoPreviewCode = (state: IAppState):string | undefined => state.etoFlow.etoPreviewCode;
+export const selectIssuerEtoPreviewCode = (state: IAppState): string | undefined => state.etoFlow.etoPreviewCode;
 
-export const selectIssuerEto = (state: IAppState): DeepReadonly<IStatePublicEtoData> | undefined => {
+export const selectIssuerEto = (state: IAppState): IBlPublicEtoData | undefined => {
   const issuerEtoPreviewCode = selectIssuerEtoPreviewCode(state);
 
   if (issuerEtoPreviewCode) {
@@ -28,7 +25,7 @@ export const selectIssuerEto = (state: IAppState): DeepReadonly<IStatePublicEtoD
   return undefined;
 };
 
-export const selectIssuerEtoWithCompanyAndContract = (state: IAppState):TStateEtoWithCompanyAndContract | undefined => {
+export const selectIssuerEtoWithCompanyAndContract = (state: IAppState): TBlEtoWithCompanyAndContract | undefined => {
   const issuerEtoPreviewCode = selectIssuerEtoPreviewCode(state);
 
   if (issuerEtoPreviewCode) {
@@ -48,13 +45,13 @@ export const selectIsBookBuilding = (state: IAppState): boolean => {
   return false;
 };
 
-export const selectMaxPledges = (state: IAppState):number|null => {
+export const selectMaxPledges = (state: IAppState): number | null => {
   const eto = selectIssuerEto(state);
 
   return eto !== undefined ? eto.maxPledges : null;
 };
 
-export const selectEtoId = (state: IAppState):string | undefined => {
+export const selectEtoId = (state: IAppState): string | undefined => {
   const eto = selectIssuerEto(state);
   if (eto) {
     return eto.etoId;
@@ -92,7 +89,7 @@ export const selectIssuerEtoIsRetail = (state: IAppState): boolean => {
   return false;
 };
 
-export const selectIssuerCompany = (state: IAppState): DeepReadonly<IStateCompanyEtoData> | undefined => {
+export const selectIssuerCompany = (state: IAppState): IBlCompanyEtoData | undefined => {
   const eto = selectIssuerEtoWithCompanyAndContract(state);
 
   if (eto) {
@@ -106,10 +103,13 @@ export const selectIssuerEtoLoading = (state: IAppState): boolean => state.etoFl
 
 export const selectCombinedEtoCompanyData = (
   state: IAppState,
-): DeepPartial<DeepReadonly<IStatePublicEtoData> & DeepReadonly<IStateCompanyEtoData>> => ({
-  ...selectIssuerCompany(state),
-  ...selectIssuerEto(state),
-});
+): DeepPartial<IBlPublicEtoData & IBlCompanyEtoData> => {
+
+  return ({
+    ...selectIssuerCompany(state),
+    ...selectIssuerEto(state),
+  })
+};
 
 export const selectIssuerEtoTemplates = (state: IAppState): TEtoDocumentTemplates | undefined => {
   const eto = selectIssuerEto(state);
@@ -151,16 +151,16 @@ export const selectIsOfferingDocumentSubmitted = (state: IAppState): boolean | u
   return undefined;
 };
 
-export const selectShouldEtoDataLoad = (state: IAppState):boolean =>
+export const selectShouldEtoDataLoad = (state: IAppState): boolean =>
   selectKycRequestStatus(state) === ERequestStatus.ACCEPTED &&
   selectIsUserEmailVerified(state.auth);
 
-export const selectIsGeneralEtoLoading = (state: IAppState):boolean =>
+export const selectIsGeneralEtoLoading = (state: IAppState): boolean =>
   selectIssuerEtoLoading(state) && selectEtoDocumentLoading(state.etoDocuments);
 
-export const selectNewPreEtoStartDate = (state: IAppState):Date | undefined => state.etoFlow.newStartDate;
+export const selectNewPreEtoStartDate = (state: IAppState): Date | undefined => state.etoFlow.newStartDate;
 
-export const selectPreEtoStartDateFromContract = (state: IAppState):Date | undefined => {
+export const selectPreEtoStartDateFromContract = (state: IAppState): Date | undefined => { //TODO remove dates from state
   const code = selectIssuerEtoPreviewCode(state);
   if (code) {
     const eto = selectEtoWithCompanyAndContract(state, code);
@@ -168,16 +168,16 @@ export const selectPreEtoStartDateFromContract = (state: IAppState):Date | undef
   }
 };
 
-export const selectPreEtoStartDate = (state: IAppState): Date | undefined =>
+export const selectPreEtoStartDate = (state: IAppState): Date | undefined => //TODO remove dates from state
   selectNewPreEtoStartDate(state) || selectPreEtoStartDateFromContract(state);
 
-export const selectCanChangePreEtoStartDate = (state: IAppState):boolean => {
+export const selectCanChangePreEtoStartDate = (state: IAppState): boolean => {
   const constants = selectPlatformTermsConstants(state);
   const date = selectPreEtoStartDateFromContract(state);
   return !date || isValidEtoStartDate(date, constants.DATE_TO_WHITELIST_MIN_DURATION);
 };
 
-export const selectIsNewPreEtoStartDateValid = (state: IAppState):boolean => {
+export const selectIsNewPreEtoStartDateValid = (state: IAppState): boolean => {
   const constants = selectPlatformTermsConstants(state);
   const date = selectNewPreEtoStartDate(state);
   return !!date && isValidEtoStartDate(date, constants.DATE_TO_WHITELIST_MIN_DURATION);

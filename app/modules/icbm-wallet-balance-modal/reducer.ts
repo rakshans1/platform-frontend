@@ -1,20 +1,21 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
-import {IIcbmWalletBalanceModalState} from './intefaces'
+import {IStateIcbmWalletBalanceModal} from './interfaces/intefaces'
 
-const initialState: IIcbmWalletBalanceModalState = {
+const initialState: IStateIcbmWalletBalanceModal = {
   isOpen: false,
   loading: false,
   isMigrating: false,
   firstTransactionDone: false,
   secondTransactionDone: false,
   currentMigrationStep: 1,
+  walletMigrationData:[]
 };
 
-export const icbmWalletBalanceModalReducer: AppReducer<IIcbmWalletBalanceModalState> = (
+export const icbmWalletBalanceModalReducer: AppReducer<IStateIcbmWalletBalanceModal> = (
   state = initialState,
   action,
-): DeepReadonly<IIcbmWalletBalanceModalState> => {
+): DeepReadonly<IStateIcbmWalletBalanceModal> => {
   switch (action.type) {
     case "ICBM_WALLET_BALANCE_MODAL_SHOW":
       return {

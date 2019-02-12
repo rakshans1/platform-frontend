@@ -8,8 +8,6 @@ import { PublicEtosMessage } from "../../components/translatedMessages/messages"
 import { createMessage } from "../../components/translatedMessages/utils";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { IHttpResponse } from "../../lib/api/client/IHttpClient";
-import {EEtoState} from "../../lib/api/eto/EtoApi.interfaces";
-import { IEtoDocument, immutableDocumentName } from "../../lib/api/eto/EtoFileApi.interfaces";
 import { EUserType } from "../auth/interfaces";
 import { EtherToken } from "../../lib/contracts/EtherToken";
 import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
@@ -29,11 +27,11 @@ import {
 } from "./selectors";
 import {EETOStateOnChain, TApiPublicEtoData, TStateEtoWithCompanyAndContract} from "./interfaces/interfaces";
 import * as publicEtoInterfaces from '../eto-flow/interfaces/PublicEtoData'
-import {convert} from "../../components/eto/utils";
 import * as companyEtoDataInterfaces from "../eto-flow/interfaces/CompanyEtoData";
-import {IStatePublicEtoData} from "../eto-flow/interfaces/PublicEtoData";
+import {convert} from "../../components/eto/utils";
 import {convertToEtoTotalInvestment, convertToStateStartDate} from "./utils";
-import {IApiPublicEtoData} from "../eto-flow/interfaces/PublicEtoData";
+import {EEtoState} from "../eto-flow/interfaces/interfaces";
+import {IEtoDocument, immutableDocumentNames} from "../eto-documents/interfaces";
 
 export function* loadEtoPreview(
   { apiEtoService, notificationCenter, logger }: TGlobalDependencies,
@@ -276,12 +274,12 @@ function* loadEtos({ apiEtoService, logger }: TGlobalDependencies): any {
       map((company:companyEtoDataInterfaces.IApiCompanyEtoData) => convert(company, companyEtoDataInterfaces.apiToStateConversionSpec))
     )(etos as any) as unknown as Dictionary<companyEtoDataInterfaces.IStateCompanyEtoData>;
 
-    const etosByPreviewCode:Dictionary<IStatePublicEtoData> = compose(
-      keyBy((eto: IStatePublicEtoData) => eto.previewCode),
+    const etosByPreviewCode:Dictionary<publicEtoInterfaces.IStatePublicEtoData> = compose(
+      keyBy((eto: publicEtoInterfaces.IStatePublicEtoData) => eto.previewCode),
       // remove company prop from eto
       // it's saved separately for consistency with other endpoints
       map(omit("company")),
-      map((eto:IApiPublicEtoData) => convert(eto, publicEtoInterfaces.apiToStateConversionSpec)),
+      map((eto:publicEtoInterfaces.IApiPublicEtoData) => convert(eto, publicEtoInterfaces.apiToStateConversionSpec)),
     )(etos);
 
     const order = etosResponse.body.map(eto => eto.previewCode);
@@ -317,7 +315,7 @@ function* download(document: IEtoDocument): any {
           mimeType: document.mimeType,
           asPdf: true,
         },
-        immutableDocumentName[document.documentType],
+        immutableDocumentNames[document.documentType],
       ),
     );
   }

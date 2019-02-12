@@ -1,17 +1,16 @@
-import { IEtoFiles } from "../../lib/api/eto/EtoFileApi.interfaces";
 import { DeepReadonly } from "../../types";
-import { IEtoDocumentState } from "./reducer";
+import {IEtoFiles, IStateEtoDocuments} from "./interfaces";
 
-export const selectIsIpfsModalOpen = (state: DeepReadonly<IEtoDocumentState>): boolean =>
+export const selectIsIpfsModalOpen = (state: DeepReadonly<IStateEtoDocuments>): boolean =>
   state.showIpfsModal;
 
 export const selectFileUploadAction = (
-  state: DeepReadonly<IEtoDocumentState>,
+  state: DeepReadonly<IStateEtoDocuments>,
 ): (() => void) | undefined => state.uploadAction;
 
-export const selectEtoDocumentLoading = (state: DeepReadonly<IEtoDocumentState>): boolean =>
+export const selectEtoDocumentLoading = (state: DeepReadonly<IStateEtoDocuments>): boolean =>
   state.loading;
 
 export const selectEtoDocumentData = (
-  state: DeepReadonly<IEtoDocumentState>,
+  state: DeepReadonly<IStateEtoDocuments>,
 ): DeepReadonly<IEtoFiles> => state.etoFileData;

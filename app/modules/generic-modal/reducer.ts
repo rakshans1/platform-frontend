@@ -1,15 +1,15 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
-import {IGenericModalState, IGenericModalObjectState} from './interfaces'
+import {IStateGenericModal} from './interfaces'
 
-const initialState: IGenericModalState = {
+const initialState: IStateGenericModal = {
   isOpen: false,
 };
 
-export const genericModalReducer: AppReducer<IGenericModalState> = (
+export const genericModalReducer: AppReducer<IStateGenericModal> = (
   state = initialState,
   action,
-): DeepReadonly<IGenericModalState> => {
+): DeepReadonly<IStateGenericModal> => {
   switch (action.type) {
     case "GENERIC_MODAL_SHOW":
       return {

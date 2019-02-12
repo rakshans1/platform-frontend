@@ -6,11 +6,6 @@ import { createMessage } from "../../components/translatedMessages/utils";
 import { DO_BOOK_BUILDING, SUBMIT_ETO_PERMISSION } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { IHttpResponse } from "../../lib/api/client/IHttpClient";
-import {
-  EEtoState,
-  // TEtoSpecsData,
-  TPartialEtoSpecData,
-} from "../../lib/api/eto/EtoApi.interfaces";
 import { IAppState } from "../../store";
 import { actions, TAction } from "../actions";
 import { ensurePermissionsArePresent } from "../auth/jwt/sagas";
@@ -18,9 +13,12 @@ import { loadEtoContract } from "../public-etos/sagas";
 import { neuCall, neuTakeEvery, neuTakeLatest } from "../sagasUtils";
 import { selectIsNewPreEtoStartDateValid, selectIssuerCompany, selectIssuerEto } from "./selectors";
 import { bookBuildingStatsToCsvString, createCsvDataUri, downloadFile } from "./utils";
-import * as companyEtoDataInterfaces from "../eto-flow/interfaces/CompanyEtoData";
-import * as publicEtoInterfaces from '../eto-flow/interfaces/PublicEtoData';
+import * as companyEtoDataInterfaces from "./interfaces/CompanyEtoData";
+import * as publicEtoInterfaces from './interfaces/PublicEtoData';
 import {convert} from "../../components/eto/utils";
+import {EEtoState} from "./interfaces/interfaces";
+import {DeepPartial} from "../../types";
+import {IApiDetailedBookbuildingStats} from "../bookbuilding-flow/interfaces/DetailedBookbuildingStats";
 
 export function* loadIssuerEto({
   apiEtoService,
@@ -79,11 +77,10 @@ export function* downloadBookBuildingStats(
 ): any {
   if (action.type !== "ETO_FLOW_DOWNLOAD_BOOK_BUILDING_STATS") return;
   try {
-    const detailedStatsResponse: IHttpResponse<
-      any
-    > = yield apiEtoService.getDetailedBookBuildingStats();
+    const detailedStatsResponse: IHttpResponse<IApiDetailedBookbuildingStats[]> =
+      yield apiEtoService.getDetailedBookBuildingStats();
 
-    const dataAsString = yield bookBuildingStatsToCsvString(detailedStatsResponse.body);
+    const dataAsString:string = yield bookBuildingStatsToCsvString(detailedStatsResponse.body);
 
     yield downloadFile(createCsvDataUri(dataAsString), "whitelisted_investors.csv");
   } catch (e) {
@@ -94,7 +91,7 @@ export function* downloadBookBuildingStats(
   }
 }
 
-function stripEtoDataOptionalFields(data: TPartialEtoSpecData): TPartialEtoSpecData {
+function stripEtoDataOptionalFields(data: DeepPartial<publicEtoInterfaces.IBlPublicEtoData>): DeepPartial<publicEtoInterfaces.IBlPublicEtoData> {
   // formik will pass empty strings into numeric fields that are optional, see
   // https://github.com/jaredpalmer/formik/pull/827
   // todo: we should probably enumerate Yup schema and clean up all optional numbers
@@ -114,19 +111,22 @@ export function* saveEtoData(
 ): any {
   if (action.type !== "ETO_FLOW_SAVE_DATA_START") return;
   try {
-    const currentCompanyData: TCompanyEtoData = yield effects.select(selectIssuerCompany);
-    const currentEtoData: TEtoSpecsData = yield effects.select(selectIssuerEto);
+    const currentCompanyData: companyEtoDataInterfaces.IBlCompanyEtoData = yield effects.select(selectIssuerCompany);
+    const currentEtoData: publicEtoInterfaces.IBlPublicEtoData = yield effects.select(selectIssuerEto);
     yield apiEtoService.putCompany({
-      ...currentCompanyData,
-      ...action.payload.data.companyData,
+      ...convert(currentCompanyData, companyEtoDataInterfaces.blToApiConversionSpec),
+      ...convert(action.payload.data.companyData, companyEtoDataInterfaces.stateToApiConversionSpec),
     });
     if (currentEtoData.state === EEtoState.PREVIEW)
       yield apiEtoService.putMyEto(
-        stripEtoDataOptionalFields({
-          //TODO this is already being done on form save. Need to synchronize with convert() method
-          ...currentEtoData,
-          ...action.payload.data.etoData,
-        }),
+        convert(
+          stripEtoDataOptionalFields({
+            //TODO this is already being done on form save. Need to synchronize with convert() method
+            ...currentEtoData,
+            ...action.payload.data.etoData,
+          }),
+          publicEtoInterfaces.blToApiConversionSpec
+        )
       );
     yield put(actions.etoFlow.loadDataStart());
     yield put(actions.routing.goToDashboard());

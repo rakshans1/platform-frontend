@@ -1,15 +1,15 @@
 import { AppReducer } from "../../store";
-import { ISignMessageModalState } from './interfaces'
+import { IStateSignMessageModal } from './interfaces'
 
 
-const initialState: ISignMessageModalState = {
+const initialState: IStateSignMessageModal = {
   isModalOpen: false,
 };
 
-export const accessWalletReducer: AppReducer<ISignMessageModalState> = (
+export const accessWalletReducer: AppReducer<IStateSignMessageModal> = (
   state = initialState,
   action,
-): ISignMessageModalState => {
+): IStateSignMessageModal => {
   switch (action.type) {
     case "SHOW_ACCESS_WALLET_MODAL":
       return {
@@ -40,4 +40,4 @@ export const accessWalletReducer: AppReducer<ISignMessageModalState> = (
   return state;
 };
 
-export const selectIsSigning = (state: ISignMessageModalState): boolean => state.isModalOpen;
+export const selectIsSigning = (state: IStateSignMessageModal): boolean => state.isModalOpen;

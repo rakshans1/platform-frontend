@@ -1,6 +1,6 @@
 import {NumericString} from "../../types";
 
-export interface IWalletState {
+export interface IStateWallet {
   loading: boolean;
   error?: string;
   data?: IStateWalletData;

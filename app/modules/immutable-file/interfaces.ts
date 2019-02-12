@@ -2,7 +2,7 @@ export interface IImmutableStorageState {
   pendingDownloads: { [ipfsHash: string]: boolean };
 }
 
-export interface ImmutableFileIdState {
+export interface IImmutableFileId {
   ipfsHash: string;
   mimeType: string;
   placeholders?: { [key: string]: string };

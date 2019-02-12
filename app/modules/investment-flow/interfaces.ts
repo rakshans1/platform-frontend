@@ -39,7 +39,7 @@ export interface IStateInvestmentFlow {
   bankTransferReference: string | null;
 }
 
-export interface IInvestmentFlowData {
+export interface IBlInvestmentFlow {
   etoId: string;
   euroValueUlps: BigNumber;
   ethValueUlps: BigNumber;

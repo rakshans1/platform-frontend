@@ -3,13 +3,13 @@ import { inject, injectable } from "inversify";
 import { Dictionary } from "lodash";
 import { symbols } from "../../../di/symbols";
 import { IHttpClient, IHttpResponse } from "../client/IHttpClient";
-import { withParams } from "./../../../utils/withParams";
+import { withParams } from "../../../utils/withParams";
 import {
   EEtoDocumentType,
   IEtoDocument,
-  IEtoFiles,
   TEtoDocumentTemplates,
-} from "./EtoFileApi.interfaces";
+  TStateInfo
+} from "../../../modules/eto-documents/interfaces";
 
 const BASE_PATH = "/api/eto-listing/etos";
 // Issuer endpoints
@@ -71,16 +71,16 @@ export class EtoFileApi {
     return response.body;
   }
 
-  public async getEtoFileStateInfo(): Promise<IHttpResponse<IEtoFiles>> {
-    const response = await this.httpClient.get<IHttpResponse<IEtoFiles>>({
+  public async getEtoFileStateInfo(): Promise<TStateInfo> {
+    const response = await this.httpClient.get<TStateInfo>({
       baseUrl: BASE_PATH,
       url: ETO_DOCUMENTS_INFO_PATH,
     });
     return response.body;
   }
 
-  public async getAllEtoTemplates(): Promise<IHttpResponse<TEtoDocumentTemplates>> {
-    const response = await this.httpClient.get<IHttpResponse<TEtoDocumentTemplates>>({
+  public async getAllEtoTemplates(): Promise<TEtoDocumentTemplates> {
+    const response = await this.httpClient.get<TEtoDocumentTemplates>({
       baseUrl: BASE_PATH,
       url: ETO_TEMPLATES_PATH,
     });

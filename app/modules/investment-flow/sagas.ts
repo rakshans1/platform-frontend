@@ -49,21 +49,22 @@ import {
   selectIsBankTransferModalOpened,
   selectIsICBMInvestment,
 } from "./selectors";
-import {IBlCalculatedContribution, IStateCalculatedContribution} from "../investor-portfolio/interfaces/interfaces";
+import * as calculatedContributionInterfaces from "../investor-portfolio/interfaces/CalculatedContribution";
 import {NumericString} from "../../types";
 import {convert} from "../../components/eto/utils";
+import * as publicEtoDataInterfaces from "../eto-flow/interfaces/PublicEtoData";
 
 // default: 3 days
 const HOURS_TO_DISABLE_BANK_TRANSFER = parseInt(
   process.env.NF_HOURS_TO_DISABLE_BANK_TRANSFER_INVESTMENT || "72",
   10,
 );
-
+//todo move debouncing and user input validation into component
 function* processCurrencyValue(action: TAction): any {
   if (action.type !== "INVESTMENT_FLOW_SUBMIT_INVESTMENT_VALUE") return;
   const state: IAppState = yield select();
 
-  const value:BigNumber = new BigNumber(extractNumber(action.payload.value));
+  const value = new BigNumber(extractNumber(action.payload.value)); //fixme extract number should go into component
 
   if (value.isNaN()) return;
 
@@ -143,7 +144,8 @@ function calculateInvestmentError(state: IAppState): EInvestmentErrorState | und
     const euroValue = investmentFlow.euroValueUlps !== null ? new BigNumber(investmentFlow.euroValueUlps) : null;
     const etherValue = investmentFlow.ethValueUlps !== null ? new BigNumber(investmentFlow.ethValueUlps) : null;
     const wallet = state.wallet.data;
-    const contribs:IStateCalculatedContribution | undefined = selectCalculatedContribution(state, investmentFlow.etoId);
+    const contribs:calculatedContributionInterfaces.IBlCalculatedContribution | undefined =
+      selectCalculatedContribution(state, investmentFlow.etoId);
     const ticketSizes = selectCalculatedEtoTicketSizesUlpsById(state, investmentFlow.etoId); //{bignumber, bignumber}
 
     if (!contribs || !euroValue || !etherValue || !wallet || !ticketSizes) return;
@@ -196,9 +198,12 @@ function* validateAndCalculateInputs({ contractsService }: TGlobalDependencies):
     const etoContract: ETOCommitment = yield contractsService.getETOCommitmentContract(eto.etoId);
     if (etoContract) {
       const isICBM = selectIsICBMInvestment(state);
-      const contribution:IBlCalculatedContribution = yield neuCall(loadComputedContributionFromContract, eto, value, isICBM);
+      const contribution:calculatedContributionInterfaces.IBlCalculatedContribution =
+        yield neuCall(loadComputedContributionFromContract, eto, value, isICBM);
 
-      yield put(actions.investorEtoTicket.setCalculatedContribution(eto.etoId, contribution));
+      yield put(actions.investorEtoTicket.setCalculatedContribution(eto.etoId,
+        convert(contribution, calculatedContributionInterfaces.blToStateConversionSpec)
+      ));
 
       state = yield select();
 
@@ -231,7 +236,9 @@ function* start(action: TAction): any {
   yield put(actions.investmentFlow.setEtoId(etoId));
   yield put(actions.kyc.kycLoadClientData());
   yield put(actions.txTransactions.startInvestment());
-  yield put(actions.investorEtoTicket.loadEtoInvestorTicket(selectPublicEtoById(state, etoId)!)); //fixme casting
+  yield put(actions.investorEtoTicket.loadEtoInvestorTicket(
+    convert(selectPublicEtoById(state, etoId), publicEtoDataInterfaces.blToApiConversionSpec)
+  ));
 
   yield take("TX_SENDER_WATCH_PENDING_TXS_DONE");
   yield getActiveInvestmentTypes();

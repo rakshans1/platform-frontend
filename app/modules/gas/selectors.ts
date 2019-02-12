@@ -2,19 +2,15 @@ import BigNumber from "bignumber.js";
 
 import { calculateGasPriceWithOverhead } from "../tx/utils";
 import { IAppState } from "../../store";
-import {IBlGasModel} from "./interfaces";
+import * as gasModelInterfaces from "./interfaces";
+import {convert} from "../../components/eto/utils";
 
 export const selectIsGasPriceAlreadyLoaded = (state: IAppState): boolean =>
   !state.gas.loading && !!state.gas.gasPrice;
 
-export const selectGasPrice = (state: IAppState): IBlGasModel | undefined => {
+export const selectGasPrice = (state: IAppState): gasModelInterfaces.IBlGasModel | undefined => {
   return state.gas.gasPrice
-    ? {
-      fast: new BigNumber(state.gas.gasPrice.fast),
-      fastest: new BigNumber(state.gas.gasPrice.fastest),
-      safeLow: new BigNumber(state.gas.gasPrice.safeLow),
-      standard: new BigNumber(state.gas.gasPrice.standard),
-    }
+    ? convert(state.gas.gasPrice, gasModelInterfaces.stateToBlConversionSpec)
     : undefined;
 };
 

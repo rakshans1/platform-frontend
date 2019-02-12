@@ -1,13 +1,13 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
-import {IAuthState } from './interfaces'
+import {IStateAuth } from './interfaces'
 
-const authInitialState: IAuthState = {};
+const authInitialState: IStateAuth = {};
 
-export const authReducer: AppReducer<IAuthState> = (
+export const authReducer: AppReducer<IStateAuth> = (
   state = authInitialState,
   action,
-): DeepReadonly<IAuthState> => {
+): DeepReadonly<IStateAuth> => {
   switch (action.type) {
     case "AUTH_SET_USER":
       return {

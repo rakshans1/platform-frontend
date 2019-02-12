@@ -3,7 +3,12 @@ import { inject, injectable } from "inversify";
 import { symbols } from "../../../di/symbols";
 import { withParams } from "../../../utils/withParams";
 import { IHttpClient, IHttpResponse } from "../client/IHttpClient";
-import { TGeneralEtoData, TPartialCompanyEtoData, TPartialEtoSpecData } from "./EtoApi.interfaces";
+import {DeepPartial} from "../../../types";
+import {IApiPublicEtoData} from "../../../modules/eto-flow/interfaces/PublicEtoData";
+import {IApiCompanyEtoData} from "../../../modules/eto-flow/interfaces/CompanyEtoData";
+import {TApiGeneralEtoData} from "../../../modules/eto-flow/interfaces/interfaces";
+import {IApiBookBuildingStats} from "../../../modules/bookbuilding-flow/interfaces/BookbuildingStats";
+import {IApiDetailedBookbuildingStats} from "../../../modules/bookbuilding-flow/interfaces/DetailedBookbuildingStats";
 
 const BASE_PATH = "/api/eto-listing/";
 const COMPANIES_ME_DATA_PATH = "/companies/me";
@@ -21,68 +26,68 @@ export class EtoApi {
     @inject(symbols.jsonHttpClient) private httpClient: IHttpClient,
   ) {}
 
-  public async getEtos(): Promise<IHttpResponse<TPartialEtoSpecData>> {
-    return await this.authorizedHttpClient.get<TPartialEtoSpecData>({
+  public async getEtos(): Promise<IHttpResponse<DeepPartial<IApiPublicEtoData>>> {
+    return await this.authorizedHttpClient.get<DeepPartial<IApiPublicEtoData>>({
       baseUrl: BASE_PATH,
       url: ETOS_PATH,
     });
   }
 
-  public async getMyEto(): Promise<IHttpResponse<TPartialEtoSpecData>> {
-    return await this.authorizedHttpClient.get<TPartialEtoSpecData>({
+  public async getMyEto(): Promise<IHttpResponse<DeepPartial<IApiPublicEtoData>>> {
+    return await this.authorizedHttpClient.get<DeepPartial<IApiPublicEtoData>>({
       baseUrl: BASE_PATH,
       url: ETO_DATA_PATH,
     });
   }
 
-  public async putMyEto(data: TPartialEtoSpecData): Promise<IHttpResponse<TPartialEtoSpecData>> {
-    return await this.authorizedHttpClient.put<TPartialEtoSpecData>({
+  public async putMyEto(data: DeepPartial<IApiPublicEtoData>): Promise<IHttpResponse<DeepPartial<IApiPublicEtoData>>> {
+    return await this.authorizedHttpClient.put<DeepPartial<IApiPublicEtoData>>({
       baseUrl: BASE_PATH,
       url: ETO_DATA_PATH,
       body: data,
     });
   }
 
-  public async getEtoPreview(previewCode: string): Promise<IHttpResponse<TPartialCompanyEtoData>> {
-    return await this.httpClient.get<TPartialCompanyEtoData>({
+  public async getEtoPreview(previewCode: string): Promise<IHttpResponse<DeepPartial<IApiCompanyEtoData>>> {
+    return await this.httpClient.get<DeepPartial<IApiCompanyEtoData>>({
       baseUrl: BASE_PATH,
       url: withParams(ETO_PREVIEW_PATH, { previewCode }),
     });
   }
 
-  public async getEto(etoId: string): Promise<IHttpResponse<TPartialEtoSpecData>> {
-    return await this.httpClient.get<TPartialEtoSpecData>({
+  public async getEto(etoId: string): Promise<IHttpResponse<DeepPartial<IApiPublicEtoData>>> {
+    return await this.httpClient.get<DeepPartial<IApiPublicEtoData>>({
       baseUrl: BASE_PATH,
       url: ETOS_PATH + "/" + etoId,
     });
   }
 
-  public async getCompany(): Promise<IHttpResponse<TPartialCompanyEtoData>> {
-    return await this.authorizedHttpClient.get<TPartialCompanyEtoData>({
+  public async getCompany(): Promise<IHttpResponse<DeepPartial<IApiCompanyEtoData>>> {
+    return await this.authorizedHttpClient.get<DeepPartial<IApiCompanyEtoData>>({
       baseUrl: BASE_PATH,
       url: COMPANIES_ME_DATA_PATH,
     });
   }
 
-  public async getCompanyById(companyId: string): Promise<IHttpResponse<TPartialCompanyEtoData>> {
-    return await this.httpClient.get<TPartialCompanyEtoData>({
+  public async getCompanyById(companyId: string): Promise<IHttpResponse<DeepPartial<IApiCompanyEtoData>>> {
+    return await this.httpClient.get<DeepPartial<IApiCompanyEtoData>>({
       baseUrl: BASE_PATH,
       url: COMPANIES_DATA_PATH + companyId,
     });
   }
 
   public async putCompany(
-    data: TPartialCompanyEtoData,
-  ): Promise<IHttpResponse<TPartialCompanyEtoData>> {
-    return await this.authorizedHttpClient.put<TPartialCompanyEtoData>({
+    data: DeepPartial<IApiCompanyEtoData>,
+  ): Promise<IHttpResponse<DeepPartial<IApiCompanyEtoData>>> {
+    return await this.authorizedHttpClient.put<DeepPartial<IApiCompanyEtoData>>({
       baseUrl: BASE_PATH,
       url: COMPANIES_ME_DATA_PATH,
       body: data,
     });
   }
 
-  public async submitCompanyAndEto(): Promise<IHttpResponse<TGeneralEtoData>> {
-    return await this.authorizedHttpClient.post<TGeneralEtoData>({
+  public async submitCompanyAndEto(): Promise<IHttpResponse<TApiGeneralEtoData>> {
+    return await this.authorizedHttpClient.post<TApiGeneralEtoData>({
       baseUrl: BASE_PATH,
       url: ETO_SUBMISSION_PATH,
     });
@@ -90,22 +95,22 @@ export class EtoApi {
 
   public async changeBookBuildingState(
     isBookBuilding: boolean,
-  ): Promise<IHttpResponse<TGeneralEtoData>> {
-    return await this.authorizedHttpClient.put<TGeneralEtoData>({
+  ): Promise<IHttpResponse<TApiGeneralEtoData>> {
+    return await this.authorizedHttpClient.put<TApiGeneralEtoData>({
       baseUrl: BASE_PATH,
       url: ETO_BOOK_BUILDING_PATH,
       body: { is_bookbuilding: isBookBuilding },
     });
   }
 
-  public getBookBuildingStats(etoId: string): Promise<IHttpResponse<any>> {
-    return this.httpClient.get<any>({
+  public getBookBuildingStats(etoId: string): Promise<IHttpResponse<IApiBookBuildingStats>> {
+    return this.httpClient.get<IApiBookBuildingStats>({
       baseUrl: BASE_PATH,
       url: ETOS_PATH + "/" + etoId + "/bookbuilding-stats",
     });
   }
 
-  public getDetailedBookBuildingStats(): Promise<IHttpResponse<any>> {
+  public getDetailedBookBuildingStats(): Promise<IHttpResponse<IApiDetailedBookbuildingStats>> {
     return this.authorizedHttpClient.get<any>({
       baseUrl: BASE_PATH,
       url: ETOS_PATH + "/me/pledges",

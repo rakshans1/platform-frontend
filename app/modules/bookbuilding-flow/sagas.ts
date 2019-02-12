@@ -6,7 +6,6 @@ import { BOOKBUILDING_WATCHER_DELAY, DO_BOOK_BUILDING } from "../../config/const
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { IHttpResponse } from "../../lib/api/client/IHttpClient";
 import { EtoPledgeNotFound } from "../../lib/api/eto/EtoPledgeApi";
-import { IPledge } from "../../lib/api/eto/EtoPledgeApi.interfaces";
 import { delay } from "../../utils/delay";
 import { actions, TAction } from "../actions";
 import { ensurePermissionsArePresent } from "../auth/jwt/sagas";
@@ -19,6 +18,8 @@ import {
   UNWATCH_BOOKBUILDING_FLOW_STATS,
   WATCH_BOOKBUILDING_FLOW_STATS,
 } from "./actions";
+import * as pledgeInterfaces from "./interfaces/Pledge";
+import {convert} from "../../components/eto/utils";
 
 export function* saveMyPledge(
   { apiEtoPledgeService, notificationCenter, logger }: TGlobalDependencies,
@@ -35,14 +36,14 @@ export function* saveMyPledge(
     );
 
     const etoId = action.payload.etoId;
-    const pledge = action.payload.pledge;
+    const pledge:pledgeInterfaces.IStatePledge = action.payload.pledge;
 
-    const pledgeResult: IHttpResponse<IPledge> = yield apiEtoPledgeService.saveMyPledge(
+    const pledgeResult: IHttpResponse<pledgeInterfaces.IApiPledge> = yield apiEtoPledgeService.saveMyPledge(
       etoId,
-      pledge,
+      convert(pledge, pledgeInterfaces.stateToApiConversionSpec),
     );
 
-    yield put(actions.bookBuilding.setPledge(etoId, pledgeResult.body));
+    yield put(actions.bookBuilding.setPledge(etoId, convert(pledgeResult.body, pledgeInterfaces.apiToStateConversionSpec)));
     yield put(actions.bookBuilding.loadBookBuildingStats(etoId));
   } catch (e) {
     notificationCenter.error(
@@ -102,7 +103,7 @@ export function* loadBookBuildingStats(
     const etoId = action.payload.etoId;
     const statsResponse: IHttpResponse<any> = yield apiEtoService.getBookBuildingStats(etoId);
 
-    yield put(actions.bookBuilding.setBookBuildingStats(etoId, statsResponse.body));
+    yield put(actions.bookBuilding.setBookBuildingStats(etoId, statsResponse.body)); //fixme statsResponse:any
   } catch (e) {
     notificationCenter.error(
       createMessage(BookbuildingFlowMessage.PLEDGE_FLOW_FAILED_TO_GET_BOOKBUILDING_STATS),
@@ -120,9 +121,9 @@ export function* loadMyPledge(
 
   try {
     const etoId = action.payload.etoId;
-    const pledgeResponse: IHttpResponse<IPledge> = yield apiEtoPledgeService.getMyPledge(etoId);
+    const pledgeResponse: IHttpResponse<pledgeInterfaces.IApiPledge> = yield apiEtoPledgeService.getMyPledge(etoId);
 
-    yield put(actions.bookBuilding.setPledge(etoId, pledgeResponse.body));
+    yield put(actions.bookBuilding.setPledge(etoId, convert(pledgeResponse.body, pledgeInterfaces.apiToStateConversionSpec)));
   } catch (e) {
     if (!(e instanceof EtoPledgeNotFound)) {
       notificationCenter.error(

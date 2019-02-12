@@ -1,6 +1,6 @@
 import {EWalletSubType, EWalletType} from "../web3/interfaces";
 
-export interface IAuthState {
+export interface IStateAuth {
   user?: IStateUser;
   jwt?: string;
   currentAgreementHash?: string;
@@ -35,7 +35,6 @@ export enum EUserType {
   INVESTOR = "investor",
   ISSUER = "issuer",
 }
-
 
 export interface IApiEmailStatus {
   isAvailable: boolean;

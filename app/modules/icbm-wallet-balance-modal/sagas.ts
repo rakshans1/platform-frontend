@@ -10,19 +10,20 @@ import { actions, TAction, TActionFromCreator } from "../actions";
 import { downloadLink } from "../immutable-file/utils";
 import { neuCall, neuTakeEvery, neuTakeUntil } from "../sagasUtils";
 import { ETokenType } from "../tx/interfaces";
-import { ILockedWallet, IWalletStateData } from "../wallet/reducer";
 import { loadWalletDataAsync } from "../wallet/sagas";
 import { selectLockedWalletConnected } from "../wallet/selectors";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
-import { IWalletMigrationData } from "./reducer";
 import { selectIcbmModalIsFirstTransactionDone, selectIcbmWalletEthAddress } from "./selectors";
+import {IStateLockedWallet, IStateWalletData} from "../wallet/interfaces";
+import {IStateWalletMigrationData} from "./interfaces/WalletMigrationData";
+import {NumericString} from "../../types";
 
 const BLOCK_MINING_TIME_DELAY = 12000;
 class IcbmWalletError extends Error {}
 class NoIcbmWalletError extends IcbmWalletError {}
 class SameUserError extends IcbmWalletError {}
 
-function hasIcbmWallet(lockedWallet: ILockedWallet): boolean {
+function hasIcbmWallet(lockedWallet: IStateLockedWallet): boolean {
   return lockedWallet.unlockDate !== "0";
 }
 
@@ -55,28 +56,26 @@ function* loadIcbmWalletMigrationTransactionSaga({
     const etherLockAddress = yield contractsService.etherLock.address;
     const icbmEtherLockAddress = yield contractsService.icbmEtherLock.address;
 
-    const walletMigrationData: IWalletMigrationData[] = [
+    const walletMigrationData: IStateWalletMigrationData[] = [
       {
         migrationInputData: contractsService.etherLock
           .setInvestorMigrationWalletTx(currentEthAddress)
           .getData(),
         smartContractAddress: toChecksumAddress(etherLockAddress),
-        gasLimit: "400000",
-        value: "0",
+        gasLimit: "400000" as NumericString,
+        value: "0" as NumericString,
       },
       {
         migrationInputData: contractsService.icbmEtherLock.migrateTx().getData(),
         smartContractAddress: toChecksumAddress(icbmEtherLockAddress),
-        gasLimit: "400000",
-        value: "0",
+        gasLimit: "400000" as NumericString,
+        value: "0" as NumericString,
       },
     ];
 
-    if (
-      didUserConductFirstTransaction(investorMigrationWallet, currentEthAddress) &&
-      !isFirstTxDone
-    )
+    if ( didUserConductFirstTransaction(investorMigrationWallet, currentEthAddress) && !isFirstTxDone ) {
       yield put(actions.icbmWalletBalanceModal.setFirstTxDone());
+    }
 
     yield put(actions.icbmWalletBalanceModal.loadIcbmMigrationData(walletMigrationData));
   } catch (e) {
@@ -98,7 +97,7 @@ function* loadIcbmWalletMigrationSaga(
     const userAddress = yield select(selectEthereumAddressWithChecksum);
     if (userAddress === ethAddress) throw new SameUserError();
 
-    const migrationWalletData: IWalletStateData = yield neuCall(loadWalletDataAsync, ethAddress);
+    const migrationWalletData: IStateWalletData = yield neuCall(loadWalletDataAsync, ethAddress);
     const isIcbmUser = hasIcbmWallet(migrationWalletData.etherTokenICBMLockedWallet);
     if (!isIcbmUser) throw new NoIcbmWalletError();
 
@@ -112,7 +111,7 @@ function* loadIcbmWalletMigrationSaga(
   } catch (e) {
     yield put(actions.icbmWalletBalanceModal.hideIcbmWalletBalanceModal());
     logger.error("Load ICBM migration wallet", e);
-    // todo: all texts to text resources
+
     if (e instanceof NoIcbmWalletError)
       return notificationCenter.error(createMessage(IcbmWalletMessage.ICBM_COULD_NOT_FIND_ADDRESS));
     if (e instanceof SameUserError)

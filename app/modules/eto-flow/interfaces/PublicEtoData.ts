@@ -1,8 +1,8 @@
 import {NumericString} from "../../../types";
-import {EEtoState} from "../../../lib/api/eto/EtoApi.interfaces";
 import {TEtoDocumentTemplates} from "../../eto-documents/interfaces";
-import {numberToNumericString, numericStringToBigNumber} from "../../../utils/numericStringUtils";
+import {bigNumberToNumber, numberToNumericString, numericStringToBigNumber} from "../../../utils/numericStringUtils";
 import BigNumber from "bignumber.js";
+import {EEtoState} from "./interfaces";
 
 export interface IStatePublicEtoData {
   currencies: Array<string>;//fixme should be an enum?
@@ -184,4 +184,23 @@ export const stateToBlConversionSpec = {
   newSharesToIssueInFixedSlots: numericStringToBigNumber(),
   fixedSlotsMaximumDiscountFraction: numericStringToBigNumber(),
   discountScheme: numericStringToBigNumber(),
+};
+
+export const blToApiConversionSpec = {
+  minTicketEur:bigNumberToNumber(),
+  maxTicketEur: bigNumberToNumber(),
+  liquidationPreferenceMultiplier:bigNumberToNumber(),
+  equityTokensPerShare: bigNumberToNumber(),
+  shareNominalValueEur: bigNumberToNumber(),
+  preMoneyValuationEur: bigNumberToNumber(),
+  existingCompanyShares: bigNumberToNumber(),
+  authorizedCapitalShares: bigNumberToNumber(),
+  newSharesToIssue: bigNumberToNumber(),
+  minimumNewSharesToIssue: bigNumberToNumber(),
+  newSharesToIssueInWhitelist: bigNumberToNumber(),
+  whitelistDiscountFraction: bigNumberToNumber(),
+  publicDiscountFraction: bigNumberToNumber(),
+  newSharesToIssueInFixedSlots: bigNumberToNumber(),
+  fixedSlotsMaximumDiscountFraction: bigNumberToNumber(),
+  discountScheme: bigNumberToNumber(),
 };

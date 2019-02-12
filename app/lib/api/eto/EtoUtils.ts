@@ -1,8 +1,22 @@
-import { TStateEtoWithCompanyAndContract } from "../../../modules/public-etos/interfaces/interfaces";
-import { TEtoSpecsData, TPartialEtoSpecData } from "./EtoApi.interfaces";
+import BigNumber from "bignumber.js";
 
-export const getInvestmentAmount = (eto: TPartialEtoSpecData) => {
-  const { sharePrice } = getShareAndTokenPrice(eto);
+import {TBlEtoWithCompanyAndContract} from "../../../modules/public-etos/interfaces/interfaces";
+import {IBlPublicEtoData} from "../../../modules/eto-flow/interfaces/PublicEtoData";
+
+export const getInvestmentAmount = (eto:
+                                      {
+                                        newSharesToIssueInFixedSlots: BigNumber,
+                                        newSharesToIssueInWhitelist: BigNumber,
+                                        fixedSlotsMaximumDiscountFraction: BigNumber,
+                                        whitelistDiscountFraction: BigNumber,
+                                        publicDiscountFraction: BigNumber,
+                                        preMoneyValuationEur: BigNumber,
+                                        existingCompanyShares: BigNumber,
+                                        equityTokensPerShare: BigNumber,
+                                        minimumNewSharesToIssue: BigNumber,
+                                        newSharesToIssue:BigNumber
+                                      }) => {
+  const {sharePrice} = getShareAndTokenPrice(eto);
 
   return {
     minInvestmentAmount: getMaxInvestmentAmountWithDiscount(
@@ -15,66 +29,79 @@ export const getInvestmentAmount = (eto: TPartialEtoSpecData) => {
 };
 
 export const getShareAndTokenPrice = ({
-  preMoneyValuationEur = 0,
-  existingCompanyShares = 0,
-  equityTokensPerShare = 1,
-}: TPartialEtoSpecData) => {
-  let sharePrice = 0;
-  let tokenPrice = 0;
-  if (existingCompanyShares !== 0 && preMoneyValuationEur !== 0) {
-    sharePrice = preMoneyValuationEur / existingCompanyShares;
-    tokenPrice = sharePrice / equityTokensPerShare;
+                                        preMoneyValuationEur = new BigNumber(0),
+                                        existingCompanyShares = new BigNumber(0),
+                                        equityTokensPerShare = new BigNumber(1),
+                                      }: {
+                                        preMoneyValuationEur: BigNumber,
+                                        existingCompanyShares: BigNumber,
+                                        equityTokensPerShare: BigNumber
+                                      }
+): { sharePrice: BigNumber, tokenPrice: BigNumber } => {
+  if (!existingCompanyShares.isZero() && preMoneyValuationEur && !preMoneyValuationEur.isZero()) {
+    const sharePrice = preMoneyValuationEur.div(existingCompanyShares);
+    return {
+      sharePrice,
+      tokenPrice: sharePrice.div(equityTokensPerShare)
+    }
   }
   return {
-    sharePrice,
-    tokenPrice,
+    sharePrice: new BigNumber(0),
+    tokenPrice: new BigNumber(0)
   };
 };
 
+//todo make it return two values instead of returning one and mutating another
 const getMaxInvestmentAmountWithDiscount = (
   {
-    newSharesToIssueInFixedSlots = 0,
-    newSharesToIssueInWhitelist = 0,
-    fixedSlotsMaximumDiscountFraction = 0,
-    whitelistDiscountFraction = 0,
-    publicDiscountFraction = 0,
-  }: TPartialEtoSpecData,
-  sharePrice = 0,
-  shares = 0,
-) => {
-  if (sharePrice === 0 || shares === 0) {
-    return 0;
+    newSharesToIssueInFixedSlots = new BigNumber(0),
+    newSharesToIssueInWhitelist = new BigNumber(0),
+    fixedSlotsMaximumDiscountFraction = new BigNumber(0),
+    whitelistDiscountFraction = new BigNumber(0),
+    publicDiscountFraction = new BigNumber(0),
+  }: {
+    newSharesToIssueInFixedSlots: BigNumber,
+    newSharesToIssueInWhitelist: BigNumber,
+    fixedSlotsMaximumDiscountFraction: BigNumber,
+    whitelistDiscountFraction: BigNumber,
+    publicDiscountFraction: BigNumber
+  },
+  sharePrice: BigNumber = new BigNumber(0),
+  shares: BigNumber = new BigNumber(0),
+): BigNumber => {
+  if (sharePrice.isZero() || shares.isZero()) {
+    return new BigNumber(0);
   }
 
-  let amount = 0;
+  let amount = new BigNumber(0);
 
-  if (newSharesToIssueInFixedSlots > 0 && shares > 0) {
-    const minShares = Math.min(newSharesToIssueInFixedSlots, shares);
+  if (newSharesToIssueInFixedSlots.gt(0) && shares.gt(0)) {
+    const minShares = newSharesToIssueInFixedSlots.gte(shares) ? newSharesToIssueInFixedSlots : shares;
 
-    amount += minShares * sharePrice * (1 - fixedSlotsMaximumDiscountFraction);
-    shares -= minShares;
+    amount = minShares.mul(sharePrice).mul(new BigNumber(1).minus(fixedSlotsMaximumDiscountFraction)).add(amount);
+    shares = shares.minus(minShares);
   }
 
-  if (newSharesToIssueInWhitelist > 0 && shares > 0) {
-    const minShares = Math.min(newSharesToIssueInWhitelist, shares);
+  if (newSharesToIssueInWhitelist.gt(0) && shares.gt(0)) {
+    const minShares = newSharesToIssueInWhitelist.gte(shares) ? newSharesToIssueInWhitelist : shares;
 
-    amount += minShares * sharePrice * (1 - whitelistDiscountFraction);
-    shares -= minShares;
+    amount = minShares.mul(sharePrice).mul(new BigNumber(1).minus(whitelistDiscountFraction)).add(amount);
+    shares = shares.minus(minShares);
   }
 
-  if (shares > 0) {
-    amount += shares * sharePrice * (1 - publicDiscountFraction);
+  if (shares.gt(0)) {
+    amount = shares.mul(sharePrice).mul(new BigNumber(1).minus(publicDiscountFraction)).add(amount);
   }
 
   return amount;
 };
 
-export const getInvestmentCalculatedPercentage = (eto: TEtoSpecsData) => {
-  return (eto.newSharesToIssue / eto.minimumNewSharesToIssue) * 100;
+export const getInvestmentCalculatedPercentage = (eto: IBlPublicEtoData):BigNumber => {
+  return eto.newSharesToIssue.div(eto.minimumNewSharesToIssue).mul( 100);
 };
 
-export const getCurrentInvestmentProgressPercentage = (eto: TStateEtoWithCompanyAndContract) => {
-  const totalTokensInt = eto.contract!.totalInvestment.totalTokensInt.toNumber();
+export const getCurrentInvestmentProgressPercentage = (eto: TBlEtoWithCompanyAndContract): BigNumber => {
+  const totalTokensInt = eto.contract!.totalInvestment.totalTokensInt;
 
-  return (totalTokensInt / (eto.minimumNewSharesToIssue * eto.equityTokensPerShare)) * 100;
+  return totalTokensInt.div(eto.minimumNewSharesToIssue.mul(eto.equityTokensPerShare)).mul(100);
 };

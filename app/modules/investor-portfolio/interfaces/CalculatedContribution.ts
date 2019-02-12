@@ -1,6 +1,6 @@
 import {NumericString} from "../../../types";
 import BigNumber from "bignumber.js";
-import {bigNumberToNumericString} from "../../../utils/numericStringUtils";
+import {bigNumberToNumericString, numericStringToBigNumber} from "../../../utils/numericStringUtils";
 
 export interface IStateCalculatedContribution {
   isWhitelisted: boolean;
@@ -27,4 +27,11 @@ export const blToStateConversionSpec = {
   maxTicketEurUlps: bigNumberToNumericString(),
   equityTokenInt: bigNumberToNumericString(),
   neuRewardUlps: bigNumberToNumericString(),
+};
+
+export const stateToBlConversionSpec = {
+  minTicketEurUlps: numericStringToBigNumber(),
+  maxTicketEurUlps: numericStringToBigNumber(),
+  equityTokenInt: numericStringToBigNumber(),
+  neuRewardUlps: numericStringToBigNumber(),
 };

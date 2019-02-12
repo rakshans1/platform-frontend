@@ -1,6 +1,7 @@
 import BigNumber from "bignumber.js";
 
 import {NumericString} from "../../types";
+import {numberToNumericString, numericStringToBigNumber} from "../../utils/numericStringUtils";
 
 export interface IGasState {
   loading: boolean;
@@ -21,3 +22,24 @@ export interface IBlGasModel {
   safeLow: BigNumber;
   standard: BigNumber;
 }
+
+export interface IApiGasModel {
+  fast: number;
+  fastest: number;
+  safeLow: number;
+  standard: number;
+}
+
+export const stateToBlConversionSpec = {
+  fast: numericStringToBigNumber(),
+  fastest: numericStringToBigNumber(),
+  safeLow: numericStringToBigNumber(),
+  standard: numericStringToBigNumber(),
+};
+
+export const apiToStateConversionSpec = {
+  fast: numberToNumericString(),
+  fastest: numberToNumericString(),
+  safeLow: numberToNumericString(),
+  standard: numberToNumericString(),
+};

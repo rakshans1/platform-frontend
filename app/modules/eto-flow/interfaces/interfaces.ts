@@ -1,35 +1,25 @@
 import {NumericString} from "../../../types";
-import {IStatePublicEtoData} from './PublicEtoData';
-import {IStateCompanyEtoData} from "./CompanyEtoData";
+import {IApiPublicEtoData, IStatePublicEtoData} from './PublicEtoData';
+import {IApiCompanyEtoData, IStateCompanyEtoData} from "./CompanyEtoData";
+import {IStateDetailedBookbuildingStats} from "../../bookbuilding-flow/interfaces/DetailedBookbuildingStats";
 
 export interface IEtoFlowState {
   etoPreviewCode?: string;
   loading: boolean;
   saving: boolean;
-  bookbuildingStats: IBookbuildingStatsState[];
+  bookbuildingStats: IStateDetailedBookbuildingStats[];
   newStartDate?: Date; //todo no Dates in state
 }
 
-export interface IBookbuildingStatsState {
-  amountEur: NumericString;
-  consentToRevealEmail: boolean;
-  currency: string;
-  email?: string;
-  etoId?: string;
-  insertedAt: string;
-  updatedAt: string;
-  userId: string;
-}
-
-export type TGeneralEtoData = {
+export type TStateGeneralEtoData = {
   etoData: IStatePublicEtoData;
   companyData: IStateCompanyEtoData;
 };
 
-
-
-
-
+export type TApiGeneralEtoData = {
+  etoData: IApiPublicEtoData;
+  companyData: IApiCompanyEtoData;
+};
 
 
 export enum EEtoFormTypes {
@@ -44,3 +34,21 @@ export enum EEtoFormTypes {
   EtoEquityTokenInfo = "etoEquityTokenInfo",
   EtoRiskAssessment = "etoRiskAssessment",
 }
+
+export enum EEtoState {
+  PREVIEW = "preview",
+  PENDING = "pending",
+  LISTED = "listed",
+  PROSPECTUS_APPROVED = "prospectus_approved",
+  ON_CHAIN = "on_chain",
+}
+export enum EtoStateToCamelcase {
+  "preview" = "preview",
+  "pending" = "pending",
+  "listed" = "listed",
+  "prospectus_approved" = "prospectusApproved",
+  "on_chain" = "onChain",
+}
+// Since only keys are transformed from snake case to camel case we have to manually map states
+// see@ swagger /api/eto-listing/ui/#!/ETO/api_eto_get_me
+// see@ swagger api/eto-listing/ui/#!/Documents/api_document_documents_state_info

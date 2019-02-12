@@ -1,10 +1,9 @@
+import BigNumber from "bignumber.js";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Container, Row } from "reactstrap";
 import { compose, setDisplayName } from "recompose";
 
-import { TEtoSpecsData } from "../../../../lib/api/eto/EtoApi.interfaces";
-import { EEtoDocumentType } from "../../../../lib/api/eto/EtoFileApi.interfaces";
 import { getShareAndTokenPrice } from "../../../../lib/api/eto/EtoUtils";
 import { actions } from "../../../../modules/actions";
 import {
@@ -22,7 +21,6 @@ import { selectEtherPriceEur } from "../../../../modules/shared/tokenPrice/selec
 import { ETxSenderType } from "../../../../modules/tx/interfaces";
 import { selectTxGasCostEthUlps } from "../../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../../store";
-import { addBigNumbers, multiplyBigNumbers } from "../../../../utils/BigNumberUtils";
 import { formatThousands } from "../../../../utils/Number.utils";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import { CustomTooltip } from "../../../shared/CustomTooltip";
@@ -41,16 +39,19 @@ import * as neuIcon from "../../../../assets/img/neu_icon.svg";
 import * as info from "../../../../assets/img/notifications/info.svg";
 import * as tokenIcon from "../../../../assets/img/token_icon.svg";
 import * as styles from "./Summary.module.scss";
+import {IBlPublicEtoData} from "../../../../modules/eto-flow/interfaces/PublicEtoData";
+import {EEtoDocumentType} from "../../../../modules/eto-documents/interfaces";
+
 
 interface IStateProps {
   companyName: string;
-  eto: TEtoSpecsData;
-  investmentEur: string;
-  investmentEth: string;
-  gasCostEth: string;
-  equityTokens: string;
-  estimatedReward: string;
-  etherPriceEur: string;
+  eto: IBlPublicEtoData;
+  investmentEur: BigNumber | null;
+  investmentEth: BigNumber | null;
+  gasCostEth: BigNumber | null;
+  equityTokens?: BigNumber;
+  estimatedReward: BigNumber | undefined;
+  etherPriceEur: BigNumber | null;
   isIcbm?: boolean;
 }
 
@@ -101,17 +102,18 @@ const InvestmentSummaryComponent: React.FunctionComponent<IProps> = ({
       <img src={neuIcon} alt="" /> {formatEurTsd(estimatedReward)} NEU
     </span>
   );
+  const gasCostEuro = gasCostEth && etherPriceEur && gasCostEth.mul(etherPriceEur);
+  const totalCostEth = gasCostEth && investmentEth && gasCostEth.add(investmentEth);
+  const totalCostEur = gasCostEuro && investmentEur && gasCostEuro.add(investmentEur);
+
   const investment = `€ ${formatEurTsd(investmentEur)} ≈ ${formatEthTsd(investmentEth)} ETH`;
-
-  const gasCostEuro = multiplyBigNumbers([gasCostEth, etherPriceEur]);
-  const totalCostEth = addBigNumbers([gasCostEth, investmentEth]);
-  const totalCostEur = addBigNumbers([gasCostEuro, investmentEur]);
-
   const total = `€ ${formatEurTsd(totalCostEur)} ≈ ${formatEthTsd(totalCostEth)} ETH`;
-  const actualTokenPrice = getActualTokenPriceEur(investmentEur, equityTokens);
+
+  const actualTokenPrice = investmentEur && equityTokens && getActualTokenPriceEur(investmentEur, equityTokens);
+
   const { tokenPrice: fullTokenPrice } = getShareAndTokenPrice(eto);
   const formattedTokenPrice = `€ ${formatSummaryTokenPrice(
-    fullTokenPrice.toString(),
+    fullTokenPrice,
     actualTokenPrice,
   )}`;
 
@@ -194,20 +196,23 @@ const InvestmentSummary = compose<IProps, {}>(
     stateToProps: state => {
       const etoId = selectInvestmentEtoId(state);
       // eto and computed values are guaranteed to be present at investment summary state
-      const eto = selectEtoWithCompanyAndContractById(state, etoId)!;
-
-      return {
-        eto,
-        companyName: eto.company.name,
-        investmentEth: selectInvestmentEthValueUlps(state),
-        investmentEur: selectInvestmentEurValueUlps(state),
-        gasCostEth: selectTxGasCostEthUlps(state),
-        // tslint:disable: no-useless-cast
-        equityTokens: selectEquityTokenCountByEtoId(state, etoId)!,
-        estimatedReward: selectNeuRewardUlpsByEtoId(state, etoId)!,
-        etherPriceEur: selectEtherPriceEur(state),
-        isIcbm: selectIsICBMInvestment(state),
-      };
+      const eto = etoId && selectEtoWithCompanyAndContractById(state, etoId);
+      if(etoId && eto) {
+        return {
+          eto,
+          companyName: eto.company.name,
+          investmentEth: selectInvestmentEthValueUlps(state),
+          investmentEur: selectInvestmentEurValueUlps(state),
+          gasCostEth: selectTxGasCostEthUlps(state),
+          // tslint:disable: no-useless-cast
+          equityTokens: selectEquityTokenCountByEtoId(state, etoId),
+          estimatedReward: selectNeuRewardUlpsByEtoId(state, etoId),
+          etherPriceEur: selectEtherPriceEur(state),
+          isIcbm: selectIsICBMInvestment(state),
+        };
+      } else {
+        throw new Error('bla') //fixme
+      }
     },
     dispatchToProps: d => ({
       onAccept: () => d(actions.txSender.txSenderAccept()),

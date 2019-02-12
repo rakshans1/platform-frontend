@@ -2,7 +2,8 @@ import { put } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { actions } from "../actions";
-import { IPlatformTermsConstants } from "./interfaces";
+import * as platformTermsConstantsInterfaces from './interfaces'
+import {convert} from "../../components/eto/utils";
 
 export async function initializeContracts({
   contractsService,
@@ -13,7 +14,7 @@ export async function initializeContracts({
 export function* populatePlatformTermsConstants({ contractsService }: TGlobalDependencies): any {
   const contract = contractsService.platformTerms;
 
-  const terms: IPlatformTermsConstants = {
+  const terms: platformTermsConstantsInterfaces.IApiPlatformTermsConstants = {
     IS_ICBM_INVESTOR_WHITELISTED: yield contract.IS_ICBM_INVESTOR_WHITELISTED,
     MIN_TICKET_EUR_ULPS: yield contract.MIN_TICKET_EUR_ULPS,
     PLATFORM_NEUMARK_SHARE: yield contract.PLATFORM_NEUMARK_SHARE,
@@ -34,5 +35,5 @@ export function* populatePlatformTermsConstants({ contractsService }: TGlobalDep
   };
   // These are constants from Universe contract no need for pooling
 
-  yield put(actions.contracts.setPlatformTermConstants(terms));
+  yield put(actions.contracts.setPlatformTermConstants(convert(terms,platformTermsConstantsInterfaces.apiToStateConversionSpec)));
 }

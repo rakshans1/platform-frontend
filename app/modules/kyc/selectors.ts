@@ -81,7 +81,7 @@ export const selectWidgetLoading = (state: DeepReadonly<IKycState>): boolean =>
 export const selectWidgetError = (state: DeepReadonly<IKycState>): string | undefined =>
   state.individualRequestError || state.businessRequestError;
 
-export const selectIndividualClientName = (state: DeepReadonly<IKycState>) => {
+export const selectIndividualClientName = (state: DeepReadonly<IKycState>):string | undefined => {
   const data = state.individualData;
   if (data) {
     return [data.firstName, data.lastName].filter(Boolean).join(" ");
@@ -97,7 +97,7 @@ export const selectClientCountry = (state: DeepReadonly<IKycState>) =>
 
 export const selectClaims = (state: IAppState) => state.kyc.claims;
 
-export const selectIsClaimsVerified = createSelector(selectClaims, claims => {
+export const selectIsClaimsVerified:(state: IAppState) => boolean = createSelector(selectClaims, claims => {
   if (claims) {
     return claims.isVerified;
   }
@@ -105,7 +105,7 @@ export const selectIsClaimsVerified = createSelector(selectClaims, claims => {
   return false;
 });
 
-export const selectIsAccountFrozen = createSelector(selectClaims, claims => {
+export const selectIsAccountFrozen:(state: IAppState) => boolean = createSelector(selectClaims, claims => {
   if (claims) {
     return claims.isAccountFrozen;
   }

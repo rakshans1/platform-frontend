@@ -1,9 +1,9 @@
-import { EEtoDocumentType, IEtoDocument, IEtoFiles } from "../../lib/api/eto/EtoFileApi.interfaces";
 import { createAction, createSimpleAction } from "../actionsUtils";
+import {IEtoFilesState, IEtoDocument, EEtoDocumentType} from "./interfaces";
 
 export const etoDocumentsActions = {
   loadFileDataStart: () => createSimpleAction("ETO_DOCUMENTS_LOAD_FILE_DATA_START"),
-  loadEtoFileData: (data: IEtoFiles) => createAction("ETO_DOCUMENTS_LOAD_ETO_FILE_DATA", { data }),
+  loadEtoFileData: (data: IEtoFilesState) => createAction("ETO_DOCUMENTS_LOAD_ETO_FILE_DATA", { data }),
   generateTemplate: (document: IEtoDocument) =>
     createAction("ETO_DOCUMENTS_GENERATE_TEMPLATE", { document }),
   generateTemplateByEtoId: (document: IEtoDocument, etoId: string) =>

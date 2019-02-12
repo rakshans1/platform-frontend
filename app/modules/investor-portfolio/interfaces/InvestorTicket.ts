@@ -1,5 +1,5 @@
 import {NumericString} from "../../../types";
-import {bigNumberToNumericString} from "../../../utils/numericStringUtils";
+import {bigNumberToNumericString, numericStringToBigNumber} from "../../../utils/numericStringUtils";
 import BigNumber from "bignumber.js";
 
 export interface IStateInvestorTicket {
@@ -37,4 +37,15 @@ export const blToStateConversionSpec = {
   neuRate: bigNumberToNumericString(),
   amountEth: bigNumberToNumericString(),
   amountEurUlps: bigNumberToNumericString(),
-}
+};
+
+export const stateToBlConversionSpec = {
+  equivEurUlps: numericStringToBigNumber(),
+  rewardNmkUlps: numericStringToBigNumber(),
+  equityTokenInt: numericStringToBigNumber(),
+  sharesInt: numericStringToBigNumber(),
+  tokenPrice: numericStringToBigNumber(),
+  neuRate: numericStringToBigNumber(),
+  amountEth: numericStringToBigNumber(),
+  amountEurUlps: numericStringToBigNumber(),
+};

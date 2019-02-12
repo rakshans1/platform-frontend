@@ -4,6 +4,7 @@ import * as YupTS from "../yup-ts";
 
 import { symbols } from "../../di/symbols";
 import { IHttpClient, IHttpResponse } from "./client/IHttpClient";
+import {IApiGasModel} from "../../modules/gas/interfaces";
 
 const BASE_PATH = "/api/gas/";
 const GET_GAS_PATH = "/gas";
@@ -12,8 +13,8 @@ const GET_GAS_PATH = "/gas";
 export class GasApi {
   constructor(@inject(symbols.authorizedJsonHttpClient) private httpClient: IHttpClient) {}
 
-  public async getGas(): Promise<IHttpResponse<GasModelShape>> {
-    const results = await this.httpClient.get<GasModelShape>({
+  public async getGas(): Promise<IHttpResponse<IApiGasModel>> {
+    const results = await this.httpClient.get<IApiGasModel>({
       baseUrl: BASE_PATH,
       url: GET_GAS_PATH,
       responseSchema: gasModelSchema,
@@ -25,7 +26,7 @@ export class GasApi {
     };
   }
 
-  private transformBody(gas: GasModelShape): GasModelShape {
+  private transformBody(gas: IApiGasModel): IApiGasModel {
     return {
       fast: Web3Utils.toWei(gas.fast, "gwei"),
       fastest: Web3Utils.toWei(gas.fastest, "gwei"),

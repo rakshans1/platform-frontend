@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import { EUserType } from "../../lib/api/users/interfaces";
 import { EWalletSubType, EWalletType } from "../web3/types";
-import { IAuthState } from "./reducer";
+import { IStateAuth } from "./reducer";
 import { selectIsAuthorized, selectUserEmail } from "./selectors";
 
 describe("auth > selectors", () => {

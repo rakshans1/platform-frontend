@@ -4,7 +4,7 @@ import { ETHEREUM_ZERO_ADDRESS } from "../../config/constants";
 import { IAppState } from "../../store";
 import { selectEtherPriceEur, selectNeuPriceEur } from "../shared/tokenPrice/selectors";
 import { selectTxGasCostEthUlps } from "../tx/sender/selectors";
-import { IWalletState } from "./interfaces";
+import { IStateWallet } from "./interfaces";
 
 /**
  * Simple State Selectors
@@ -12,7 +12,7 @@ import { IWalletState } from "./interfaces";
 export const selectNeuBalanceEuroAmount = (state: IAppState): BigNumber =>
   selectNeuPriceEur(state).mul(selectNeuBalance(state.wallet));
 
-export const selectNeuBalance = (state: IWalletState): BigNumber =>
+export const selectNeuBalance = (state: IStateWallet): BigNumber =>
   new BigNumber((state.data && state.data.neuBalance) || "0");
 
 export const selectEtherTokenBalance = (state: IAppState): BigNumber =>
@@ -27,13 +27,13 @@ export const selectEtherBalance = (state: IAppState): BigNumber =>
 /**
  * Liquid Assets
  */
-export const selectLiquidEtherBalance = (state: IWalletState): BigNumber =>
+export const selectLiquidEtherBalance = (state: IStateWallet): BigNumber =>
   state.data && new BigNumber(state.data.etherBalance).add(new BigNumber(state.data.etherTokenBalance)) || new BigNumber("0");
 
 export const selectLiquidEtherBalanceEuroAmount = (state: IAppState):BigNumber =>
   selectEtherPriceEur(state).mul(selectLiquidEtherBalance(state.wallet));
 
-export const selectLiquidEuroTokenBalance = (state: IWalletState):BigNumber =>
+export const selectLiquidEuroTokenBalance = (state: IStateWallet):BigNumber =>
   new BigNumber((state.data && state.data.euroTokenBalance) || "0");
 
 export const selectLiquidEuroTotalAmount = (state: IAppState): BigNumber =>
@@ -42,7 +42,7 @@ export const selectLiquidEuroTotalAmount = (state: IAppState): BigNumber =>
 /**
  * Locked Wallet Assets
  */
-export const selectLockedEtherBalance = (state: IWalletState):BigNumber =>
+export const selectLockedEtherBalance = (state: IStateWallet):BigNumber =>
   new BigNumber((state.data &&
     state.data.etherTokenLockedWallet &&
     state.data.etherTokenLockedWallet.LockedBalance) ||
@@ -51,7 +51,7 @@ export const selectLockedEtherBalance = (state: IWalletState):BigNumber =>
 export const selectLockedEtherBalanceEuroAmount = (state: IAppState):BigNumber =>
   selectEtherPriceEur(state).mul(selectLockedEtherBalance(state.wallet));
 
-export const selectLockedEuroTokenBalance = (state: IWalletState):BigNumber =>
+export const selectLockedEuroTokenBalance = (state: IStateWallet):BigNumber =>
   new BigNumber((state.data &&
     state.data.euroTokenLockedWallet &&
     state.data.euroTokenLockedWallet.LockedBalance) ||
@@ -111,19 +111,19 @@ export const selectTotalEuroBalance = (state: IAppState): BigNumber =>
       .add(selectLockedEuroTotalAmount(state))
       .add(selectICBMLockedEuroTotalAmount(state));
 
-export const selectEtherNeumarksDue = (state: IWalletState): BigNumber =>
+export const selectEtherNeumarksDue = (state: IStateWallet): BigNumber =>
   new BigNumber((state.data &&
     state.data.etherTokenICBMLockedWallet &&
     state.data.etherTokenICBMLockedWallet.neumarksDue) ||
   "0");
 
-export const selectEurNeumarksDue = (state: IWalletState): BigNumber =>
+export const selectEurNeumarksDue = (state: IStateWallet): BigNumber =>
   new BigNumber((state.data &&
     state.data.euroTokenICBMLockedWallet &&
     state.data.euroTokenICBMLockedWallet.neumarksDue) ||
   "0");
 
-export const selectIcbmWalletConnected = (state: IWalletState): boolean =>
+export const selectIcbmWalletConnected = (state: IStateWallet): boolean =>
   !!(
     (state.data && state.data.etherTokenICBMLockedWallet.unlockDate !== "0") || //todo invalid/zero value should be null
     (state.data && state.data.euroTokenICBMLockedWallet.unlockDate !== "0")
@@ -135,9 +135,9 @@ export const selectLockedWalletConnected = (state: IAppState): boolean =>
     (state.wallet.data && state.wallet.data.euroTokenLockedWallet.unlockDate !== "0")
   );
 
-export const selectIsLoading = (state: IWalletState): boolean => state.loading;
+export const selectIsLoading = (state: IStateWallet): boolean => state.loading;
 
-export const selectWalletError = (state: IWalletState): string | undefined => state.error;
+export const selectWalletError = (state: IStateWallet): string | undefined => state.error;
 
 export const selectIsEtherUpgradeTargetSet = (state: IAppState): boolean =>
   state.wallet.data &&

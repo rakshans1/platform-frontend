@@ -1,6 +1,7 @@
 import { Dictionary } from "../../types";
 import { createAction, createActionFactory } from "../actionsUtils";
-import { IStateCalculatedContribution, IStateTokenDisbursal } from "./interfaces/interfaces";
+import { IStateCalculatedContribution, } from "./interfaces/CalculatedContribution";
+import { IStateTokenDisbursal } from "./interfaces/TokenDisbursal";
 import {IStateInvestorTicket} from './interfaces/InvestorTicket'
 import {IStatePublicEtoData} from "../eto-flow/interfaces/PublicEtoData";
 

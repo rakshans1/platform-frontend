@@ -6,16 +6,13 @@ import { createMessage } from "../../components/translatedMessages/utils";
 import { ETHEREUM_ZERO_ADDRESS, UPLOAD_IMMUTABLE_DOCUMENT } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { FileAlreadyExists } from "../../lib/api/eto/EtoFileApi";
-import {
-  EEtoDocumentType,
-  IEtoDocument,
-  TEtoDocumentTemplates,
-} from "../../lib/api/eto/EtoFileApi.interfaces";
 import { actions, TAction } from "../actions";
 import { ensurePermissionsArePresent } from "../auth/jwt/sagas";
 import { downloadLink } from "../immutable-file/utils";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
+import {EEtoDocumentType, IEtoDocument, TEtoDocumentTemplates, TStateInfo} from "./interfaces";
+
 
 export function* generateDocumentFromTemplate(
   { apiImmutableStorage, notificationCenter, logger, apiEtoFileService }: TGlobalDependencies,
@@ -102,8 +99,8 @@ export function* downloadDocumentByType(
 ): any {
   if (action.type !== "ETO_DOCUMENTS_DOWNLOAD_BY_TYPE") return;
   try {
-    const matchingDocument = yield neuCall(getDocumentOfTypePromise, action.payload.documentType);
-    const downloadedDocument = yield apiImmutableStorage.getFile({
+    const matchingDocument:IEtoDocument = yield neuCall(getDocumentOfTypePromise, action.payload.documentType);
+    const downloadedDocument:Blob = yield apiImmutableStorage.getFile({
       ipfsHash: matchingDocument.ipfsHash,
       mimeType: matchingDocument.mimeType,
       asPdf: true,
@@ -124,8 +121,8 @@ export function* loadEtoFileData({
 }: TGlobalDependencies): any {
   try {
     yield put(actions.etoFlow.loadIssuerEto());
-    const stateInfo = yield apiEtoFileService.getEtoFileStateInfo();
-    const allTemplates = yield apiEtoFileService.getAllEtoTemplates();
+    const stateInfo:TStateInfo = yield apiEtoFileService.getEtoFileStateInfo();
+    const allTemplates:TEtoDocumentTemplates = yield apiEtoFileService.getAllEtoTemplates();
     yield put(
       actions.etoDocuments.loadEtoFileData({
         allTemplates,
@@ -168,9 +165,10 @@ function* uploadEtoFile(
       createMessage(EtoDocumentsMessage.ETO_DOCUMENTS_CONFIRM_UPLOAD_DOCUMENT_DESCRIPTION),
     );
 
-    const matchingDocument = yield neuCall(getDocumentOfTypePromise, documentType);
-    if (matchingDocument)
+    const matchingDocument:IEtoDocument = yield neuCall(getDocumentOfTypePromise, documentType);
+    if (matchingDocument) {
       yield apiEtoFileService.deleteSpecificEtoDocument(matchingDocument.ipfsHash);
+    }
 
     yield apiEtoFileService.uploadEtoDocument(file, documentType);
     notificationCenter.info(createMessage(EtoDocumentsMessage.ETO_DOCUMENTS_FILE_UPLOADED));

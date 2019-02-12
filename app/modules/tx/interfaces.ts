@@ -1,7 +1,7 @@
 import {TPendingTxs} from "../../lib/api/users/interfaces";
 import {NumericString} from "../../types";
 
-export interface IWithdrawDraftType {
+export interface IStateWithdrawDraftType {
   type: ETxSenderType.WITHDRAW;
   to: string;
   value: NumericString;
@@ -10,7 +10,7 @@ export interface IInvestmentDraftType {
   type: ETxSenderType.INVEST;
 }
 
-export type IDraftType = IWithdrawDraftType | IInvestmentDraftType;
+export type IDraftType = IStateWithdrawDraftType | IInvestmentDraftType;
 
 export enum ETxSenderType {
   WITHDRAW = "WITHDRAW",

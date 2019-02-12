@@ -1,11 +1,11 @@
 import { TMessage } from "../../components/translatedMessages/utils";
 import { createActionFactory } from "../actionsUtils";
-import {ImmutableFileIdState} from './interfaces'
+import {IImmutableFileId} from './interfaces'
 
 export const immutableStorageActions = {
   downloadImmutableFile: createActionFactory(
     "IMMUTABLE_STORAGE_DOWNLOAD_FILE",
-    (immutableFileId: ImmutableFileIdState, fileName: TMessage | string) => ({
+    (immutableFileId: IImmutableFileId, fileName: TMessage | string) => ({
       immutableFileId,
       fileName,
     }),

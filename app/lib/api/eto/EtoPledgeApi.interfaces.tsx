@@ -4,17 +4,6 @@ import * as Yup from "yup";
 
 import { ECurrency, ECurrencySymbol, EMoneyFormat, Money } from "../../../components/shared/Money";
 
-export interface IPledge {
-  amountEur: number;
-  currency: ECurrency.EUR_TOKEN;
-  consentToRevealEmail: boolean;
-}
-
-export interface IBookBuildingStats {
-  investorsCount: number;
-  pledgedAmount: number;
-}
-
 export const generateCampaigningValidation = (minPledge: number, maxPledge?: number) => {
   const amount = Yup.number()
     .min(minPledge, (

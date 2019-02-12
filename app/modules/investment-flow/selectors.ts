@@ -2,7 +2,6 @@ import BigNumber from "bignumber.js";
 import * as moment from "moment";
 
 import { IAppState } from "../../store";
-import { compareBigNumbers } from "../../utils/BigNumberUtils";
 import { selectIsAccountFrozen, selectIsClaimsVerified } from "../kyc/selectors";
 import { selectEtoOnChainStateById } from "../public-etos/selectors";
 import { EETOStateOnChain } from "../public-etos/interfaces/interfaces";
@@ -55,7 +54,7 @@ export const selectIsReadyToInvest = (state: IAppState):boolean => {
     ethValue &&
     !selectInvestmentErrorState(state) &&
     selectIsInvestmentInputValidated(state) &&
-    compareBigNumbers(ethValue, 0) > 0 &&
+    ethValue.comparedTo(0) > 0 &&
     (type !== EInvestmentType.BankTransfer
       ? selectTxValidationState(state) === EValidationState.VALIDATION_OK
       : true)

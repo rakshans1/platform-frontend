@@ -10,7 +10,7 @@ import { selectStandardGasPriceWithOverHead } from "../../../gas/selectors";
 import { neuCall } from "../../../sagasUtils";
 import { selectEtherTokenBalanceAsBigNumber } from "../../../wallet/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
-import { IWithdrawDraftType } from "../../interfaces";
+import { IStateWithdrawDraftType } from "../../interfaces";
 import { calculateGasLimitWithOverhead, EMPTY_DATA } from "../../utils";
 import {NumericString} from "../../../../types";
 import {convert} from "../../../../components/eto/utils";
@@ -19,7 +19,7 @@ const SIMPLE_WITHDRAW_TRANSACTION = new BigNumber("21000");
 
 export function* generateEthWithdrawTransaction(
   { contractsService, web3Manager }: TGlobalDependencies,
-  payload: IWithdrawDraftType,
+  payload: IStateWithdrawDraftType,
 ): any {
   // Typing purposes
   const { to, value } = payload;

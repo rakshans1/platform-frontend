@@ -7,11 +7,11 @@ import {
 import * as publicEtoDataInterfaces from "../eto-flow/interfaces/PublicEtoData";
 import {convert} from "../../components/eto/utils";
 import * as tokenDataInterfaces from "./interfaces/EtoTokenData";
-import * as publicEtoInterfaces from "./interfaces/PublicEto";
-import {IStatePublicEto} from "./interfaces/PublicEto";
+import * as publicEtosInterfaces from "./interfaces/PublicEto";
+import {IStatePublicEtos} from "./interfaces/PublicEto";
 
-const selectPublicEtosState = (state: IAppState):publicEtoInterfaces.IBlPublicEto =>
-  convert(state.publicEtos, publicEtoInterfaces.stateToBlConversionSpec);
+const selectPublicEtosState = (state: IAppState):publicEtosInterfaces.IBlPublicEtos =>
+  convert(state.publicEtos, publicEtosInterfaces.stateToBlConversionSpec);
 
 const selectEtoPreviewCode = (state: IAppState, etoId: string):string | undefined => {
   const eto = find(eto => eto!.etoId === etoId, state.publicEtos.publicEtos);
@@ -113,7 +113,7 @@ export const selectEtoOnChainNextStateStartDate = (
   return undefined;
 };
 
-export const selectEtoWidgetError = (state: IStatePublicEto): boolean | undefined => {
+export const selectEtoWidgetError = (state: IStatePublicEtos): boolean | undefined => {
   return state.etoWidgetError;
 };
 
@@ -126,7 +126,7 @@ export const selectEtoOnChainStateById = (
 };
 
 export const selectTokenData = (
-  state: IStatePublicEto,
+  state: IStatePublicEtos,
   previewCode: string,
 ): tokenDataInterfaces.IBlEtoTokenData | undefined => {
   const tokenData = state.tokenData[previewCode];

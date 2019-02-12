@@ -1,18 +1,18 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 import { SET_BOOKBUILDING_FLOW_STATS, SET_PLEDGE } from "./actions";
-import { IBookbuildingFLowState } from './interfaces'
+import { IStateBookbuildingFLow } from './interfaces/interfaces'
 
 
-export const bookBuildingFlow: IBookbuildingFLowState = {
+export const bookBuildingFlow: IStateBookbuildingFLow = {
   bookbuildingStats: {},
   pledges: {},
 };
 
-export const bookBuildingFlowReducer: AppReducer<IBookbuildingFLowState> = (
+export const bookBuildingFlowReducer: AppReducer<IStateBookbuildingFLow> = (
   state = bookBuildingFlow,
   action,
-): DeepReadonly<IBookbuildingFLowState> => {
+): DeepReadonly<IStateBookbuildingFLow> => {
   switch (action.type) {
     case SET_BOOKBUILDING_FLOW_STATS:
       return {
