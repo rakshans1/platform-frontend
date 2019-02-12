@@ -36,22 +36,51 @@ const PortfolioReservedAssets: React.FunctionComponent<IExternalProps> = ({ pend
 
     <Row>
       <Col>
+        {/* TODO: Refactor during https://github.com/Neufund/platform-frontend/issues/2407*/}
         <NewTable
           placeholder={
             <FormattedMessage id="portfolio.section.reserved-assets.table.header.placeholder" />
           }
           titles={[
             { title: "", width: "30px" },
-            <FormattedMessage id="portfolio.section.reserved-assets.table.header.token" />,
+            {
+              title: <FormattedMessage id="portfolio.section.reserved-assets.table.header.token" />,
+              width: "160px",
+            },
             { title: "", width: "100px" },
-            <FormattedMessage id="portfolio.section.reserved-assets.table.header.balance" />,
-            <FormattedMessage id="portfolio.section.reserved-assets.table.header.value-eur" />,
-            <FormattedMessage id="portfolio.section.reserved-assets.table.header.price-eur" />,
-            <>
-              <img src={neuIcon} alt="neu token" className={cn("mr-2", styles.tokenSmall)} />
-              <FormattedMessage id="portfolio.section.reserved-assets.table.header.neu-reward" />
-            </>,
-            <FormattedMessage id="portfolio.section.reserved-assets.table.header.eto-status" />,
+            {
+              title: (
+                <FormattedMessage id="portfolio.section.reserved-assets.table.header.balance" />
+              ),
+              width: "70px",
+            },
+            {
+              title: (
+                <FormattedMessage id="portfolio.section.reserved-assets.table.header.value-eur" />
+              ),
+              width: "90px",
+            },
+            {
+              title: (
+                <FormattedMessage id="portfolio.section.reserved-assets.table.header.price-eur" />
+              ),
+              width: "90px",
+            },
+            {
+              title: (
+                <>
+                  <img src={neuIcon} alt="neu token" className={cn("mr-2", styles.tokenSmall)} />
+                  <FormattedMessage id="portfolio.section.reserved-assets.table.header.neu-reward" />
+                </>
+              ),
+              width: "130px",
+            },
+            {
+              title: (
+                <FormattedMessage id="portfolio.section.reserved-assets.table.header.eto-status" />
+              ),
+              width: "120px",
+            },
           ]}
         >
           {pendingAssets.map(
