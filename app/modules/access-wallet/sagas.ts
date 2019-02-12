@@ -37,10 +37,6 @@ export function* ensureWalletConnection(
   }: TGlobalDependencies,
   password?: string,
 ): any {
-  if (web3Manager.personalWallet) {
-    return;
-  }
-
   const userType: EUserType = yield select(selectUserType);
   const metadata = walletStorage.get(userType);
 
@@ -122,13 +118,12 @@ export function* connectWalletAndRunEffect(effect: Effect | Iterator<Effect>): a
     try {
       yield effects.put(actions.accessWallet.clearSigningError());
 
-      const acceptAction: TActionFromCreator<typeof actions.accessWallet.accept> = yield take(
+      const { payload }: TActionFromCreator<typeof actions.accessWallet.accept> = yield take(
         actions.accessWallet.accept.getType(),
       );
 
       // Password can be undefined if its Metamask or Ledger
-      yield neuCall(ensureWalletConnection, acceptAction.payload.password);
-
+      yield neuCall(ensureWalletConnection, payload.password);
       return yield effect;
     } catch (e) {
       const error = mapSignMessageErrorToErrorMessage(e);

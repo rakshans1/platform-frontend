@@ -199,7 +199,7 @@ function* handleLightWalletError({ logger }: TGlobalDependencies, e: Error): any
   } else {
     error = createMessage(SignInUserErrorMessage.MESSAGE_SIGNING_SERVER_CONNECTION_FAILURE);
   }
-  
+
   yield put(
     actions.genericModal.showErrorModal(createMessage(GenericModalMessage.ERROR_TITLE), error),
   );
