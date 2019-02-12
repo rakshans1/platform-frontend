@@ -16,7 +16,7 @@ import { selectVerifiedUserEmail } from "./selectors";
 import { loadUser, signInUser } from "./user/sagas";
 
 function* logoutWatcher(
-  { web3Manager, jwtStorage, logger, userStorage, walletStorage }: TGlobalDependencies,
+  { web3Manager, jwtStorage, logger, userStorage }: TGlobalDependencies,
   action: TAction,
 ): Iterator<any> {
   if (action.type !== "AUTH_LOGOUT") return;
@@ -27,10 +27,8 @@ function* logoutWatcher(
   yield web3Manager.unplugPersonalWallet();
   yield put(actions.web3.personalWalletDisconnected());
   if (userType === EUserType.INVESTOR || !userType) {
-    walletStorage.clear(EUserType.INVESTOR);
     yield put(actions.routing.goHome());
   } else {
-    walletStorage.clear(EUserType.ISSUER);
     yield put(actions.routing.goEtoHome());
   }
   yield put(actions.init.start(EInitType.APP_INIT));
