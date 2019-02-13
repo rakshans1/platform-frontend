@@ -3,6 +3,7 @@ import { put, select, take } from "redux-saga/effects";
 import { Q18 } from "../../../../config/constants";
 import { TAction } from "../../../actions";
 
+import { Q18 } from "../../../../config/constants";
 import { TGlobalDependencies } from "../../../../di/setupBindings";
 import * as txInterfaces from "../../../../lib/web3/types";
 import { actions } from "../../../actions";
@@ -59,8 +60,12 @@ export function* generateEthWithdrawTransaction(
 }
 
 export function* ethWithdrawFlow(_: TGlobalDependencies): any {
-  const action: TAction = yield take("TX_SENDER_ACCEPT_DRAFT");
-  if (action.type !== "TX_SENDER_ACCEPT_DRAFT" || !action.payload.txDraftData) return;
+  const action: TActionFromCreator<typeof actions.txSender.txSenderAcceptDraft> = yield take(
+    actions.txSender.txSenderAcceptDraft,
+  );
+
+  if (!action.payload.txDraftData) return;
+
   const txDataFromUser = action.payload.txDraftData;
   const generatedTxDetails:txInterfaces.IBlTxData = yield neuCall(generateEthWithdrawTransaction, txDataFromUser);
   yield put(actions.txSender.setTransactionData(convert(generatedTxDetails, txInterfaces.stateToBlConversionSpec)));

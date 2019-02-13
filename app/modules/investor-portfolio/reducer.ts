@@ -8,6 +8,11 @@ export const etoFlowInitialState: IStateInvestorTickets = {
   initialCalculatedContributions: {},
   investorEtoTickets: {},
   tokensDisbursal: undefined,
+  incomingPayouts: {
+    loading: true,
+    data: undefined,
+    payoutDone: false,
+  },
 };
 
 export const investorTicketsReducer: AppReducer<IStateInvestorTickets> = (
@@ -43,6 +48,28 @@ export const investorTicketsReducer: AppReducer<IStateInvestorTickets> = (
       return {
         ...state,
         tokensDisbursal: action.payload.tokensDisbursal,
+      };
+    case actions.investorEtoTicket.getIncomingPayouts.getType():
+      return {
+        ...state,
+        incomingPayouts: etoFlowInitialState.incomingPayouts,
+      };
+    case actions.investorEtoTicket.setIncomingPayouts.getType():
+      return {
+        ...state,
+        incomingPayouts: {
+          ...state.incomingPayouts,
+          loading: false,
+          data: action.payload.incomingPayouts,
+        },
+      };
+    case actions.investorEtoTicket.setIncomingPayoutDone.getType():
+      return {
+        ...state,
+        incomingPayouts: {
+          ...state.incomingPayouts,
+          payoutDone: true,
+        },
       };
   }
 

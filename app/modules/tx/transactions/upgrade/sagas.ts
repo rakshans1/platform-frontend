@@ -42,7 +42,7 @@ export function* generateEuroUpgradeTransaction({
 
   const txDetails: IStateTxData = {
     ...txInitialDetails,
-    gas: addHexPrefix(estimatedGasWithOverhead.toString()) as NumericString,
+    gas: estimatedGasWithOverhead,
   };
   return txDetails;
 }
@@ -73,7 +73,7 @@ export function* generateEtherUpgradeTransaction({
 
   const txDetails: IStateTxData = {
     ...txInitialDetails,
-    gas: addHexPrefix(estimatedGasWithOverhead) as NumericString,
+    gas: estimatedGasWithOverhead,
   };
 
   return txDetails;

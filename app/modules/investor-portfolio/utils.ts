@@ -62,7 +62,7 @@ export const convertToInvestorTicket = ([
 });
 
 export const convertToTokenDisbursal = (
-  currency: ECurrency,
+  token: ECurrency,
   [amountToBeClaimed, totalDisbursedAmount, timeToFirstDisbursalRecycle]: [
     BigNumber,
     BigNumber,
@@ -70,7 +70,7 @@ export const convertToTokenDisbursal = (
     BigNumber
   ],
 ): IStateTokenDisbursal => ({
-  currency,
+  token,
   amountToBeClaimed: amountToBeClaimed.toString() as NumericString,
   totalDisbursedAmount: totalDisbursedAmount.toString() as NumericString,
   // convert seconds timestamp to milliseconds

@@ -8,8 +8,10 @@ export const txSenderActions = {
   txSenderShowModal: (type: ETxSenderType) => createAction("TX_SENDER_SHOW_MODAL", { type }),
   txSenderHideModal: () => createSimpleAction("TX_SENDER_HIDE_MODAL"),
   // User awaiting actions
-  txSenderAcceptDraft: (txDraftData?: Partial<IStateTxData>) =>
-    createAction("TX_SENDER_ACCEPT_DRAFT", { txDraftData }),
+  txSenderAcceptDraft: createActionFactory(
+    "TX_SENDER_ACCEPT_DRAFT",
+    (txDraftData?: Partial<IStateTxData>) => ({ txDraftData }),
+  ),
   txSenderAccept: () => createSimpleAction("TX_SENDER_ACCEPT"),
   txSenderChange: (type: ETxSenderType) => createAction("TX_SENDER_CHANGE", { type }),
   // Signer actions

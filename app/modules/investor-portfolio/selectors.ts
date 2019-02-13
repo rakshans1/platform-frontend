@@ -1,9 +1,11 @@
 import BigNumber from "bignumber.js";
+import { isArray } from "lodash/fp";
 import { createSelector } from "reselect";
 
 import { Q18 } from "../../config/constants";
 import { getShareAndTokenPrice } from "../../lib/api/eto/EtoUtils";
 import { IAppState } from "../../store";
+import { isZero } from "../../utils/Number.utils";
 import { selectPublicEtoById, selectPublicEtos, selectTokenData } from "../public-etos/selectors";
 import { EETOStateOnChain } from "../public-etos/interfaces/interfaces";
 import { isOnChain } from "../public-etos/utils";
@@ -163,10 +165,16 @@ export const selectIsEligibleToPreEto = (state: IAppState, etoId: string):boolea
   return isLockedWalletConnected || isWhitelisted;
 };
 
-export const selectTokensDisbursal:((state: IAppState) => IBlTokenDisbursal[]|undefined) = createSelector(
-  selectInvestorTicketsState,
-  investorTickets => investorTickets.tokensDisbursal,
-);
+/**
+ * Selects tokens disbursal with `amountToBeClaimed` greater than zero
+ */
+export const selectTokensDisbursal = createSelector(selectInvestorTicketsState, investorTickets => {
+  if (isArray(investorTickets.tokensDisbursal)) {
+    return investorTickets.tokensDisbursal.filter(d => !isZero(d.amountToBeClaimed));
+  }
+
+  return investorTickets.tokensDisbursal;
+});
 
 export const selectMyAssetsWithTokenData = (state: IAppState): TBlETOWithTokenData[] | undefined => {
   const myAsssets = selectMyAssets(state);
@@ -178,4 +186,37 @@ export const selectMyAssetsWithTokenData = (state: IAppState): TBlETOWithTokenDa
   }
 
   return undefined;
+};
+
+export const selectIsIncomingPayoutLoading = (state: IAppState): boolean => {
+  return state.investorTickets.incomingPayouts.loading;
+};
+
+export const selectEtherTokenIncomingPayout = (state: IAppState): string => {
+  const incomingPayout = state.investorTickets.incomingPayouts.data;
+
+  if (incomingPayout) {
+    return incomingPayout.etherTokenIncomingPayoutValue;
+  }
+  return "0";
+};
+
+export const selectEuroTokenIncomingPayout = (state: IAppState): string => {
+  const incomingPayout = state.investorTickets.incomingPayouts.data;
+
+  if (incomingPayout) {
+    return incomingPayout.euroTokenIncomingPayoutValue;
+  }
+  return "0";
+};
+
+export const selectIsIncomingPayoutAvailable = (state: IAppState): boolean => {
+  const etherToken = selectEtherTokenIncomingPayout(state);
+  const euroToken = selectEuroTokenIncomingPayout(state);
+
+  return etherToken !== "0" || euroToken !== "0";
+};
+
+export const selectIsIncomingPayoutDone = (state: IAppState): boolean => {
+  return state.investorTickets.incomingPayouts.payoutDone;
 };

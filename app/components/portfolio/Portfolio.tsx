@@ -1,6 +1,7 @@
 import { branch, compose, renderComponent } from "recompose";
 
 import { actions } from "../../modules/actions";
+import { selectIsVerifiedInvestor } from "../../modules/auth/selectors";
 import {
   selectMyAssets,
   selectMyPendingAssets,
@@ -24,7 +25,10 @@ export const Portfolio = compose<TPortfolioLayoutProps, {}>(
   onEnterAction({
     actionCreator: dispatch => {
       dispatch(actions.publicEtos.loadEtos());
-      dispatch(actions.investorEtoTicket.loadClaimables());
+
+      if (process.env.NF_ASSETS_PORTFOLIO_COMPONENT_VISIBLE === "1") {
+        dispatch(actions.investorEtoTicket.loadClaimables());
+      }
     },
   }),
   appConnect<TStateProps, {}>({
@@ -33,6 +37,7 @@ export const Portfolio = compose<TPortfolioLayoutProps, {}>(
       pendingAssets: selectMyPendingAssets(state),
       walletAddress: selectEthereumAddressWithChecksum(state),
       tokensDisbursal: selectTokensDisbursal(state),
+      isVerifiedInvestor: selectIsVerifiedInvestor(state),
     }),
   }),
   withContainer(LayoutAuthorized),

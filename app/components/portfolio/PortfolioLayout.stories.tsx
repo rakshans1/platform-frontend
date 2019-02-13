@@ -10,15 +10,16 @@ const data: TPortfolioLayoutProps = {
   pendingAssets: [],
   isRetailEto: false,
   walletAddress: "0x00000",
+  isVerifiedInvestor: true,
   tokensDisbursal: [
     {
-      currency: ECurrency.EUR_TOKEN,
+      token: ECurrency.EUR_TOKEN,
       amountToBeClaimed: "11200657227385184",
       timeToFirstDisbursalRecycle: 1675062154000,
       totalDisbursedAmount: "364458900000000000",
     },
     {
-      currency: ECurrency.ETH,
+      token: ECurrency.ETH,
       amountToBeClaimed: "01200657227385184",
       timeToFirstDisbursalRecycle: 1675062154000,
       totalDisbursedAmount: "064458900000000000",
