@@ -10,6 +10,7 @@ import { ECurrency, ECurrencySymbol, EMoneyFormat, Money } from "../../../../sha
 import { Tooltip } from "../../../../shared/Tooltip";
 
 import * as styles from "../EtoOverviewStatus.module.scss";
+import BigNumber from "bignumber.js";
 
 export enum CampaigningFormState {
   VIEW,
@@ -17,9 +18,9 @@ export enum CampaigningFormState {
 }
 
 export interface ICampaigningActivatedInvestorWidgetLayoutProps {
-  pledgedAmount: number | "";
+  pledgedAmount: BigNumber | null;
   consentToRevealEmail: boolean;
-  backNow: (amount: number) => void;
+  backNow: (amount: BigNumber) => void;
   formState: CampaigningFormState;
   showMyEmail: (consentToRevealEmail: boolean) => void;
   changePledge: () => void;
@@ -85,9 +86,9 @@ const CampaigningActivatedInvestorApprovedWidgetLayout: React.FunctionComponent<
           </div>
         </div>
       ) : (
-        <Formik<{ amount: number | "" }>
-          initialValues={{ amount: pledgedAmount }}
-          onSubmit={({ amount }) => backNow(amount as number)}
+        <Formik<{ amount: string }>
+          initialValues={{ amount: pledgedAmount ? pledgedAmount.toString() : ""}}
+          onSubmit={({ amount }) => backNow(new BigNumber(amount))}
           validationSchema={generateCampaigningValidation(minPledge, maxPledge)}
         >
           <Form className={styles.group}>

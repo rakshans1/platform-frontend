@@ -196,8 +196,8 @@ const InvestmentSummary = compose<IProps, {}>(
     stateToProps: state => {
       const etoId = selectInvestmentEtoId(state);
       // eto and computed values are guaranteed to be present at investment summary state
-      const eto = etoId && selectEtoWithCompanyAndContractById(state, etoId);
-      if(etoId && eto) {
+      const eto = etoId ? selectEtoWithCompanyAndContractById(state, etoId) : null;
+      if(eto) {
         return {
           eto,
           companyName: eto.company.name,
@@ -205,8 +205,8 @@ const InvestmentSummary = compose<IProps, {}>(
           investmentEur: selectInvestmentEurValueUlps(state),
           gasCostEth: selectTxGasCostEthUlps(state),
           // tslint:disable: no-useless-cast
-          equityTokens: selectEquityTokenCountByEtoId(state, etoId),
-          estimatedReward: selectNeuRewardUlpsByEtoId(state, etoId),
+          equityTokens: selectEquityTokenCountByEtoId(state, etoId!),
+          estimatedReward: selectNeuRewardUlpsByEtoId(state, etoId!),
           etherPriceEur: selectEtherPriceEur(state),
           isIcbm: selectIsICBMInvestment(state),
         };

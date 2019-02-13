@@ -3,6 +3,7 @@ import * as React from "react";
 
 import { Q18 } from "../../../config/constants";
 import { MyPortfolioWidgetComponent } from "./MyPortfolioWidget";
+import BigNumber from "bignumber.js";
 
 storiesOf("MyPortfolioWidget", module)
   .add("loading", () => (
@@ -18,8 +19,8 @@ storiesOf("MyPortfolioWidget", module)
       isIncomingPayoutLoading={false}
       isIncomingPayoutAvailable={false}
       {...{
-        balanceEur: "12312352413",
-        balanceNeu: Q18.mul(123).toString(),
+        balanceEur: new BigNumber("12312352413"),
+        balanceNeu: new BigNumber(Q18.mul(123)),
         isIcbmWalletConnected: true,
       }}
     />
@@ -29,7 +30,7 @@ storiesOf("MyPortfolioWidget", module)
       isLoading={false}
       isIncomingPayoutLoading={false}
       isIncomingPayoutAvailable={false}
-      {...{ balanceEur: "0", balanceNeu: "0", isIcbmWalletConnected: true }}
+      {...{ balanceEur: new BigNumber("0"), balanceNeu: new BigNumber("0"), isIcbmWalletConnected: true }}
     />
   ))
   .add("error", () => (
@@ -38,6 +39,6 @@ storiesOf("MyPortfolioWidget", module)
       isIncomingPayoutLoading={false}
       isIncomingPayoutAvailable={false}
       error={"bla bla error"}
-      {...{ balanceEur: "0", balanceNeu: "0", isIcbmWalletConnected: true }}
+      {...{ balanceEur: new BigNumber("0"), balanceNeu: new BigNumber("0"), isIcbmWalletConnected: true }}
     />
   ));

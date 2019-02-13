@@ -112,34 +112,38 @@ export function getInvestmentTypeMessages(type?: EInvestmentType): React.ReactNo
   }
 }
 
-export function formatEur(val?: BigNumber): string | undefined {
-  return val && formatMoney(val, MONEY_DECIMALS, 2);
+export function formatEur(val?: BigNumber | null): string | undefined {
+  return val ? formatMoney(val, MONEY_DECIMALS, 2) : "";
 }
 
-export function formatEurTsd(val?: BigNumber): string | undefined {
+export function formatEurTsd(val?: BigNumber | null): string {
   return formatThousands(formatEur(val));
 }
 
-export function formatEth(val?: BigNumber): string | undefined {
-  return val && formatMoney(val, MONEY_DECIMALS, 4);
+export function formatEth(val?: BigNumber | null): string {
+  return val ? formatMoney(val, MONEY_DECIMALS, 4) : "";
 }
 
-export function formatEthTsd(val?: BigNumber): string | undefined {
+export function formatEthTsd(val?: BigNumber | null): string {
   return formatThousands(formatEth(val));
 }
 
-export function formatVaryingDecimals(val?: BigNumber): string | undefined {
-  return val && formatMoney(val, MONEY_DECIMALS);
+export function formatVaryingDecimals(val?: BigNumber): string {
+  return val ? formatMoney(val, MONEY_DECIMALS) : "";
 }
 
 export function getActualTokenPriceEur( //  // formatMoney(investmentEurUlps.div(equityTokenCount), MONEY_DECIMALS, 8)
   investmentEurUlps: BigNumber,
   equityTokenCount: BigNumber,
 ): BigNumber {
-  return investmentEurUlps.div(equityTokenCount;
+  return investmentEurUlps.div(equityTokenCount);
 }
 
-export const formatSummaryTokenPrice = (fullTokenPrice: BigNumber, actualTokenPrice: BigNumber):string => {
+export const formatSummaryTokenPrice = (fullTokenPrice: BigNumber, actualTokenPrice?: BigNumber | null):string => {
+  if(!fullTokenPrice || !actualTokenPrice){
+    return ''
+  }
+
   const discount = new BigNumber(1)
     .sub(actualTokenPrice.div(fullTokenPrice))
     .mul(100)

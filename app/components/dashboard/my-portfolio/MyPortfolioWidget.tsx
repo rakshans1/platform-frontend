@@ -18,20 +18,21 @@ import { IncomingPayoutWidget } from "../incoming-payout/IncomingPayoutWidget";
 import { MyNeuWidget } from "./MyNeuWidget";
 
 import * as styles from "./MyPortfolioWidget.module.scss";
+import BigNumber from "bignumber.js";
 
 type TOwnProps = CommonHtmlProps;
 
 interface IBodyProps {
   error?: string;
-  balanceNeu: string;
-  balanceEur: string;
+  balanceNeu: BigNumber;
+  balanceEur: BigNumber;
   isIncomingPayoutAvailable: boolean;
 }
 
 interface IStateProps {
   isLoading: boolean;
-  balanceNeu?: string;
-  balanceEur?: string;
+  balanceNeu?: BigNumber;
+  balanceEur?: BigNumber;
   error?: string;
   isIncomingPayoutLoading: boolean;
   isIncomingPayoutAvailable: boolean;

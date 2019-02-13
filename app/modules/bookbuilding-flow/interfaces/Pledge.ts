@@ -3,6 +3,7 @@ import BigNumber from "bignumber.js";
 import {NumericString} from "../../../types";
 import {ECurrency} from "../../../components/shared/Money";
 import {
+  bigNumberToNumericString,
   numberToNumericString,
   numericStringToBigNumber,
   numericStringToNumber
@@ -36,4 +37,8 @@ export const apiToStateConversionSpec = {
 
 export const stateToBlConversionSpec = {
   amountEur: numericStringToBigNumber()
+};
+
+export const blToStateConversionSpec = {
+  amountEur: bigNumberToNumericString()
 };

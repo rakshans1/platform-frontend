@@ -6,6 +6,7 @@ import { makeTid } from "../../utils/tidUtils";
 import { ECurrency, Money } from "./Money";
 
 import * as styles from "./MoneySuiteWidget.module.scss";
+import BigNumber from "bignumber.js";
 
 export type TTheme = "light";
 export type TSize = "large";
@@ -14,9 +15,9 @@ export interface IMoneySuiteWidgetProps {
   icon: string;
   currency: ECurrency;
   currencyTotal: ECurrency;
-  largeNumber: string;
-  value: string;
-  percentage?: string;
+  largeNumber: BigNumber;
+  value: BigNumber;
+  percentage?: BigNumber;
   theme?: TTheme;
   size?: TSize;
 }
@@ -42,9 +43,9 @@ export const MoneySuiteWidget: React.FunctionComponent<IMoneySuiteWidgetProps & 
         <div className={styles.totalMoney} data-test-id={makeTid(dataTestId, "-value")}>
           = <Money value={value} currency={currencyTotal} />
           {percentage && (
-            <span className={`${parseInt(percentage, 10) > 0 ? styles.green : styles.red}`}>
+            <span className={`${percentage.gt(0) ? styles.green : styles.red}`}>
               {" "}
-              ({percentage}
+              ({percentage.toString(10)}
               %)
             </span>
           )}

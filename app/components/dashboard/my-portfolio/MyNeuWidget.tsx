@@ -11,10 +11,11 @@ import { MoneySuiteWidget } from "../../shared/MoneySuiteWidget";
 import * as arrowRight from "../../../assets/img/inline_icons/arrow_right.svg";
 import * as icon from "../../../assets/img/neu_icon.svg";
 import * as styles from "./MyNeuWidget.module.scss";
+import BigNumber from "bignumber.js";
 
 interface IProps {
-  balanceNeu: string;
-  balanceEur: string;
+  balanceNeu: BigNumber;
+  balanceEur: BigNumber;
 }
 
 export const MyNeuWidget: React.FunctionComponent<IProps> = props => {

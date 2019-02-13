@@ -9,7 +9,7 @@ import {
   selectGenericModalIsOpen,
   selectGenericModalObj,
 } from "../../modules/generic-modal/selectors";
-import {IGenericModal} from "../../modules/generic-modal/interfaces";
+import {IBlGenericModalObject} from "../../modules/generic-modal/interfaces";
 import { appConnect, AppDispatch } from "../../store";
 import { DeepReadonly } from "../../types";
 import { Button } from "../shared/buttons";
@@ -22,7 +22,7 @@ import * as styles from "./GenericModal.module.scss";
 
 interface IStateProps {
   isOpen: boolean;
-  genericModalObj?: DeepReadonly<IGenericModal>;
+  genericModalObj?: DeepReadonly<IBlGenericModalObject>;
   component?: React.ComponentType<any>;
 }
 

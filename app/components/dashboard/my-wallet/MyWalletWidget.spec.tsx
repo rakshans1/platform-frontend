@@ -5,6 +5,7 @@ import * as React from "react";
 import { MyWalletWidgetComponentBody } from "./MyWalletWidget";
 
 import { tid } from "../../../../test/testUtils";
+import BigNumber from "bignumber.js";
 
 describe("<MyWalletWidget />", () => {
   let initialEnvVar: any;
@@ -15,12 +16,12 @@ describe("<MyWalletWidget />", () => {
     const props = {
       isLoading: false,
       data: {
-        euroTokenEuroAmount: "66482" + "0".repeat(14),
-        euroTokenAmount: "36490" + "0".repeat(18),
-        ethAmount: "66482" + "0".repeat(14),
-        ethEuroAmount: "6004904646" + "0".repeat(16),
-        percentage: "-3.67",
-        totalAmount: "637238" + "0".repeat(18),
+        euroTokenEuroAmount: new BigNumber("66482" + "0".repeat(14)),
+        euroTokenAmount: new BigNumber("36490" + "0".repeat(18)),
+        ethAmount: new BigNumber("66482" + "0".repeat(14)),
+        ethEuroAmount: new BigNumber("6004904646" + "0".repeat(16)),
+        percentage: new BigNumber("-3.67"),
+        totalAmount: new BigNumber("637238" + "0".repeat(18)),
         isIcbmWalletConnected: true,
         isLockedWalletConnected: true,
       },
@@ -40,12 +41,12 @@ describe("<MyWalletWidget />", () => {
     const props = {
       isLoading: false,
       data: {
-        euroTokenEuroAmount: "66482" + "0".repeat(14),
-        euroTokenAmount: "36490" + "0".repeat(18),
-        ethAmount: "66482" + "0".repeat(14),
-        ethEuroAmount: "6004904646" + "0".repeat(16),
-        percentage: "-3.67",
-        totalAmount: "637238" + "0".repeat(18),
+        euroTokenEuroAmount: new BigNumber("66482" + "0".repeat(14)),
+        euroTokenAmount: new BigNumber("36490" + "0".repeat(18)),
+        ethAmount: new BigNumber("66482" + "0".repeat(14)),
+        ethEuroAmount: new BigNumber("6004904646" + "0".repeat(16)),
+        percentage: new BigNumber("-3.67"),
+        totalAmount: new BigNumber("637238" + "0".repeat(18)),
         isIcbmWalletConnected: false,
         isLockedWalletConnected: false,
       },

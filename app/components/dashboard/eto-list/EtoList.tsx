@@ -6,7 +6,7 @@ import { compose } from "redux";
 
 import { actions } from "../../../modules/actions";
 import { selectPublicEtos } from "../../../modules/public-etos/selectors";
-import { TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
+import { TBlEtoWithCompanyAndContract } from "../../../modules/public-etos/interfaces/interfaces";
 import { appConnect } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { EtoOverviewStatus } from "../../eto/overview/EtoOverviewStatus";
@@ -17,7 +17,7 @@ import { SectionHeader } from "../../shared/SectionHeader";
 import * as styles from "./EtoList.module.scss";
 
 interface IStateProps {
-  etos: TEtoWithCompanyAndContract[] | undefined;
+  etos: TBlEtoWithCompanyAndContract[] | undefined;
 }
 
 const EtoListComponent: React.FunctionComponent<IStateProps> = ({ etos }) => (

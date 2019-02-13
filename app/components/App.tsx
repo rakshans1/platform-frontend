@@ -6,7 +6,7 @@ import { compose } from "redux";
 import { symbols } from "../di/symbols";
 import { ILogger } from "../lib/dependencies/logger";
 import { actions } from "../modules/actions";
-import { EInitType } from "../modules/init/reducer";
+import { EInitType } from "../modules/init/interfaces";
 import {
   selectInitError,
   selectIsInitDone,

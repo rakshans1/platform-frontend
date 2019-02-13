@@ -13,8 +13,11 @@ export function isZero(value: string): boolean {
 /**
  * Assumes dot as decimal separator
  */
-export function formatThousands(value?: BigNumber): string {
+export function formatThousands(value?: BigNumber | string | null): string {
   if (!value) return "";
+  if (typeof value !== 'string'){
+    value = value.toString(10)
+  }
   const splitByDot = value.split(".");
 
   invariant(splitByDot.length <= 2, "Can't format this number: " + value);
@@ -26,6 +29,7 @@ export function formatThousands(value?: BigNumber): string {
   }
   return formattedBeforeDot;
 }
+
 //FIXME find out what it does and rename it to be understandable
 export function convertToBigInt(value: string, currencyDecimals?: number): BigNumber {
   const q = currencyDecimals ? new BigNumber(10).pow(currencyDecimals) : Q18;

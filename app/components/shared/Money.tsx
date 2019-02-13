@@ -39,7 +39,7 @@ enum ETheme {
 
 interface IOwnProps extends React.HTMLAttributes<HTMLSpanElement> {
   currency: ECurrency;
-  value?: React.ReactElement<any> | string | BigNumber | number | null;
+  value?: React.ReactElement<any> | string | BigNumber | number | null; //fixme wtf
   format?: EMoneyFormat;
   currencySymbol?: ECurrencySymbol;
   currencyClassName?: string;
@@ -102,7 +102,7 @@ function getFormatDecimals(format: EMoneyFormat): number {
 }
 
 export function getFormattedMoney(
-  value: string | number | BigNumber,
+  value: BigNumber,
   currency: ECurrency,
   format: EMoneyFormat,
   isPrice?: boolean,

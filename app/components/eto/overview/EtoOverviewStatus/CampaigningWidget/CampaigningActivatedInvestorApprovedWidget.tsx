@@ -8,7 +8,6 @@ import {
   withStateHandlers,
 } from "recompose";
 
-import { IPledge } from "../../../../../lib/api/eto/EtoPledgeApi.interfaces";
 import { actions } from "../../../../../modules/actions";
 import { appConnect } from "../../../../../store";
 import { ECurrency } from "../../../../shared/Money";
@@ -17,27 +16,30 @@ import {
   CampaigningFormState,
   ICampaigningActivatedInvestorWidgetLayoutProps,
 } from "./CampaigningActivatedInvestorApprovedWidgetLayout";
+import {IBlPledge, blToStateConversionSpec} from "../../../../../modules/bookbuilding-flow/interfaces/Pledge";
+import {convert} from "../../../utils";
+import BigNumber from "bignumber.js";
 
 export interface IExternalProps {
   etoId: string;
-  minPledge: number;
-  maxPledge?: number;
-  pledge?: IPledge;
+  minPledge: BigNumber;
+  maxPledge?: BigNumber;
+  pledge?: IBlPledge;
 }
 
 interface IDispatchProps {
-  savePledge: (newPledge: IPledge) => void;
+  savePledge: (newPledge: IBlPledge) => void;
   deletePledge: () => void;
 }
 
 interface IHandlersProps {
   showMyEmail: (consentToRevealEmail: boolean) => void;
-  backNow: (amount: number) => void;
+  backNow: (amount: BigNumber) => void;
   changePledge: () => void;
 }
 
 interface IWithProps {
-  pledgedAmount: number | "";
+  pledgedAmount: BigNumber | null;
 }
 
 interface ILocalStateProps {
@@ -57,8 +59,8 @@ const CampaigningActivatedInvestorApprovedWidget = compose<
 >(
   appConnect<{}, IDispatchProps, IExternalProps>({
     dispatchToProps: (dispatch, props) => ({
-      savePledge: (newPledge: IPledge) => {
-        dispatch(actions.bookBuilding.savePledge(props.etoId, newPledge));
+      savePledge: (newPledge: IBlPledge) => {
+        dispatch(actions.bookBuilding.savePledge(props.etoId, convert(newPledge, blToStateConversionSpec)));
       },
       deletePledge: () => {
         dispatch(actions.bookBuilding.deletePledge(props.etoId));
@@ -94,7 +96,7 @@ const CampaigningActivatedInvestorApprovedWidget = compose<
     },
   }),
   withProps<IWithProps, IExternalProps>(({ pledge }) => ({
-    pledgedAmount: pledge ? pledge.amountEur : "",
+    pledgedAmount: pledge ? pledge.amountEur : null,
   })),
   withHandlers<
     IExternalProps &
@@ -111,13 +113,13 @@ const CampaigningActivatedInvestorApprovedWidget = compose<
 
       // only save when already pledged
       if (pledge) {
-        const newPledge: IPledge = { ...pledge, consentToRevealEmail };
+        const newPledge: IBlPledge = { ...pledge, consentToRevealEmail };
 
         savePledge(newPledge);
       }
     },
-    backNow: ({ savePledge, consentToRevealEmail }) => (amountEur: number) => {
-      const newPledge: IPledge = {
+    backNow: ({ savePledge, consentToRevealEmail }) => (amountEur: BigNumber) => {
+      const newPledge: IBlPledge = {
         amountEur,
         consentToRevealEmail,
         currency: ECurrency.EUR_TOKEN,

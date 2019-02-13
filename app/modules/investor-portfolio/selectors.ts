@@ -5,7 +5,6 @@ import { createSelector } from "reselect";
 import { Q18 } from "../../config/constants";
 import { getShareAndTokenPrice } from "../../lib/api/eto/EtoUtils";
 import { IAppState } from "../../store";
-import { isZero } from "../../utils/Number.utils";
 import { selectPublicEtoById, selectPublicEtos, selectTokenData } from "../public-etos/selectors";
 import { EETOStateOnChain } from "../public-etos/interfaces/interfaces";
 import { isOnChain } from "../public-etos/utils";
@@ -168,12 +167,12 @@ export const selectIsEligibleToPreEto = (state: IAppState, etoId: string):boolea
 /**
  * Selects tokens disbursal with `amountToBeClaimed` greater than zero
  */
-export const selectTokensDisbursal = createSelector(selectInvestorTicketsState, investorTickets => {
+export const selectTokensDisbursal:(state: IAppState)=>IBlTokenDisbursal[] = createSelector(selectInvestorTicketsState, investorTickets => {
+  let res:IBlTokenDisbursal[] = [];
   if (isArray(investorTickets.tokensDisbursal)) {
-    return investorTickets.tokensDisbursal.filter(d => !isZero(d.amountToBeClaimed));
+    res = investorTickets.tokensDisbursal.filter(d => !d.amountToBeClaimed.isZero());
   }
-
-  return investorTickets.tokensDisbursal;
+  return res
 });
 
 export const selectMyAssetsWithTokenData = (state: IAppState): TBlETOWithTokenData[] | undefined => {
