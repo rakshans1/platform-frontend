@@ -3,14 +3,14 @@ import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { setDisplayName, withProps } from "recompose";
 import { compose } from "redux";
 
-import { IPledge } from "../../../../../lib/api/eto/EtoPledgeApi.interfaces";
+import {IBlPledge} from "../../../../../modules/bookbuilding-flow/interfaces/Pledge";
 import { actions } from "../../../../../modules/actions";
 import { selectIsInvestor, selectIsVerifiedInvestor } from "../../../../../modules/auth/selectors";
 import {
   selectBookbuildingStats,
   selectMyPledge,
 } from "../../../../../modules/bookbuilding-flow/selectors";
-import { EETOStateOnChain } from "../../../../../modules/public-etos/types";
+import { EETOStateOnChain } from "../../../../../modules/public-etos/interfaces/interfaces";
 import { appConnect } from "../../../../../store";
 import { onEnterAction } from "../../../../../utils/OnEnterAction";
 import { ECurrency, ECurrencySymbol, EMoneyFormat, Money } from "../../../../shared/Money";
@@ -22,12 +22,19 @@ import { appRoutes } from "../../../../appRoutes";
 import { ButtonLink } from "../../../../shared/buttons";
 import { Tooltip } from "../../../../shared/Tooltip";
 import * as styles from "../EtoOverviewStatus.module.scss";
+import BigNumber from "bignumber.js";
 
 export interface IExternalProps {
   etoId: string;
   investorsLimit: number;
-  minPledge: number;
-  maxPledge?: number;
+  nextStateStartDate?: Date;
+}
+
+export interface IComponentProps {
+  etoId: string;
+  investorsLimit: number;
+  minPledge: BigNumber;
+  maxPledge?: BigNumber;
   nextState: EETOStateOnChain;
   nextStateStartDate?: Date;
   isActive: boolean;
@@ -35,10 +42,10 @@ export interface IExternalProps {
 }
 
 interface IStateProps {
-  pledgedAmount: number | null;
+  pledgedAmount: BigNumber | null;
   investorsCount: number;
   isInvestor: boolean;
-  pledge?: IPledge;
+  pledge?: IBlPledge;
   isVerifiedInvestor: boolean;
 }
 
@@ -47,9 +54,7 @@ interface IWithProps {
   isWaitingForNextStateToStart: boolean;
 }
 
-type IProps = IWithProps & IExternalProps & IStateProps;
-
-const CampaigningActivatedWidgetComponent: React.FunctionComponent<IProps> = ({
+const CampaigningActivatedWidgetComponent: React.FunctionComponent<IWithProps & IComponentProps & IStateProps> = ({
   investorsLimit,
   pledgedAmount,
   investorsCount,

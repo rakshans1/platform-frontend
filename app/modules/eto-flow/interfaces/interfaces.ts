@@ -1,4 +1,3 @@
-import {NumericString} from "../../../types";
 import {IApiPublicEtoData, IStatePublicEtoData} from './PublicEtoData';
 import {IApiCompanyEtoData, IStateCompanyEtoData} from "./CompanyEtoData";
 import {IStateDetailedBookbuildingStats} from "../../bookbuilding-flow/interfaces/DetailedBookbuildingStats";

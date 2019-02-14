@@ -5,14 +5,14 @@ import { Redirect } from "react-router";
 import { branch, renderComponent, setDisplayName } from "recompose";
 import { compose } from "redux";
 
-import { EEtoState, EtoStateToCamelcase } from "../../lib/api/eto/EtoApi.interfaces";
+import { EEtoState, EtoStateToCamelcase } from "../../modules/eto-flow/interfaces/interfaces";
 import {
   EEtoDocumentType,
   IEtoDocument,
   IEtoFiles,
   TEtoDocumentTemplates,
   TStateInfo,
-} from "../../lib/api/eto/EtoFileApi.interfaces";
+} from "../../modules/eto-documents/interfaces";
 import { ignoredTemplates } from "../../lib/api/eto/EtoFileUtils";
 import { actions } from "../../modules/actions";
 import {

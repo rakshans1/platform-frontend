@@ -2,14 +2,15 @@ import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
 import { MyWalletWidgetComponent } from "./MyWalletWidget";
+import BigNumber from "bignumber.js";
 
 const props = {
   isLoading: false,
   data: {
-    euroTokenAmount: "100",
-    ethAmount: "100",
-    ethEuroAmount: "100",
-    totalAmount: "100",
+    euroTokenAmount: new BigNumber("100"),
+    ethAmount: new BigNumber("100"),
+    ethEuroAmount: new BigNumber("100"),
+    totalAmount: new BigNumber("100"),
     isIcbmWalletConnected: false,
     isLockedWalletConnected: false,
   },
