@@ -117,3 +117,5 @@ export const selectIsAccountFrozen = createSelector(selectClaims, claims => {
 
   return false;
 });
+
+export const selectBankAccount = (state: IAppState) => state.kyc.bankAccount;
