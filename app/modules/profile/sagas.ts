@@ -9,7 +9,7 @@ import { IAppState } from "../../store";
 import { accessWalletAndRunEffect } from "../access-wallet/sagas";
 import { actions, TActionFromCreator } from "../actions";
 import { MessageSignCancelledError } from "../auth/errors";
-import { ensurePermissionsArePresent } from "../auth/jwt/sagas";
+import { ensurePermissionsArePresentAndRunEffect } from "../auth/jwt/sagas";
 import { selectDoesEmailExist, selectUser } from "../auth/selectors";
 import { updateUser } from "../auth/user/sagas";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
@@ -52,7 +52,7 @@ export function* addNewEmail(
   try {
     yield put(actions.verifyEmail.lockVerifyEmailButton());
     yield neuCall(
-      ensurePermissionsArePresent,
+      ensurePermissionsArePresentAndRunEffect,
       [CHANGE_EMAIL_PERMISSION],
       emailModalTitle,
       createMessage(ProfileMessage.PROFILE_ADD_EMAIL_CONFIRM),
@@ -74,7 +74,7 @@ export function* resendEmail({ notificationCenter, logger }: TGlobalDependencies
   const effect = neuCall(resendEmailEffect);
   try {
     yield neuCall(
-      ensurePermissionsArePresent,
+      ensurePermissionsArePresentAndRunEffect,
       [CHANGE_EMAIL_PERMISSION],
       createMessage(ProfileMessage.PROFILE_RESEND_EMAIL_LINK_CONFIRMATION_TITLE),
       createMessage(ProfileMessage.PROFILE_RESEND_EMAIL_LINK_CONFIRMATION_DESCRIPTION),
