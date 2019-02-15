@@ -12,7 +12,7 @@ import { actions } from "../actions";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
 import { EBankTransferType } from "./reducer";
-import { selectBankTransferType } from "./selectors";
+import { selectBankTransferType, selectIsBankTransferModalOpened } from "./selectors";
 
 /**
  * Generates reference code in the following format:
@@ -53,7 +53,11 @@ function* start({ logger, notificationCenter }: TGlobalDependencies): any {
 }
 
 function* stop(): any {
-  yield put(actions.bankTransferFlow.stopBankTransfer());
+  const isInProgress: boolean = yield select(selectIsBankTransferModalOpened);
+
+  if (isInProgress) {
+    yield put(actions.bankTransferFlow.stopBankTransfer());
+  }
 }
 
 export function* bankTransferFlowSaga(): any {
