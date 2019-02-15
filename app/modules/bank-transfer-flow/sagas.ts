@@ -6,6 +6,7 @@ import { createMessage } from "../../components/translatedMessages/utils";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { cryptoRandomString } from "../../lib/dependencies/cryptoRandomString";
 import { EthereumAddressWithChecksum } from "../../types";
+import { invariant } from "../../utils/invariant";
 import { convertToBigInt } from "../../utils/Number.utils";
 import { actions } from "../actions";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
@@ -21,6 +22,8 @@ import { selectBankTransferType } from "./selectors";
 function* generateReference(): Iterable<any> {
   const addressHex: EthereumAddressWithChecksum = yield select(selectEthereumAddressWithChecksum);
   const type: EBankTransferType = yield select(selectBankTransferType);
+
+  invariant(type.length === 2, "Bank transfer type should be the length of 2 characters");
 
   const date = moment.utc().format("DDMMYYHHmm");
   const random = cryptoRandomString(4);
