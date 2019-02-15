@@ -1,9 +1,8 @@
 import BigNumber from "bignumber.js";
 import * as React from "react";
-import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
+import { FormattedMessage } from "react-intl-phraseapp";
 
 import { MONEY_DECIMALS } from "../../../../config/constants";
-import { externalRoutes } from "../../../../config/externalRoutes";
 import {
   EInvestmentErrorState,
   EInvestmentType,
@@ -25,7 +24,6 @@ import { formatThousands } from "../../../../utils/Number.utils";
 import { WalletSelectionData } from "./InvestmentTypeSelector";
 
 import * as ethIcon from "../../../../assets/img/eth_icon.svg";
-import * as euroIcon from "../../../../assets/img/euro_icon.svg";
 import * as neuroIcon from "../../../../assets/img/nEUR_icon.svg";
 
 export function createWallets(state: IAppState): WalletSelectionData[] {
@@ -40,11 +38,6 @@ export function createWallets(state: IAppState): WalletSelectionData[] {
       type: EInvestmentType.InvestmentWallet,
       name: "Investment Wallet",
       icon: ethIcon,
-    },
-    [EInvestmentType.BankTransfer]: {
-      type: EInvestmentType.BankTransfer,
-      name: "Invest with EUR",
-      icon: euroIcon,
     },
     [EInvestmentType.ICBMnEuro]: {
       type: EInvestmentType.ICBMnEuro,
@@ -97,19 +90,6 @@ export function getInputErrorMessage(
       return <FormattedMessage id="investment-flow.error-message.exceeds-wallet-balance" />;
     case EValidationState.NOT_ENOUGH_ETHER_FOR_GAS:
       return <FormattedMessage id="modal.txsender.error-message.not-enough-ether-for-gas" />;
-  }
-}
-
-export function getInvestmentTypeMessages(type?: EInvestmentType): React.ReactNode {
-  switch (type) {
-    case EInvestmentType.BankTransfer:
-      return (
-        <FormattedHTMLMessage
-          id="investment-flow.bank-transfer-info-message"
-          tagName="p"
-          values={{ href: `${externalRoutes.neufundSupport}/home` }}
-        />
-      );
   }
 }
 
