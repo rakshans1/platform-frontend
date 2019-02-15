@@ -586,12 +586,12 @@ function* loadBankAccountDetails({
   notificationCenter,
 }: TGlobalDependencies): Iterator<any> {
   try {
-    const result: IHttpResponse<TKycBankAccount> = yield apiKycService.getBankAccount();
+    const result: TKycBankAccount = yield apiKycService.getBankAccount();
 
     yield put(
       actions.kyc.setBankAccountDetails({
         hasBankAccount: true,
-        details: result.body,
+        details: result,
       }),
     );
   } catch (e) {

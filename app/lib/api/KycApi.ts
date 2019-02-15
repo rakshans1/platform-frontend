@@ -274,7 +274,7 @@ export class KycApi {
    * Bank account
    */
 
-  public async getBankAccount(): Promise<IHttpResponse<IKycRequestState>> {
+  public async getBankAccount(): Promise<IKycRequestState> {
     const response = await this.httpClient.get<IKycRequestState>({
       baseUrl: BASE_PATH,
       url: BANK_ACCOUNT_PATH,
@@ -286,6 +286,6 @@ export class KycApi {
       throw new BankAccountNotFound();
     }
 
-    return response;
+    return response.body;
   }
 }
