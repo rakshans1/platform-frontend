@@ -1,7 +1,7 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { SpinningEthereum } from "../../../shared/ethererum/SpinningEthereum";
+import { SpinningEthereum } from "../../../shared/ethererum";
 import { Message } from "../../Message";
 
 const SigningMessage = () => (

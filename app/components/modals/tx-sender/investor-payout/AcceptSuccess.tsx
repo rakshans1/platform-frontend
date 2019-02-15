@@ -4,7 +4,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { actions } from "../../../../modules/actions";
 import { appConnect } from "../../../../store";
 import { ButtonArrowRight } from "../../../shared/buttons";
-import { ConfettiEthereum } from "../../../shared/ethererum/ConfettiEthereum";
+import { ConfettiEthereum } from "../../../shared/ethererum";
 import { Message } from "../../Message";
 
 interface IDispatchProps {

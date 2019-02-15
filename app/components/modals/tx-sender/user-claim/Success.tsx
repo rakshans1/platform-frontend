@@ -6,7 +6,7 @@ import { selectEtoTokenName } from "../../../../modules/public-etos/selectors";
 import { selectTxSummaryAdditionalData } from "../../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../../store";
 import { Button, EButtonLayout } from "../../../shared/buttons";
-import { ConfettiEthereum } from "../../../shared/ethererum/ConfettiEthereum";
+import { ConfettiEthereum } from "../../../shared/ethererum";
 
 import * as styles from "./Success.module.scss";
 

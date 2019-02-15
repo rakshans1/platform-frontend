@@ -16,7 +16,7 @@ import { doesUserHaveEnoughEther, validateAddress } from "../../../../modules/we
 import { appConnect } from "../../../../store";
 import { IIntlProps, injectIntlHelpers } from "../../../../utils/injectIntlHelpers";
 import { Button } from "../../../shared/buttons";
-import { SpinningEthereum } from "../../../shared/ethererum/SpinningEthereum";
+import { SpinningEthereum } from "../../../shared/ethererum";
 import { Form, FormField } from "../../../shared/forms";
 import { ValidationErrorMessage } from "../shared/ValidationErrorMessage";
 

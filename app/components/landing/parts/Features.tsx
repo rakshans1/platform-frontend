@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Col, Container, Row } from "reactstrap";
 
-import { SpinningEthereum } from "../../shared/ethererum/SpinningEthereum";
+import { SpinningEthereum } from "../../shared/ethererum";
 import { Interoperable } from "./Interoperable";
 import { RainbowSheepTip } from "./RainbowSheepTip";
 import { SmartContractWindow } from "./SmartContractWindow";
