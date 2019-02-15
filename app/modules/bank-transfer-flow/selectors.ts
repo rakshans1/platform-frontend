@@ -20,6 +20,11 @@ export const selectBankTransferFlowReference = createSelector(
   bankTransferFlow => bankTransferFlow.reference,
 );
 
+export const selectBankTransferType = createSelector(
+  selectBankTransferFlow,
+  bankTransferFlow => bankTransferFlow.type,
+);
+
 export const selectBankTransferMinAmount = createSelector(
   selectBankTransferFlow,
   bankTransferFlow => bankTransferFlow.minEuroUlps,

@@ -9,15 +9,24 @@ export enum EBankTransferFlowState {
   SUMMARY = "summary",
 }
 
+/**
+ * This enum should use two character value convention as it's injected into reference code
+ */
+export enum EBankTransferType {
+  PURCHASE = "PU",
+}
+
 export interface IBankTransferState {
-  minEuroUlps: string;
   state: EBankTransferFlowState;
+  type: EBankTransferType | undefined;
+  minEuroUlps: string;
   reference: string;
 }
 
 export const bankTransferInitialState: IBankTransferState = {
-  minEuroUlps: "",
   state: EBankTransferFlowState.UNINITIALIZED,
+  type: undefined,
+  minEuroUlps: "",
   reference: "",
 };
 
@@ -30,6 +39,7 @@ export const bankTransferFlowReducer: AppReducer<IBankTransferState> = (
       return {
         ...state,
         state: EBankTransferFlowState.INIT,
+        type: action.payload.type,
       };
 
     case actions.bankTransferFlow.continueToDetails.getType():

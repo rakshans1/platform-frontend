@@ -6,21 +6,28 @@ import { createMessage } from "../../components/translatedMessages/utils";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { cryptoRandomString } from "../../lib/dependencies/cryptoRandomString";
 import { EthereumAddressWithChecksum } from "../../types";
+import { convertToBigInt } from "../../utils/Number.utils";
 import { actions } from "../actions";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
+import { EBankTransferType } from "./reducer";
+import { selectBankTransferType } from "./selectors";
 
+/**
+ * Generates reference code in the following format:
+ * NF <user address> REF <bank transfer type (2 characters)><date with minutes in UTC (format DDMMYYHHmm)><4 random characters>
+ * see https://github.com/Neufund/platform-backend/wiki/5.4.-Use-Case-EUR-T-deposit for reference
+ */
 function* generateReference(): Iterable<any> {
   const addressHex: EthereumAddressWithChecksum = yield select(selectEthereumAddressWithChecksum);
+  const type: EBankTransferType = yield select(selectBankTransferType);
 
-  const reference = btoa(cryptoRandomString(9))
-    .replace("=", "")
-    .toUpperCase();
+  const date = moment.utc().format("DDMMYYHHmm");
+  const random = cryptoRandomString(4);
 
-  const date = moment().format("DD-MM-YYYY");
+  const reference = `${type}${date}${random}`.toUpperCase();
 
-  // see https://github.com/Neufund/platform-backend/wiki/5.4.-Use-Case-EUR-T-deposit for reference
-  return `Bank Transfer from ${date} NF ${addressHex} REF ${reference}`;
+  return `NF ${addressHex} REF ${reference}`;
 }
 
 function* start({ logger, notificationCenter }: TGlobalDependencies): any {
@@ -29,7 +36,7 @@ function* start({ logger, notificationCenter }: TGlobalDependencies): any {
 
     yield put(
       actions.bankTransferFlow.continueToDetails({
-        minEuroUlps: "1",
+        minEuroUlps: convertToBigInt(1), // TODO: will be replaced by proper contract call later
         reference: reference,
       }),
     );

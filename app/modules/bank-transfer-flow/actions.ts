@@ -1,8 +1,11 @@
 import { createActionFactory } from "../actionsUtils";
+import { EBankTransferType } from "./reducer";
 
 export const bankTransferFLowActions = {
   // public actions
-  startBankTransfer: createActionFactory("BANK_TRANSFER_FLOW_START"),
+  startBankTransfer: createActionFactory("BANK_TRANSFER_FLOW_START", (type: EBankTransferType) => ({
+    type,
+  })),
   stopBankTransfer: createActionFactory("BANK_TRANSFER_FLOW_STOP"),
 
   // private actions

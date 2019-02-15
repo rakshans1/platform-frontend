@@ -4,6 +4,7 @@ import { branch, renderComponent } from "recompose";
 import { compose } from "redux";
 
 import { actions } from "../../../../modules/actions";
+import { EBankTransferType } from "../../../../modules/bank-transfer-flow/reducer";
 import { ETokenType } from "../../../../modules/tx/interfaces";
 import {
   selectICBMLockedEtherBalance,
@@ -166,7 +167,8 @@ export const WalletStart = compose<React.FunctionComponent>(
       upgradeWalletEuroToken: () => dispatch(actions.txTransactions.startUpgrade(ETokenType.EURO)),
       upgradeWalletEtherToken: () =>
         dispatch(actions.txTransactions.startUpgrade(ETokenType.ETHER)),
-      purchaseNEur: () => dispatch(actions.bankTransferFlow.startBankTransfer()),
+      purchaseNEur: () =>
+        dispatch(actions.bankTransferFlow.startBankTransfer(EBankTransferType.PURCHASE)),
     }),
   }),
   branch<IStateProps>(props => props.isLoading, renderComponent(LoadingIndicator)),
