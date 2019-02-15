@@ -113,22 +113,37 @@ export function getInvestmentTypeMessages(type?: EInvestmentType): React.ReactNo
   }
 }
 
+/**
+ * @deprecated Use Money component
+ */
 export function formatEur(val?: string | BigNumber): string | undefined {
   return val && formatMoney(val, MONEY_DECIMALS, 2);
 }
 
+/**
+ * @deprecated Use Money component
+ */
 export function formatEurTsd(val?: string | BigNumber): string | undefined {
   return formatThousands(formatEur(val));
 }
 
+/**
+ * @deprecated Use Money component
+ */
 export function formatEth(val?: string | BigNumber): string | undefined {
   return val && formatMoney(val, MONEY_DECIMALS, 4);
 }
 
+/**
+ * @deprecated Use Money component
+ */
 export function formatEthTsd(val?: string | BigNumber): string | undefined {
   return formatThousands(formatEth(val));
 }
 
+/**
+ * @deprecated Use Money component
+ */
 export function formatVaryingDecimals(val?: string | BigNumber): string | undefined {
   return val && formatMoney(val, MONEY_DECIMALS);
 }
