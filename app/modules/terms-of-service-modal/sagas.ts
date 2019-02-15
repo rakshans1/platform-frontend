@@ -52,10 +52,10 @@ function* handleAcceptCurrentAgreement({
   try {
     yield neuCall(
       ensurePermissionsArePresentAndRunEffect,
+      neuCall(handleAcceptCurrentAgreementEffect),
       [SIGN_TOS],
       createMessage(ToSMessage.TOS_ACCEPT_PERMISSION_TITLE),
       createMessage(ToSMessage.TOS_ACCEPT_PERMISSION_TEXT),
-      neuCall(handleAcceptCurrentAgreementEffect),
     );
   } catch (e) {
     notificationCenter.error(createMessage(AuthMessage.AUTH_TOC_ACCEPT_ERROR));

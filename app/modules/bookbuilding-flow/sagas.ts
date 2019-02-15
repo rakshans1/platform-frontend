@@ -45,10 +45,10 @@ export function* saveMyPledge(
   try {
     yield neuCall(
       ensurePermissionsArePresentAndRunEffect,
+      neuCall(saveMyPledgeEffect, etoId, pledge),
       [DO_BOOK_BUILDING],
       createMessage(BookbuildingFlowMessage.PLEDGE_FLOW_CONFIRM_PLEDGE),
       createMessage(BookbuildingFlowMessage.PLEDGE_FLOW_PLEDGE_DESCRIPTION),
-      neuCall(saveMyPledgeEffect, etoId, pledge),
     );
   } catch (e) {
     notificationCenter.error(
@@ -78,10 +78,10 @@ export function* deleteMyPledge(
   try {
     yield neuCall(
       ensurePermissionsArePresentAndRunEffect,
+      neuCall(deleteMyPledgeEffect, etoId),
       [DO_BOOK_BUILDING],
       createMessage(BookbuildingFlowMessage.PLEDGE_FLOW_CONFIRM_PLEDGE_REMOVAL),
       createMessage(BookbuildingFlowMessage.PLEDGE_FLOW_CONFIRM_PLEDGE_REMOVAL_DESCRIPTION),
-      neuCall(deleteMyPledgeEffect, etoId),
     );
   } catch (e) {
     notificationCenter.error(

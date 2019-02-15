@@ -48,15 +48,14 @@ export function* addNewEmail(
     ? createMessage(ProfileMessage.PROFILE_UPDATE_EMAIL_TITLE)
     : createMessage(ProfileMessage.PROFILE_ADD_EMAIL_TITLE);
 
-  const effect = neuCall(addNewEmailEffect, email);
   try {
     yield put(actions.verifyEmail.lockVerifyEmailButton());
     yield neuCall(
       ensurePermissionsArePresentAndRunEffect,
+      neuCall(addNewEmailEffect, email),
       [CHANGE_EMAIL_PERMISSION],
       emailModalTitle,
       createMessage(ProfileMessage.PROFILE_ADD_EMAIL_CONFIRM),
-      effect,
     );
   } catch (e) {
     if (e instanceof EmailAlreadyExists)
@@ -71,14 +70,13 @@ export function* addNewEmail(
 }
 
 export function* resendEmail({ notificationCenter, logger }: TGlobalDependencies): Iterator<any> {
-  const effect = neuCall(resendEmailEffect);
   try {
     yield neuCall(
       ensurePermissionsArePresentAndRunEffect,
+      neuCall(resendEmailEffect),
       [CHANGE_EMAIL_PERMISSION],
       createMessage(ProfileMessage.PROFILE_RESEND_EMAIL_LINK_CONFIRMATION_TITLE),
       createMessage(ProfileMessage.PROFILE_RESEND_EMAIL_LINK_CONFIRMATION_DESCRIPTION),
-      effect,
     );
   } catch (e) {
     logger.error("Failed to resend email", e);

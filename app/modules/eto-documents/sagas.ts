@@ -176,10 +176,10 @@ function* uploadEtoFile(
 
     yield neuCall(
       ensurePermissionsArePresentAndRunEffect,
+      neuCall(uploadEtoFileEffect, file, documentType),
       [UPLOAD_IMMUTABLE_DOCUMENT],
       createMessage(EtoDocumentsMessage.ETO_DOCUMENTS_CONFIRM_UPLOAD_DOCUMENT_TITLE),
       createMessage(EtoDocumentsMessage.ETO_DOCUMENTS_CONFIRM_UPLOAD_DOCUMENT_DESCRIPTION),
-      neuCall(uploadEtoFileEffect, file, documentType),
     );
   } catch (e) {
     if (e instanceof FileAlreadyExists) {

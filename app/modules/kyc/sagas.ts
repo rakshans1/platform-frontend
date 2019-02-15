@@ -228,10 +228,10 @@ function* submitIndividualRequest(
   try {
     yield neuCall(
       ensurePermissionsArePresentAndRunEffect,
+      neuCall(submitIndividualRequestEffect),
       [SUBMIT_KYC_PERMISSION],
       createMessage(KycFlowMessage.KYC_SUBMIT_TITLE),
       createMessage(KycFlowMessage.KYC_SUBMIT_DESCRIPTION),
-      neuCall(submitIndividualRequestEffect),
     );
   } catch {
     yield put(actions.kyc.kycUpdateIndividualRequestState(false));
@@ -573,10 +573,10 @@ function* submitBusinessRequest(
 
     yield neuCall(
       ensurePermissionsArePresentAndRunEffect,
+      neuCall(submitBusinessRequestEffect),
       [SUBMIT_KYC_PERMISSION],
       createMessage(KycFlowMessage.KYC_SUBMIT_TITLE),
       createMessage(KycFlowMessage.KYC_SUBMIT_DESCRIPTION),
-      neuCall(submitBusinessRequestEffect),
     );
   } catch {
     yield put(actions.kyc.kycUpdateBusinessRequestState(false));

@@ -47,7 +47,7 @@ export function* loadIssuerEto({
   }
 }
 
-export function* changeBookBuildingStatusEffect(
+function* changeBookBuildingStatusEffect(
   { apiEtoService }: TGlobalDependencies,
   status: boolean,
 ): Iterator<any> {
@@ -59,17 +59,16 @@ export function* changeBookBuildingStatus(
   action: TAction,
 ): any {
   if (action.type !== "ETO_FLOW_CHANGE_BOOK_BUILDING_STATES") return;
-
+  const { status } = action.payload;
   try {
     const message = action.payload.status
       ? createMessage(EtoDocumentsMessage.ETO_DOCUMENTS_CONFIRM_START_BOOKBUILDING)
       : createMessage(EtoDocumentsMessage.ETO_DOCUMENTS_CONFIRM_STOP_BOOKBUILDING);
-
     yield neuCall(
       ensurePermissionsArePresentAndRunEffect,
+      neuCall(changeBookBuildingStatusEffect, status),
       [DO_BOOK_BUILDING],
       message,
-      neuCall(changeBookBuildingStatusEffect),
     );
   } catch (e) {
     logger.error("Failed to change book-building status", e);
@@ -166,10 +165,10 @@ export function* submitEtoData(
   try {
     yield neuCall(
       ensurePermissionsArePresentAndRunEffect,
+      neuCall(submitEtoDataEffect),
       [SUBMIT_ETO_PERMISSION],
       createMessage(EtoDocumentsMessage.ETO_DOCUMENTS_SUBMIT_ETO_TITLE), //eto.modal.submit-title
       createMessage(EtoDocumentsMessage.ETO_DOCUMENTS_SUBMIT_ETO_DESCRIPTION), //eto.modal.submit-description
-      neuCall(submitEtoDataEffect),
     );
   } catch (e) {
     logger.error("Failed to Submit ETO data", e);

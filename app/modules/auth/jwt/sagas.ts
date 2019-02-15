@@ -84,15 +84,16 @@ export function* obtainJWT(
  */
 export function* ensurePermissionsArePresentAndRunEffect(
   { jwtStorage, logger }: TGlobalDependencies,
+  effect: Iterator<any>,
   permissions: Array<string> = [],
   title: TMessage,
   message: TMessage,
-  effect: Iterator<any>,
 ): Iterator<any> {
   // check wether all permissions are present and still valid
   const jwt = jwtStorage.get();
   if (jwt && hasValidPermissions(jwt, permissions)) {
-    return yield effect;
+    yield effect;
+    return;
   }
   // obtain a freshly signed token with missing permissions
   try {
