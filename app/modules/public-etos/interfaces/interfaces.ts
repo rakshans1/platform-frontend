@@ -33,6 +33,13 @@ export type TBlEtoWithCompanyAndContract =
   company: companyEtoData.IBlCompanyEtoData;
 }
 
+export type TApiEtoWithCompanyAndContract =
+  publicEtoInterfaces.IApiPublicEtoData & {
+  // contract is undefined when ETO is not on blockchain
+  contract?: contractDataInterfaces.IApiEtoContractData;
+  company: companyEtoData.IApiCompanyEtoData;
+}
+
 export const stateToBlConversionSpec = {
   ...publicEtoInterfaces.stateToBlConversionSpec,
   company: companyEtoData.stateToBlConversionSpec

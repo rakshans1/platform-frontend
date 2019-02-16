@@ -38,26 +38,27 @@ export function convertToBigInt(value: string, currencyDecimals?: number): BigNu
 }
 
 export function formatFlexiPrecision(
-  value: number | string,
+  value: BigNumber,
   maxPrecision: number,
   minPrecision = 0,
   useGrouping = false,
 ): string {
-  return parseFloat(value as string).toLocaleString(undefined, {
+  return parseFloat(value.toString(10)).toLocaleString(undefined, {
     maximumFractionDigits: maxPrecision,
     minimumFractionDigits: minPrecision,
     useGrouping,
   });
 }
 
-type TNormalizeOptions = { min: number; max: number };
+type TNormalizeOptions = { min: BigNumber; max: BigNumber };
 
-function normalizeValue(options: TNormalizeOptions, value: number): number {
-  const minAllowed = 0;
-  const maxAllowed = 1;
+function normalizeValue(options: TNormalizeOptions, value: BigNumber): BigNumber {
+  const minAllowed = new BigNumber(0);
+  const maxAllowed = new BigNumber(1);
 
   return (
-    ((maxAllowed - minAllowed) * (value - options.min)) / (options.max - options.min) + minAllowed
+    // ((maxAllowed - minAllowed) * (value - options.min)) / (options.max - options.min) + minAllowed
+    ((maxAllowed.minus(minAllowed)).mul(value.minus(options.min))).div(options.max.minus(options.min)).add(minAllowed)
   );
 }
 

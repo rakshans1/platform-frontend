@@ -4,10 +4,11 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { setDisplayName } from "recompose";
 import { compose } from "redux";
 
-import { EtoMediaType, TPartialCompanyEtoData } from "../../../../lib/api/eto/EtoApi.interfaces";
+import {EtoMediaValidator} from "../../../../modules/eto-flow/validators";
+import {IBlPublicEtoData} from "../../../../modules/eto-flow/interfaces/PublicEtoData";
 import { actions } from "../../../../modules/actions";
 import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
-import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
+import { EEtoFormTypes } from "../../../../modules/eto-flow/interfaces/interfaces";
 import { etoMediaProgressOptions } from "../../../../modules/eto-flow/utils";
 import { appConnect } from "../../../../store";
 import { Button, EButtonLayout } from "../../../shared/buttons";
@@ -24,19 +25,19 @@ import * as styles from "../Shared.module.scss";
 interface IStateProps {
   loadingData: boolean;
   savingData: boolean;
-  stateValues: TPartialCompanyEtoData;
+  stateValues: Partial<IBlPublicEtoData>;
 }
 
 interface IDispatchProps {
-  saveData: (values: TPartialCompanyEtoData) => void;
+  saveData: (values: Partial<IBlPublicEtoData>) => void;
 }
 
-type IProps = IStateProps & IDispatchProps & FormikProps<TPartialCompanyEtoData>;
+type IProps = IStateProps & IDispatchProps & FormikProps<Partial<IBlPublicEtoData>>;
 
 const EtoRegistrationMediaComponent = ({ savingData }: IProps) => (
   <EtoFormBase
     title={<FormattedMessage id="eto.form.eto-media.title" />}
-    validator={EtoMediaType.toYup()}
+    validator={EtoMediaValidator.toYup()}
     progressOptions={etoMediaProgressOptions}
   >
     <Section>
@@ -106,17 +107,17 @@ const EtoRegistrationMedia = compose<React.FunctionComponent>(
     stateToProps: s => ({
       loadingData: s.etoFlow.loading,
       savingData: s.etoFlow.saving,
-      stateValues: selectIssuerCompany(s) as TPartialCompanyEtoData,
+      stateValues: selectIssuerCompany(s) as Partial<IBlPublicEtoData>,
     }),
     dispatchToProps: dispatch => ({
-      saveData: (data: TPartialCompanyEtoData) => {
+      saveData: (data: Partial<IBlPublicEtoData>) => {
         const convertedData = convert(data, fromFormState);
         dispatch(actions.etoFlow.saveDataStart({ companyData: convertedData, etoData: {} }));
       },
     }),
   }),
-  withFormik<IProps, TPartialCompanyEtoData>({
-    validationSchema: EtoMediaType.toYup(),
+  withFormik<IProps, Partial<IBlPublicEtoData>>({
+    validationSchema: EtoMediaValidator.toYup(),
     mapPropsToValues: props => props.stateValues,
     handleSubmit: (values, props) => props.props.saveData(values),
   }),

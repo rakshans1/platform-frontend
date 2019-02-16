@@ -4,36 +4,36 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { setDisplayName } from "recompose";
 import { compose } from "redux";
 
-import {
-  EtoRiskAssessmentType,
-  TPartialCompanyEtoData,
-} from "../../../../lib/api/eto/EtoApi.interfaces";
+import * as companyEtoDataInterfaces from "../../../../modules/eto-flow/interfaces/CompanyEtoData";
 import { actions } from "../../../../modules/actions";
 import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
-import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
+import { EEtoFormTypes } from "../../../../modules/eto-flow/interfaces/interfaces";
 import { appConnect } from "../../../../store";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import { FormFieldBoolean, FormTextArea } from "../../../shared/forms";
 import { EtoFormBase } from "../EtoFormBase";
 import { Section } from "../Shared";
 import * as styles from "../Shared.module.scss";
+import {DeepPartial} from "../../../../types";
+import {convert} from "../../utils";
+import {EtoRiskAssessmentValidator} from "../../../../modules/eto-flow/validators";
 
 interface IStateProps {
   loadingData: boolean;
   savingData: boolean;
-  stateValues: TPartialCompanyEtoData;
+  stateValues: DeepPartial<companyEtoDataInterfaces.IBlCompanyEtoData>;
 }
 
 interface IDispatchProps {
-  saveData: (values: TPartialCompanyEtoData) => void;
+  saveData: (values: DeepPartial<companyEtoDataInterfaces.IBlCompanyEtoData>) => void;
 }
 
-type IProps = IStateProps & IDispatchProps & FormikProps<TPartialCompanyEtoData>;
+type IProps = IStateProps & IDispatchProps & FormikProps<DeepPartial<companyEtoDataInterfaces.IBlCompanyEtoData>>;
 
 const EtoRegistrationRiskAssessmentComponent = (props: IProps) => {
   console.log("EtoRegistrationRiskAssessmentComponent",(props as any).browser) //FIXME
   return (
-    <EtoFormBase title="Risk Assessment" validator={EtoRiskAssessmentType.toYup()}>
+    <EtoFormBase title="Risk Assessment" validator={EtoRiskAssessmentValidator.toYup()}>
       <Section>
         <FormTextArea
           className="my-2"
@@ -116,22 +116,22 @@ const EtoRegistrationRiskAssessment = compose<React.FunctionComponent>(
     stateToProps: s => ({
       loadingData: s.etoFlow.loading,
       savingData: s.etoFlow.saving,
-      stateValues: selectIssuerCompany(s) as TPartialCompanyEtoData,
-      browser: s.browser.name //FIXME
+      stateValues: selectIssuerCompany(s) as DeepPartial<companyEtoDataInterfaces.IBlCompanyEtoData>,
+      browser: s.browser.name
     }),
     dispatchToProps: dispatch => ({
-      saveData: (data: TPartialCompanyEtoData) => {
+      saveData: (data: DeepPartial<companyEtoDataInterfaces.IBlCompanyEtoData>) => {
         dispatch(
           actions.etoFlow.saveDataStart({
-            companyData: data,
+            companyData: convert(data, companyEtoDataInterfaces.blToStateConversionSpec),
             etoData: {},
           }),
         );
       },
     }),
   }),
-  withFormik<IStateProps & IDispatchProps, TPartialCompanyEtoData>({
-    validationSchema: EtoRiskAssessmentType.toYup(),
+  withFormik<IStateProps & IDispatchProps, DeepPartial<companyEtoDataInterfaces.IBlCompanyEtoData>>({
+    validationSchema: EtoRiskAssessmentValidator.toYup(),
     mapPropsToValues: props => props.stateValues,
     handleSubmit: (values, props) => props.props.saveData(values),
   }),

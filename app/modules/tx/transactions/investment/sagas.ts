@@ -3,7 +3,7 @@ import { put, select, take } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { ContractsService } from "../../../../lib/web3/ContractsService";
-import { IBlTxData } from "../../../../lib/web3/types";
+import { IBlTxData } from "../../../../modules/web3/interfaces";
 import { IAppState } from "../../../../store";
 import { selectStandardGasPriceWithOverHead } from "../../../gas/selectors";
 import { selectPublicEtoById } from "../../../public-etos/selectors";

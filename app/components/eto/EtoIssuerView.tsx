@@ -2,7 +2,7 @@ import { branch, compose, renderComponent } from "recompose";
 
 import { actions } from "../../modules/actions";
 import { selectIssuerEtoWithCompanyAndContract } from "../../modules/eto-flow/selectors";
-import { TEtoWithCompanyAndContract } from "../../modules/public-etos/types";
+import { TBlEtoWithCompanyAndContract } from "../../modules/public-etos/interfaces/interfaces";
 import { appConnect } from "../../store";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { withContainer } from "../../utils/withContainer";
@@ -13,7 +13,7 @@ import { LoadingIndicator } from "../shared/loading-indicator";
 import { EtoView } from "./shared/EtoView";
 
 type TProps = {
-  eto: TEtoWithCompanyAndContract;
+  eto: TBlEtoWithCompanyAndContract;
 };
 
 type TStateProps = Partial<TProps>;

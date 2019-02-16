@@ -70,7 +70,7 @@ export const NumberTransformingField = ({
                     if (customOnBlur) {
                       customOnBlur(e);
                     }
-                    setFieldValue(name, convertToPrecision(2)(e.target.valueAsNumber));
+                    setFieldValue(name, convertToPrecision(2)(e.target.value)); //FIXME INPUT
                   }}
                   onChange={e =>
                     setFieldValue(name, e.target.value === "" ? undefined : e.target.value)

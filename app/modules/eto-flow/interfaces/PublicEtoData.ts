@@ -1,6 +1,11 @@
 import {NumericString} from "../../../types";
 import {TEtoDocumentTemplates} from "../../eto-documents/interfaces";
-import {bigNumberToNumber, numberToNumericString, numericStringToBigNumber} from "../../../utils/numericStringUtils";
+import {
+  bigNumberToNumber,
+  bigNumberToNumericString,
+  numberToNumericString,
+  numericStringToBigNumber
+} from "../../../utils/numericStringUtils";
 import BigNumber from "bignumber.js";
 import {EEtoState} from "./interfaces";
 
@@ -37,7 +42,7 @@ export interface IStatePublicEtoData {
   publicDiscountFraction: NumericString;
   newSharesToIssueInFixedSlots: NumericString;
   fixedSlotsMaximumDiscountFraction: NumericString;
-  discountScheme: NumericString;
+  discountScheme: string;
 
   etoId: string;
   companyId: string;
@@ -47,7 +52,7 @@ export interface IStatePublicEtoData {
   templates: TEtoDocumentTemplates;
   startDate: string;
   documents: TEtoDocumentTemplates;
-  maxPledges: number;
+  maxPledges: NumericString;
   canEnableBookbuilding: boolean;
 }
 
@@ -86,7 +91,7 @@ export interface IApiPublicEtoData {
   publicDiscountFraction: number;
   newSharesToIssueInFixedSlots: number;
   fixedSlotsMaximumDiscountFraction: number;
-  discountScheme: number;
+  discountScheme: string;
 
   etoId: string;
   companyId: string;
@@ -133,7 +138,7 @@ export interface IBlPublicEtoData {
   publicDiscountFraction: BigNumber;
   newSharesToIssueInFixedSlots: BigNumber;
   fixedSlotsMaximumDiscountFraction: BigNumber;
-  discountScheme: BigNumber;
+  discountScheme: string;
 
   etoId: string;
   companyId: string;
@@ -143,7 +148,7 @@ export interface IBlPublicEtoData {
   templates: TEtoDocumentTemplates;
   startDate: string;
   documents: TEtoDocumentTemplates;
-  maxPledges: number;
+  maxPledges: BigNumber;
   canEnableBookbuilding: boolean;
 }
 
@@ -164,7 +169,6 @@ export const apiToStateConversionSpec = {
   publicDiscountFraction: numberToNumericString(),
   newSharesToIssueInFixedSlots: numberToNumericString(),
   fixedSlotsMaximumDiscountFraction: numberToNumericString(),
-  discountScheme: numberToNumericString(),
 };
 
 export const stateToBlConversionSpec = {
@@ -183,7 +187,6 @@ export const stateToBlConversionSpec = {
   publicDiscountFraction: numericStringToBigNumber(),
   newSharesToIssueInFixedSlots: numericStringToBigNumber(),
   fixedSlotsMaximumDiscountFraction: numericStringToBigNumber(),
-  discountScheme: numericStringToBigNumber(),
 };
 
 export const blToApiConversionSpec = {
@@ -202,5 +205,23 @@ export const blToApiConversionSpec = {
   publicDiscountFraction: bigNumberToNumber(),
   newSharesToIssueInFixedSlots: bigNumberToNumber(),
   fixedSlotsMaximumDiscountFraction: bigNumberToNumber(),
-  discountScheme: bigNumberToNumber(),
 };
+
+export const blToStateConversionSpec = {
+  minTicketEur:bigNumberToNumericString(),
+  maxTicketEur: bigNumberToNumericString(),
+  liquidationPreferenceMultiplier:bigNumberToNumericString(),
+  equityTokensPerShare: bigNumberToNumericString(),
+  shareNominalValueEur: bigNumberToNumericString(),
+  preMoneyValuationEur: bigNumberToNumericString(),
+  existingCompanyShares: bigNumberToNumericString(),
+  authorizedCapitalShares: bigNumberToNumericString(),
+  newSharesToIssue: bigNumberToNumericString(),
+  minimumNewSharesToIssue: bigNumberToNumericString(),
+  newSharesToIssueInWhitelist: bigNumberToNumericString(),
+  whitelistDiscountFraction: bigNumberToNumericString(),
+  publicDiscountFraction: bigNumberToNumericString(),
+  newSharesToIssueInFixedSlots: bigNumberToNumericString(),
+  fixedSlotsMaximumDiscountFraction: bigNumberToNumericString(),
+};
+

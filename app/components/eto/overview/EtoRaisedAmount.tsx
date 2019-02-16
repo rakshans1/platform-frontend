@@ -13,6 +13,7 @@ import * as ethIcon from "../../../assets/img/eth_icon.svg";
 import * as moneyIcon from "../../../assets/img/nEUR_icon.svg";
 import * as stylesCommon from "../EtoOverviewCommon.module.scss";
 import * as styles from "./EtoRaisedAmount.module.scss";
+import BigNumber from "bignumber.js";
 
 interface IProps {
   chartData: IChartBarsData;
@@ -58,15 +59,15 @@ export const EtoRaisedAmount: React.FunctionComponent<IProps> = ({
               </div>
               <MoneySuiteWidget
                 currency={ECurrency.EUR_TOKEN}
-                largeNumber={"1234567" + "0".repeat(16)}
-                value={"1234567" + "0".repeat(16)}
+                largeNumber={new BigNumber("1234567" + "0".repeat(16))}
+                value={new BigNumber("1234567" + "0".repeat(16))}
                 currencyTotal={ECurrency.EUR}
                 icon={moneyIcon}
               />
               <MoneySuiteWidget
                 currency={ECurrency.ETH}
-                largeNumber={"1234567" + "0".repeat(16)}
-                value={"1234567" + "0".repeat(16)}
+                largeNumber={new BigNumber("1234567" + "0".repeat(16))}
+                value={new BigNumber("1234567" + "0".repeat(16))}
                 currencyTotal={ECurrency.EUR}
                 icon={ethIcon}
               />

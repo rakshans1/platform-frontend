@@ -4,7 +4,7 @@ import * as React from "react";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
 
-import { EtoKeyIndividualsType } from "../../../../lib/api/eto/EtoApi.interfaces";
+import { EtoKeyIndividualsValidator } from "../../../../modules/eto-flow/validators";
 import { EtoRegistrationCompanyInformationComponent } from "./CompanyInformation";
 import { EtoEquityTokenInfoComponent } from "./EtoEquityTokenInfo";
 import { EtoRegistrationMediaComponent } from "./EtoMedia";
@@ -82,7 +82,7 @@ storiesOf("ETO-Flow/Registration-forms", module)
       <Formik
         initialValues={eto}
         onSubmit={() => {}}
-        validationSchema={() => EtoKeyIndividualsType.toYup()}
+        validationSchema={() => EtoKeyIndividualsValidator.toYup()}
       >
         {props => <EtoRegistrationKeyIndividualsComponent {...props} {...loadingState} />}
       </Formik>

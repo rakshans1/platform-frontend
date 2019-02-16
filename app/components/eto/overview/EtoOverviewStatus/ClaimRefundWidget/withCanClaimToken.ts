@@ -1,14 +1,14 @@
 import { compose, withProps } from "recompose";
 
-import { EUserType } from "../../../../../lib/api/users/interfaces";
+import { EUserType } from "../../../../../modules/auth/interfaces";
 import { actions } from "../../../../../modules/actions";
 import { selectUserType } from "../../../../../modules/auth/selectors";
 import {
   selectHasInvestorTicket,
   selectInvestorTicket,
 } from "../../../../../modules/investor-portfolio/selectors";
-import { IInvestorTicket } from "../../../../../modules/investor-portfolio/types";
-import { EETOStateOnChain } from "../../../../../modules/public-etos/types";
+import { IBlInvestorTicket } from "../../../../../modules/investor-portfolio/interfaces/InvestorTicket";
+import { EETOStateOnChain } from "../../../../../modules/public-etos/interfaces/interfaces";
 import { appConnect } from "../../../../../store";
 import { Omit } from "../../../../../types";
 
@@ -20,7 +20,7 @@ interface IExternalProps {
 interface IStateProps {
   doesInvestorInvest: boolean;
   userType: EUserType | undefined;
-  investorTicket?: IInvestorTicket;
+  investorTicket?: IBlInvestorTicket;
 }
 
 interface IDispatchProps {

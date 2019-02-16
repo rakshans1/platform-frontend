@@ -1,6 +1,6 @@
 import { call, put, select } from "redux-saga/effects";
 import { TGlobalDependencies } from "../../../di/setupBindings";
-import { EUserType, IUser, IUserInput } from "../../../lib/api/users/interfaces";
+import {EUserType, IApiUser, IApiUserInput} from "../interfaces";
 import { UserNotExisting } from "../../../lib/api/users/UsersApi";
 import { REGISTRATION_LOGIN_DONE } from "../../../lib/persistence/UserStorage";
 import { SignerRejectConfirmationError } from "../../../lib/web3/Web3Manager";
@@ -11,11 +11,11 @@ import { selectRedirectURLFromQueryString } from "../../routing/selectors";
 import { neuCall } from "../../sagasUtils";
 import { selectUrlUserType } from "../../wallet-selector/selectors";
 import { loadPreviousWallet } from "../../web3/sagas";
-import { EWalletSubType, EWalletType } from "../../web3/types";
+import { EWalletSubType, EWalletType } from "../../web3/interfaces";
 import { obtainJWT } from "../jwt/sagas";
 import { selectUserType } from "../selectors";
-import { SIGN_TOS } from "./../../../config/constants";
-import { SignerTimeoutError, SignerUnknownError } from "./../../../lib/web3/Web3Manager";
+import { SIGN_TOS } from "../../../config/constants";
+import { SignerTimeoutError, SignerUnknownError } from "../../../lib/web3/Web3Manager";
 
 export function* signInUser({
   walletStorage,
@@ -56,25 +56,25 @@ export function* signInUser({
 }
 
 export function* loadUser(): Iterator<any> {
-  const user: IUser = yield neuCall(loadUserPromise);
+  const user: IApiUser = yield neuCall(loadUserPromise);
   yield neuCall(loadPreviousWallet, user.type);
   yield put(actions.auth.setUser(user));
   yield neuCall(loadKycRequestData);
 }
 
-export async function loadUserPromise({ apiUserService }: TGlobalDependencies): Promise<IUser> {
+export async function loadUserPromise({ apiUserService }: TGlobalDependencies): Promise<IApiUser> {
   return await apiUserService.me();
 }
 
 export async function createUserPromise(
   { apiUserService }: TGlobalDependencies,
-  user: IUserInput,
-): Promise<IUser> {
+  user: IApiUserInput,
+): Promise<IApiUser> {
   return apiUserService.createAccount(user);
 }
 
-export function* createUser(newUser: IUserInput): Iterator<any> {
-  const user: IUser = yield neuCall(createUserPromise, newUser);
+export function* createUser(newUser: IApiUserInput): Iterator<any> {
+  const user: IApiUser = yield neuCall(createUserPromise, newUser);
   yield put(actions.auth.setUser(user));
 
   yield neuCall(loadKycRequestData);
@@ -82,28 +82,28 @@ export function* createUser(newUser: IUserInput): Iterator<any> {
 
 export async function updateUserPromise(
   { apiUserService }: TGlobalDependencies,
-  user: IUserInput,
-): Promise<IUser> {
+  user: IApiUserInput,
+): Promise<IApiUser> {
   return apiUserService.updateUser(user);
 }
 // TODO: Remove updateUserPromise
 
 export function* loadOrCreateUser(userType: EUserType): Iterator<any> {
-  const user: IUser = yield neuCall(loadOrCreateUserPromise, userType);
+  const user: IApiUser = yield neuCall(loadOrCreateUserPromise, userType);
   yield put(actions.auth.setUser(user));
 
   yield neuCall(loadKycRequestData);
 }
 
-export function* updateUser(updatedUser: IUserInput): Iterator<any> {
-  const user: IUser = yield neuCall(updateUserPromise, updatedUser);
+export function* updateUser(updatedUser: IApiUserInput): Iterator<any> {
+  const user: IApiUser = yield neuCall(updateUserPromise, updatedUser);
   yield put(actions.auth.setUser(user));
 }
 
 export async function loadOrCreateUserPromise(
   { apiUserService, web3Manager }: TGlobalDependencies,
   userType: EUserType,
-): Promise<IUser> {
+): Promise<IApiUser> {
   // tslint:disable-next-line
   const walletMetadata = web3Manager.personalWallet!.getMetadata();
   try {

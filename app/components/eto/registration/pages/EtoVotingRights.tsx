@@ -4,14 +4,12 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { setDisplayName } from "recompose";
 import { compose } from "redux";
 
-import {
-  EtoVotingRightsType,
-  TPartialEtoSpecData,
-} from "../../../../lib/api/eto/EtoApi.interfaces";
+import {EtoVotingRightsValidator} from "../../../../modules/eto-flow/validators";
+import {IBlPublicEtoData} from "../../../../modules/eto-flow/interfaces/PublicEtoData";
 import { etoFormIsReadonly } from "../../../../lib/api/eto/EtoApiUtils";
 import { actions } from "../../../../modules/actions";
 import { selectIssuerEto, selectIssuerEtoState } from "../../../../modules/eto-flow/selectors";
-import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
+import { EEtoFormTypes } from "../../../../modules/eto-flow/interfaces/interfaces";
 import { appConnect } from "../../../../store";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import { BOOL_TRUE_KEY, FormSelectField } from "../../../shared/forms";
@@ -42,11 +40,11 @@ interface IExternalProps {
 interface IStateProps {
   loadingData: boolean;
   savingData: boolean;
-  stateValues: TPartialEtoSpecData;
+  stateValues: Partial<IBlPublicEtoData>;
 }
 
 interface IDispatchProps {
-  saveData: (values: TPartialEtoSpecData) => void;
+  saveData: (values: Partial<IBlPublicEtoData>) => void;
 }
 
 type IProps = IExternalProps & IStateProps & IDispatchProps;
@@ -54,7 +52,7 @@ type IProps = IExternalProps & IStateProps & IDispatchProps;
 const EtoVotingRightsComponent: React.FunctionComponent<IProps> = ({ readonly, savingData }) => (
   <EtoFormBase
     title={<FormattedMessage id="eto.form.eto-voting-rights.title" />}
-    validator={EtoVotingRightsType.toYup()}
+    validator={EtoVotingRightsValidator.toYup()}
   >
     <Section>
       <FormSelectField
@@ -113,11 +111,11 @@ const EtoVotingRights = compose<React.FunctionComponent<IExternalProps>>(
     stateToProps: s => ({
       loadingData: s.etoFlow.loading,
       savingData: s.etoFlow.saving,
-      stateValues: selectIssuerEto(s) as TPartialEtoSpecData,
+      stateValues: selectIssuerEto(s) as Partial<IBlPublicEtoData>,
       readonly: etoFormIsReadonly(EEtoFormTypes.EtoVotingRights, selectIssuerEtoState(s)),
     }),
     dispatchToProps: dispatch => ({
-      saveData: (data: TPartialEtoSpecData) => {
+      saveData: (data: Partial<IBlPublicEtoData>) => {
         const convertedData = convert(data, fromFormState);
         dispatch(
           actions.etoFlow.saveDataStart({
@@ -128,8 +126,8 @@ const EtoVotingRights = compose<React.FunctionComponent<IExternalProps>>(
       },
     }),
   }),
-  withFormik<IProps, TPartialEtoSpecData>({
-    validationSchema: EtoVotingRightsType.toYup(),
+  withFormik<IProps, Partial<IBlPublicEtoData>>({
+    validationSchema: EtoVotingRightsValidator.toYup(),
     mapPropsToValues: props => applyDefaults(props.stateValues, defaults),
     handleSubmit: (values, props) => props.props.saveData(values),
   }),

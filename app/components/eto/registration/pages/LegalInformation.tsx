@@ -4,13 +4,11 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { setDisplayName } from "recompose";
 import { compose } from "redux";
 
-import {
-  EtoLegalInformationType,
-  TPartialCompanyEtoData,
-} from "../../../../lib/api/eto/EtoApi.interfaces";
+import {EtoLegalInformationValidator} from "../../../../modules/eto-flow/validators";
+import {IBlCompanyEtoData} from "../../../../modules/eto-flow/interfaces/CompanyEtoData";
 import { actions } from "../../../../modules/actions";
 import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
-import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
+import { EEtoFormTypes } from "../../../../modules/eto-flow/interfaces/interfaces";
 import { appConnect } from "../../../../store";
 import { TTranslatedString } from "../../../../types";
 import { Button, EButtonLayout } from "../../../shared/buttons";
@@ -36,7 +34,7 @@ import * as styles from "../Shared.module.scss";
 interface IStateProps {
   loadingData: boolean;
   savingData: boolean;
-  company: TPartialCompanyEtoData;
+  company: Partial<IBlCompanyEtoData>;
 }
 
 interface IExternalProps {
@@ -44,7 +42,7 @@ interface IExternalProps {
 }
 
 interface IDispatchProps {
-  saveData: (values: TPartialCompanyEtoData) => void;
+  saveData: (values: Partial<IBlCompanyEtoData>) => void;
 }
 
 interface IRounds {
@@ -72,12 +70,12 @@ const NUMBER_OF_EMPLOYEES = {
   ">1000": ">1000",
 };
 
-type IProps = IExternalProps & IStateProps & IDispatchProps & FormikProps<TPartialCompanyEtoData>;
+type IProps = IExternalProps & IStateProps & IDispatchProps & FormikProps<Partial<IBlCompanyEtoData>>;
 
 //Some fields in LegalInformation are always readonly because this data ist set during KYC process
 const EtoRegistrationLegalInformationComponent = ({ savingData }: IProps) => {
   return (
-    <EtoFormBase title="Legal Information" validator={EtoLegalInformationType.toYup()}>
+    <EtoFormBase title="Legal Information" validator={EtoLegalInformationValidator.toYup()}>
       <Section>
         <FormField
           label={<FormattedMessage id="eto.form.legal-information.legal-company-name" />}
@@ -168,17 +166,17 @@ const EtoRegistrationLegalInformation = compose<React.FunctionComponent<IExterna
     stateToProps: state => ({
       loadingData: state.etoFlow.loading,
       savingData: state.etoFlow.saving,
-      company: selectIssuerCompany(state) as TPartialCompanyEtoData,
+      company: selectIssuerCompany(state) as Partial<IBlCompanyEtoData>,
     }),
     dispatchToProps: dispatch => ({
-      saveData: (data: TPartialCompanyEtoData) => {
+      saveData: (data: Partial<IBlCompanyEtoData>) => {
         const convertedData = convert(data, fromFormState);
         dispatch(actions.etoFlow.saveDataStart({ companyData: convertedData, etoData: {} }));
       },
     }),
   }),
-  withFormik<IStateProps & IDispatchProps, TPartialCompanyEtoData>({
-    validationSchema: EtoLegalInformationType.toYup(),
+  withFormik<IStateProps & IDispatchProps, Partial<IBlCompanyEtoData>>({
+    validationSchema: EtoLegalInformationValidator.toYup(),
     mapPropsToValues: props => props.company,
     handleSubmit: (values, { props }) => props.saveData(values),
   }),

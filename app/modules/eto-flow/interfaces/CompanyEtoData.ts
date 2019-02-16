@@ -10,7 +10,7 @@ import * as companyVideoInterfaces from "./CompanyVideo";
 import * as companyNewsInterfaces from "./CompanyNews";
 import * as companyMarketingLinks from "./CompanyMarketingLinks";
 import {
-  bigNumberToNumber,
+  bigNumberToNumber, bigNumberToNumericString,
   numberToNumericString,
   numericStringToBigNumber,
   numericStringToNumber
@@ -26,7 +26,7 @@ export interface IStateCompanyEtoData {
   companyDescription: string;
   keyQuoteFounder: string;
   keyQuoteInvestor: string;
-  categories: string; //fixme ??
+  categories: string[]; //fixme ??
   companyLogo: string;
   companyBanner: string;
 
@@ -37,7 +37,7 @@ export interface IStateCompanyEtoData {
   vatNumber: string;
   registrationNumber: string;
   foundingDate: string;
-  numberOfEmployees: number;
+  numberOfEmployees: string;
   companyStage: string;
   numberOfFounders: number;
   lastFundingSizeEur: NumericString;
@@ -69,13 +69,13 @@ export interface IStateCompanyEtoData {
   riskBusinessModelDescription: string;
   riskMaxDescription: string;
 
-  team: keyIndividualInterfaces.IStateKeyIndividual[];
-  advisors: keyIndividualInterfaces.IStateKeyIndividual[];
-  boardMembers: keyIndividualInterfaces.IStateKeyIndividual[];
-  notableInvestors: keyIndividualInterfaces.IStateKeyIndividual[];
-  keyCustomers: keyIndividualInterfaces.IStateKeyIndividual[];
-  partners: keyIndividualInterfaces.IStateKeyIndividual[];
-  keyAlliances: keyIndividualInterfaces.IStateKeyIndividual[];
+  team: {members: keyIndividualInterfaces.IStateKeyIndividual[]};
+  advisors: {members: keyIndividualInterfaces.IStateKeyIndividual[]};
+  boardMembers: {members: keyIndividualInterfaces.IStateKeyIndividual[]};
+  notableInvestors: {members: keyIndividualInterfaces.IStateKeyIndividual[]};
+  keyCustomers: {members: keyIndividualInterfaces.IStateKeyIndividual[]};
+  partners: {members: keyIndividualInterfaces.IStateKeyIndividual[]};
+  keyAlliances: {members: keyIndividualInterfaces.IStateKeyIndividual[]};
 
   companyVideo: companyVideoInterfaces.IStateCompanyVideo;
   companySlideshare: companySlideshareInterfaces.IStateCompanySlideshare;
@@ -137,13 +137,13 @@ export interface IApiCompanyEtoData {
   riskBusinessModelDescription: string,
   riskMaxDescription: string,
 
-  team: keyIndividualInterfaces.IApiKeyIndividual[],
-  advisors: keyIndividualInterfaces.IApiKeyIndividual[],
-  boardMembers: keyIndividualInterfaces.IApiKeyIndividual[],
-  notableInvestors: keyIndividualInterfaces.IApiKeyIndividual[],
-  keyCustomers: keyIndividualInterfaces.IApiKeyIndividual[],
-  partners: keyIndividualInterfaces.IApiKeyIndividual[],
-  keyAlliances: keyIndividualInterfaces.IApiKeyIndividual[],
+  team: {members: keyIndividualInterfaces.IApiKeyIndividual[]},
+  advisors: {members: keyIndividualInterfaces.IApiKeyIndividual[]},
+  boardMembers: {members: keyIndividualInterfaces.IApiKeyIndividual[]},
+  notableInvestors: {members: keyIndividualInterfaces.IApiKeyIndividual[]},
+  keyCustomers: {members: keyIndividualInterfaces.IApiKeyIndividual[]},
+  partners: {members: keyIndividualInterfaces.IApiKeyIndividual[]},
+  keyAlliances: {members: keyIndividualInterfaces.IApiKeyIndividual[]},
 
   companyVideo: companyVideoInterfaces.IApiCompanyVideo,
   companySlideshare:companySlideshareInterfaces.IApiCompanySlideshare,
@@ -162,7 +162,7 @@ export interface IBlCompanyEtoData {
   companyDescription: string;
   keyQuoteFounder: string;
   keyQuoteInvestor: string;
-  categories: string; //fixme ??
+  categories: string[]; //fixme ??
   companyLogo: string;
   companyBanner: string;
 
@@ -173,7 +173,7 @@ export interface IBlCompanyEtoData {
   vatNumber: string;
   registrationNumber: string;
   foundingDate: string;
-  numberOfEmployees: number;
+  numberOfEmployees: string; //FIXME make enum
   companyStage: string;
   numberOfFounders: number;
   lastFundingSizeEur: BigNumber;
@@ -205,13 +205,13 @@ export interface IBlCompanyEtoData {
   riskBusinessModelDescription: string;
   riskMaxDescription: string;
 
-  team: keyIndividualInterfaces.IBlKeyIndividual[];
-  advisors: keyIndividualInterfaces.IBlKeyIndividual[];
-  boardMembers: keyIndividualInterfaces.IBlKeyIndividual[];
-  notableInvestors: keyIndividualInterfaces.IBlKeyIndividual[];
-  keyCustomers: keyIndividualInterfaces.IBlKeyIndividual[];
-  partners: keyIndividualInterfaces.IBlKeyIndividual[];
-  keyAlliances: keyIndividualInterfaces.IBlKeyIndividual[];
+  team: {members:keyIndividualInterfaces.IBlKeyIndividual[]};
+  advisors: {members: keyIndividualInterfaces.IBlKeyIndividual[]};
+  boardMembers: {members: keyIndividualInterfaces.IBlKeyIndividual[]};
+  notableInvestors: {members: keyIndividualInterfaces.IBlKeyIndividual[]};
+  keyCustomers: {members: keyIndividualInterfaces.IBlKeyIndividual[]};
+  partners: {members: keyIndividualInterfaces.IBlKeyIndividual[]};
+  keyAlliances: {members: keyIndividualInterfaces.IBlKeyIndividual[]};
 
   companyVideo: companyVideoInterfaces.IBlCompanyVideo;
   companySlideshare: companySlideshareInterfaces.IBlCompanySlideshare;
@@ -240,6 +240,13 @@ export const blToApiConversionSpec = {
   companyShares: bigNumberToNumber(),
   shareholders: convertInArray(shareholderDataInterfaces.blToApiConversionSpec),
   useOfCapitalList:convertInArray(etoCapitalListInterfaces.blToApiConversionSpec),
+};
+
+export const blToStateConversionSpec = {
+  lastFundingSizeEur: bigNumberToNumericString(),
+  companyShares: bigNumberToNumericString(),
+  shareholders: convertInArray(shareholderDataInterfaces.blToStateConversionSpec),
+  useOfCapitalList:convertInArray(etoCapitalListInterfaces.blToStateConversionSpec),
 };
 
 export const stateToApiConversionSpec = {

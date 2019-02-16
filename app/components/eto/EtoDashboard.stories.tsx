@@ -2,9 +2,9 @@ import { storiesOf } from "@storybook/react";
 import * as React from "react";
 import { Row } from "reactstrap";
 
-import { testEto } from "../../../test/fixtures";
+import { testEtoApi } from "../../../test/fixtures";
 import { mockedStore } from "../../../test/fixtures/mockedStore";
-import { EEtoState } from "../../lib/api/eto/EtoApi.interfaces";
+import { EEtoState } from "../../modules/eto-flow/interfaces/interfaces";
 import { withStore } from "../../utils/storeDecorator";
 import { EtoDashboardStateViewComponent } from "./EtoDashboard";
 
@@ -14,7 +14,7 @@ const state = {
   isTermSheetSubmitted: true,
   isOfferingDocumentSubmitted: true,
   shouldViewSubmissionSection: true,
-  previewCode: testEto.previewCode,
+  previewCode: testEtoApi.previewCode,
   isRetailEto: true,
 };
 

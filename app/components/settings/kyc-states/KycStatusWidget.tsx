@@ -5,7 +5,7 @@ import { Col, Row } from "reactstrap";
 import { compose } from "redux";
 
 import { externalRoutes } from "../../../config/externalRoutes";
-import { ERequestOutsourcedStatus, ERequestStatus } from "../../../lib/api/KycApi.interfaces";
+import { ERequestOutsourcedStatus, ERequestStatus } from "../../../modules/kyc/interfaces";
 import { EUserType } from "../../../lib/api/users/interfaces";
 import { actions } from "../../../modules/actions";
 import {

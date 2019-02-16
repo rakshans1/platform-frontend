@@ -31,7 +31,7 @@ import {
   IKycIndividualData,
   IKycLegalRepresentative,
   KycLegalRepresentativeSchemaRequired,
-} from "../../../lib/api/KycApi.interfaces";
+} from "../../../modules/kyc/interfaces";
 import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { Button } from "../../shared/buttons";

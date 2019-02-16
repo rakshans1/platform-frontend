@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { compose } from "recompose";
 
-import { IEtoDocument } from "../../../../lib/api/eto/EtoFileApi.interfaces";
+import { IEtoDocument } from "../../../../modules/eto-documents/interfaces";
 import { actions } from "../../../../modules/actions";
 import { appConnect } from "../../../../store";
 import { withParams } from "../../../../utils/withParams";

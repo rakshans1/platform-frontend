@@ -4,6 +4,7 @@ import { IStateCalculatedContribution, } from "./interfaces/CalculatedContributi
 import { IStateTokenDisbursal } from "./interfaces/TokenDisbursal";
 import {IStateInvestorTicket} from './interfaces/InvestorTicket'
 import {IStatePublicEtoData} from "../eto-flow/interfaces/PublicEtoData";
+import {IStateIncomingPayoutsData} from "./interfaces/IncomingPayouts";
 
 export const investorEtoTicketActions = {
   // public actions
@@ -27,7 +28,7 @@ export const investorEtoTicketActions = {
   ),
   setIncomingPayouts: createActionFactory(
     "INVESTOR_TICKET_SET_INCOMING_PAYOUTS",
-    (incomingPayouts: IIncomingPayoutsData) => ({
+    (incomingPayouts: IStateIncomingPayoutsData) => ({
       incomingPayouts,
     }),
   ),

@@ -1,12 +1,12 @@
 import * as React from "react";
 
 import { getInvestmentAmount } from "../../../lib/api/eto/EtoUtils";
-import { TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
+import { TBlEtoWithCompanyAndContract } from "../../../modules/public-etos/interfaces/interfaces";
 import { ECurrency, ECurrencySymbol, EMoneyFormat, Money } from "../../shared/Money";
 import { ToHumanReadableForm } from "../../shared/ToHumanReadableForm";
 
 type TExternalProps = {
-  etoData: TEtoWithCompanyAndContract;
+  etoData: TBlEtoWithCompanyAndContract;
 };
 
 const InvestmentAmount: React.FunctionComponent<TExternalProps> = ({ etoData }) => {

@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js";
 
 import {NumericString} from "../../../types";
 import {
-  bigNumberToNumber,
+  bigNumberToNumber, bigNumberToNumericString,
   numberToNumericString,
   numericStringToBigNumber,
   numericStringToNumber
@@ -37,4 +37,8 @@ export const blToApiConversionSpec = {
 
 export const stateToApiConversionSpec = {
   percent: numericStringToNumber()
+};
+
+export const blToStateConversionSpec = {
+  percent: bigNumberToNumericString()
 };

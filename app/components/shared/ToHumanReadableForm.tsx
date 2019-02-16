@@ -2,23 +2,24 @@ import { findLast, floor } from "lodash";
 import * as React from "react";
 import { FormattedPlural } from "react-intl";
 import { FormattedMessage } from "react-intl-phraseapp";
+import BigNumber from "bignumber.js";
 
 type TExternalProps = {
-  number: number;
-  divider?: number;
+  number: BigNumber;
+  divider?: BigNumber;
   children?: (range: any) => React.ReactNode;
 };
 
 type TKeys = "thousand" | "million";
 
 type TRangeDescriptor = {
-  divider: number;
+  divider: BigNumber;
   key: TKeys;
 };
 
 const ranges: TRangeDescriptor[] = [
-  { divider: 1e3, key: "thousand" },
-  { divider: 1e6, key: "million" },
+  { divider: new BigNumber(1e3), key: "thousand" },
+  { divider: new BigNumber(1e6), key: "million" },
 ];
 
 const translationKeys = {
@@ -32,12 +33,12 @@ const translationKeys = {
   },
 };
 
-function getRange(number: number, divider?: number): TRangeDescriptor | undefined {
+function getRange(number: BigNumber, divider?: BigNumber): TRangeDescriptor | undefined {
   if (divider) {
     return ranges.find(range => range.divider === divider);
   }
 
-  return findLast(ranges, range => number / range.divider >= 1);
+  return findLast(ranges, range => number.div(range.divider).gte(1));
 }
 
 const ToHumanReadableForm: React.FunctionComponent<TExternalProps> = ({
@@ -48,7 +49,7 @@ const ToHumanReadableForm: React.FunctionComponent<TExternalProps> = ({
   const range = getRange(number, divider);
 
   if (range) {
-    const value = floor(number / range.divider, 1);
+    const value = floor(number.div(range.divider).toNumber(), 1);
     const translation = translationKeys[range.key];
 
     return (

@@ -3,7 +3,7 @@ import { shallow } from "enzyme";
 import * as React from "react";
 
 import { tid } from "../../../test/testUtils";
-import { EUserType } from "../../lib/api/users/interfaces";
+import { EUserType } from "../../modules/auth/interfaces";
 import { LayoutAuthorizedMenuComponent } from "./LayoutAuthorizedMenu";
 
 describe("<LayoutAuthorizedMenuComponent />", () => {

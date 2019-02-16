@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import * as cn from "classnames";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
@@ -6,8 +7,8 @@ import { compose, withProps } from "recompose";
 import { selectEtoOnChainStateById } from "../../../../modules/public-etos/selectors";
 import {
   EETOStateOnChain,
-  TEtoWithCompanyAndContract,
-} from "../../../../modules/public-etos/types";
+  TBlEtoWithCompanyAndContract,
+} from "../../../../modules/public-etos/interfaces/interfaces";
 import { selectEtherPriceEur } from "../../../../modules/shared/tokenPrice/selectors";
 import { appConnect } from "../../../../store";
 import { divideBigNumbers } from "../../../../utils/BigNumberUtils";
@@ -19,11 +20,11 @@ import { Message } from "./Message";
 import * as styles from "./EtoMaxCapExceeded.module.scss";
 
 export interface IExternalProps {
-  eto: TEtoWithCompanyAndContract;
+  eto: TBlEtoWithCompanyAndContract;
 }
 
 interface IStateProps {
-  etherPriceEur: string;
+  etherPriceEur: BigNumber;
   isPreEto: boolean;
 }
 

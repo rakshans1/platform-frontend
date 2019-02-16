@@ -1,7 +1,8 @@
 import {IEtoDocument, EEtoDocumentType} from '../eto-documents/interfaces'
 import { Dictionary } from "../../types";
 import { createActionFactory } from "../actionsUtils";
-import { IStateEtoContractData, IStateEtoTokenData } from "./interfaces/interfaces";
+import { IStateEtoContractData,  } from "./interfaces/EtoContractData";
+import { IStateEtoTokenData } from "./interfaces/EtoTokenData";
 import { IStatePublicEtoData} from "../eto-flow/interfaces/PublicEtoData";
 import {IStateCompanyEtoData} from '../eto-flow/interfaces/CompanyEtoData';
 

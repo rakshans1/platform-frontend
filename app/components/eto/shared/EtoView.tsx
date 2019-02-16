@@ -5,7 +5,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 
 import { externalRoutes } from "../../../config/externalRoutes";
-import { EETOStateOnChain, TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
+import { EETOStateOnChain, TBlEtoWithCompanyAndContract } from "../../../modules/public-etos/interfaces/interfaces";
 import { isOnChain } from "../../../modules/public-etos/utils";
 import { withMetaTags } from "../../../utils/withMetaTags";
 import { withParams } from "../../../utils/withParams";
@@ -39,7 +39,7 @@ export const CHART_COLORS = ["#50e3c2", "#2fb194", "#4a90e2", "#0b0e11", "#39465
 export const DEFAULT_CHART_COLOR = "#c4c5c6";
 
 interface IProps {
-  eto: TEtoWithCompanyAndContract;
+  eto: TBlEtoWithCompanyAndContract;
 }
 
 // TODO: There are lots of castings right now in this file, cause formerly the types of IProps was "any"
@@ -94,7 +94,7 @@ const EtoViewLayout: React.FunctionComponent<IProps> = ({ eto }) => {
   const hasSocialChannelsAdded = !!(socialChannels && socialChannels.length);
   const twitterUrl =
     isTwitterFeedEnabled && socialChannels
-      ? socialChannels.find(c => c.type === "twitter").url
+      ? socialChannels.find(c => c.type === "twitter")!.url //fixme
       : "";
 
   const isInSetupState = isOnChain(eto) && eto.contract.timedState === EETOStateOnChain.Setup;
@@ -439,7 +439,7 @@ const EtoViewLayout: React.FunctionComponent<IProps> = ({ eto }) => {
                                 data={{
                                   datasets: [
                                     {
-                                      data: useOfCapitalList.map(d => d && d.percent) as number[],
+                                      data: useOfCapitalList.map(d => d && d.percent.toNumber()),
                                       backgroundColor: useOfCapitalList.map(
                                         (_, i: number) => CHART_COLORS[i],
                                       ),

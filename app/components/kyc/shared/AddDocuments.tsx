@@ -1,7 +1,7 @@
 import * as React from "react";
 import { compose } from "redux";
 
-import { EKycRequestType, IKycFileInfo } from "../../../lib/api/KycApi.interfaces";
+import { EKycRequestType, IKycFileInfo } from "../../../modules/kyc/interfaces";
 import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";

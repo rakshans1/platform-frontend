@@ -3,10 +3,10 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Modal } from "reactstrap";
 
-import { IBlTxData } from "../../../lib/web3/types";
+import { IBlTxData } from "../../../modules/web3/interfaces";
 import { actions } from "../../../modules/actions";
 import { ETxSenderType } from "../../../modules/tx/interfaces";
-import { ETransactionErrorType, ETxSenderState } from "../../../modules/tx/sender/reducer";
+import { ETransactionErrorType, ETxSenderState } from "../../../modules/tx/sender/interfaces";
 import { selectTxSenderModalOpened } from "../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../store";
 import { LoadingIndicator } from "../../shared/loading-indicator";

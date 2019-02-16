@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js";
 
 import { IAppState } from "../../../store";
 import { ETxSenderState, EValidationState } from "./interfaces";
-import * as txDataInterfaces from "../../../lib/web3/types";
+import * as txDataInterfaces from "../../../modules/web3/interfaces";
 import {ETxSenderType} from "../interfaces";
 import {convert} from "../../../components/eto/utils";
 

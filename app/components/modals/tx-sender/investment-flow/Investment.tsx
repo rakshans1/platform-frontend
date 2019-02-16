@@ -14,7 +14,7 @@ import {
   EInvestmentCurrency,
   EInvestmentErrorState,
   EInvestmentType,
-} from "../../../../modules/investment-flow/reducer";
+} from "../../../../modules/investment-flow/interfaces";
 import {
   selectInvestmentErrorState,
   selectInvestmentEthValueUlps,
@@ -31,15 +31,14 @@ import {
   selectNeuRewardUlpsByEtoId,
 } from "../../../../modules/investor-portfolio/selectors";
 import { selectEtoWithCompanyAndContractById } from "../../../../modules/public-etos/selectors";
-import { TEtoWithCompanyAndContract } from "../../../../modules/public-etos/types";
+import { TBlEtoWithCompanyAndContract } from "../../../../modules/public-etos/interfaces/interfaces";
 import {
   selectEtherPriceEur,
   selectEurPriceEther,
 } from "../../../../modules/shared/tokenPrice/selectors";
-import { EValidationState } from "../../../../modules/tx/sender/reducer";
+import { EValidationState } from "../../../../modules/tx/sender/interfaces";
 import { selectTxGasCostEthUlps } from "../../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../../store";
-import { addBigNumbers, multiplyBigNumbers } from "../../../../utils/BigNumberUtils";
 import { IIntlProps, injectIntlHelpers } from "../../../../utils/injectIntlHelpers";
 import { formatMoney } from "../../../../utils/Money.utils";
 import { formatThousands } from "../../../../utils/Number.utils";
@@ -62,19 +61,20 @@ import {
 } from "./utils";
 
 import * as styles from "./Investment.module.scss";
+import {NumericString} from "../../../../types";
 
 interface IStateProps {
-  eto: TEtoWithCompanyAndContract;
+  eto: TBlEtoWithCompanyAndContract;
   wallets: WalletSelectionData[];
-  euroValue: string;
-  ethValue: string;
-  etherPriceEur: string;
-  eurPriceEther: string;
+  euroValue: BigNumber;
+  ethValue: BigNumber;
+  etherPriceEur: BigNumber;
+  eurPriceEther: BigNumber;
   investmentType?: EInvestmentType;
-  gasCostEth: string;
+  gasCostEth: BigNumber;
   errorState?: EInvestmentErrorState | EValidationState;
-  equityTokenCount?: string;
-  neuReward?: string;
+  equityTokenCount?: BigNumber;
+  neuReward?: BigNumber;
   readyToInvest: boolean;
   showTokens: boolean;
   hasPreviouslyInvested?: boolean;
@@ -94,13 +94,13 @@ interface IDispatchProps {
 }
 
 interface IWithProps {
-  gasCostEuro: string;
+  gasCostEuro: BigNumber;
   isWalletBalanceKnown: boolean;
-  minTicketEth: string;
-  minTicketEur: string;
-  maxTicketEur: string;
-  totalCostEth: string;
-  totalCostEur: string;
+  minTicketEth: BigNumber;
+  minTicketEur: BigNumber;
+  maxTicketEur: BigNumber;
+  totalCostEth: BigNumber;
+  totalCostEur: BigNumber;
   isBankTransfer: boolean;
 }
 
@@ -305,7 +305,7 @@ export const InvestmentSelectionComponent: React.FunctionComponent<IProps> = ({
       <Row>
         <Col className={styles.summary}>
           {gasCostEth &&
-            gasCostEth !== "0" && (
+            !gasCostEth.isZero() && (
               <div>
                 + <FormattedMessage id="investment-flow.estimated-gas-cost" />:{" "}
                 <span className={styles.orange} data-test-id="invest-modal-gas-cost">
@@ -341,33 +341,39 @@ export const InvestmentSelection: React.FunctionComponent = compose<any>(
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: state => {
       const etoId = selectInvestmentEtoId(state);
-      const eto = selectEtoWithCompanyAndContractById(state, etoId)!;
       const eur = selectInvestmentEurValueUlps(state);
-      return {
-        eto,
-        etherPriceEur: selectEtherPriceEur(state),
-        eurPriceEther: selectEurPriceEther(state),
-        euroValue: eur,
-        ethValue: selectInvestmentEthValueUlps(state),
-        errorState: selectInvestmentErrorState(state),
-        gasCostEth: selectTxGasCostEthUlps(state),
-        investmentType: selectInvestmentType(state),
-        wallets: createWallets(state),
-        neuReward: selectNeuRewardUlpsByEtoId(state, etoId),
-        equityTokenCount: selectEquityTokenCountByEtoId(state, etoId),
-        showTokens: !!(eur && selectIsInvestmentInputValidated(state)),
-        readyToInvest: selectIsReadyToInvest(state),
-        etoTicketSizes: selectCalculatedEtoTicketSizesUlpsById(state, etoId),
-        hasPreviouslyInvested: selectHasInvestorTicket(state, etoId),
-      };
+      if(etoId && eur){
+        return {
+          eto: selectEtoWithCompanyAndContractById(state, etoId)!,
+          etherPriceEur: selectEtherPriceEur(state),
+          eurPriceEther: selectEurPriceEther(state),
+          euroValue: eur,
+          ethValue: selectInvestmentEthValueUlps(state),
+          errorState: selectInvestmentErrorState(state),
+          gasCostEth: selectTxGasCostEthUlps(state),
+          investmentType: selectInvestmentType(state),
+          wallets: createWallets(state),
+          neuReward: selectNeuRewardUlpsByEtoId(state, etoId),
+          equityTokenCount: selectEquityTokenCountByEtoId(state, etoId),
+          showTokens: !!(eur && selectIsInvestmentInputValidated(state)),
+          readyToInvest: selectIsReadyToInvest(state),
+          etoTicketSizes: selectCalculatedEtoTicketSizesUlpsById(state, etoId),
+          hasPreviouslyInvested: selectHasInvestorTicket(state, etoId),
+        } as IStateProps
+      } else {
+        throw new Error("incomplete data")
+      }
+
     },
     dispatchToProps: dispatch => ({
       sendTransaction: () => dispatch(actions.txSender.txSenderAcceptDraft()),
       showBankTransferSummary: () => dispatch(actions.investmentFlow.showBankTransferSummary()),
       changeEthValue: value =>
-        dispatch(actions.investmentFlow.submitCurrencyValue(value, EInvestmentCurrency.Ether)),
+        dispatch(actions.investmentFlow.submitCurrencyValue(value as NumericString, EInvestmentCurrency.Ether)
+        ),
       changeEuroValue: value =>
-        dispatch(actions.investmentFlow.submitCurrencyValue(value, EInvestmentCurrency.Euro)),
+        dispatch(actions.investmentFlow.submitCurrencyValue(value as NumericString, EInvestmentCurrency.Euro)
+        ),
       changeInvestmentType: (type: EInvestmentType) =>
         dispatch(actions.investmentFlow.selectInvestmentType(type)),
       investEntireBalance: () => dispatch(actions.investmentFlow.investEntireBalance()),
@@ -384,19 +390,19 @@ export const InvestmentSelection: React.FunctionComponent = compose<any>(
       eurPriceEther,
     }) => {
       const isBankTransfer = investmentType === EInvestmentType.BankTransfer;
-      const gasCostEther = isBankTransfer || !ethValue ? "0" : gasCostEth;
-      const gasCostEuro = multiplyBigNumbers([gasCostEther, etherPriceEur]);
-      const minTicketEur = formatEur(etoTicketSizes && etoTicketSizes.minTicketEurUlps) || "0";
-      const maxTicketEur = formatEur(etoTicketSizes && etoTicketSizes.maxTicketEurUlps) || "0";
+      const gasCostEther = isBankTransfer || !ethValue ? new BigNumber("0") : gasCostEth;
+      const gasCostEuro = gasCostEther.mul(etherPriceEur);
+      const minTicketEur =  etoTicketSizes!.minTicketEurUlps;//formatEur(etoTicketSizes && etoTicketSizes.minTicketEurUlps) || "0";
+      const maxTicketEur =  etoTicketSizes!.maxTicketEurUlps; //formatEur(etoTicketSizes && etoTicketSizes.maxTicketEurUlps) || "0";
       return {
         isBankTransfer,
         minTicketEur,
         maxTicketEur,
-        minTicketEth: multiplyBigNumbers([minTicketEur, eurPriceEther]),
+        minTicketEth: minTicketEur!.mul(eurPriceEther),
         gasCostEuro,
         gasCostEth: gasCostEther,
-        totalCostEth: addBigNumbers([gasCostEther, ethValue || "0"]),
-        totalCostEur: addBigNumbers([gasCostEuro, euroValue || "0"]),
+        totalCostEth: gasCostEther.add(ethValue || new BigNumber("0")),
+        totalCostEur: gasCostEuro.add(euroValue || new BigNumber("0")),
         isWalletBalanceKnown: !isBankTransfer,
       };
     },

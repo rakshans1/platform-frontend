@@ -2,7 +2,7 @@ import { put, select } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { ETOCommitment } from "../../../../lib/contracts/ETOCommitment";
-import { IStateTxData} from "../../../../lib/web3/types";
+import { IStateTxData} from "../../../../modules/web3/interfaces";
 import { IAppState } from "../../../../store";
 import { actions } from "../../../actions";
 import {

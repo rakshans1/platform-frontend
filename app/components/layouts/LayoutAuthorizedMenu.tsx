@@ -7,7 +7,7 @@ import { NavLink } from "react-router-dom";
 import { compose, withHandlers } from "recompose";
 
 import { externalRoutes } from "../../config/externalRoutes";
-import { EUserType } from "../../lib/api/users/interfaces";
+import { EUserType } from "../../modules/auth/interfaces";
 import { actions } from "../../modules/actions";
 import { selectUserType } from "../../modules/auth/selectors";
 import { selectShouldEtoDataLoad } from "../../modules/eto-flow/selectors";

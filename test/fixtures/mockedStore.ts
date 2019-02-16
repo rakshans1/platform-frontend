@@ -1,4 +1,4 @@
-import { testEto } from "../fixtures";
+import { testEtoApi } from "../fixtures";
 
 export const mockedStore = {
   web3: {
@@ -59,9 +59,9 @@ export const mockedStore = {
     },
   },
   publicEtos: {
-    publicEtos: { [testEto.previewCode]: testEto },
-    companies: { [testEto.companyId]: testEto.company },
-    contracts: { [testEto.previewCode]: testEto.contract },
-    displayOrder: [testEto.previewCode],
+    publicEtos: { [testEtoApi.previewCode]: testEtoApi },
+    companies: { [testEtoApi.companyId]: testEtoApi.company },
+    contracts: { [testEtoApi.previewCode]: testEtoApi.contract },
+    displayOrder: [testEtoApi.previewCode],
   },
 } as any;

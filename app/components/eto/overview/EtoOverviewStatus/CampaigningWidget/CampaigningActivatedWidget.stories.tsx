@@ -1,9 +1,10 @@
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
-import { EETOStateOnChain } from "../../../../../modules/public-etos/types";
+import { EETOStateOnChain } from "../../../../../modules/public-etos/interfaces/interfaces";
 import { withStore } from "../../../../../utils/storeDecorator";
 import { CampaigningActivatedWidgetComponent } from "./CampaigningActivatedWidget";
+import BigNumber from "bignumber.js";
 
 storiesOf("ETO/CampaigningActivatedWidgetComponent", module)
   .addDecorator(withStore({}))
@@ -12,13 +13,13 @@ storiesOf("ETO/CampaigningActivatedWidgetComponent", module)
       isInvestorsLimitReached={false}
       isWaitingForNextStateToStart={false}
       etoId="test"
-      investorsLimit={500}
-      minPledge={10}
+      investorsLimit={new BigNumber(500)}
+      minPledge={new BigNumber(10)}
       nextState={EETOStateOnChain.Claim}
       isActive={true}
       keyQuoteFounder="Quotes are like boats"
-      pledgedAmount={100}
-      investorsCount={1}
+      pledgedAmount={new BigNumber(100)}
+      investorsCount={new BigNumber(1)}
       isInvestor={true}
       isVerifiedInvestor={true}
     />
@@ -28,13 +29,13 @@ storiesOf("ETO/CampaigningActivatedWidgetComponent", module)
       isInvestorsLimitReached={true}
       isWaitingForNextStateToStart={false}
       etoId="test"
-      investorsLimit={500}
-      minPledge={10}
+      investorsLimit={new BigNumber(500)}
+      minPledge={new BigNumber(10)}
       nextState={EETOStateOnChain.Claim}
       isActive={true}
       keyQuoteFounder="Quotes are like boats"
-      pledgedAmount={100}
-      investorsCount={1}
+      pledgedAmount={new BigNumber(100)}
+      investorsCount={new BigNumber(1)}
       isInvestor={true}
       isVerifiedInvestor={true}
     />

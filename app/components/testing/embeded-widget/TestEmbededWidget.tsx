@@ -6,15 +6,15 @@ import {
   selectEtoWidgetError,
   selectEtoWithCompanyAndContractById,
 } from "../../../modules/public-etos/selectors";
-import { TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
+import { TBlEtoWithCompanyAndContract } from "../../../modules/public-etos/interfaces/interfaces";
 import { appConnect } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { withParams } from "../../../utils/withParams";
 import { appRoutes } from "../../appRoutes";
 
 interface IStateProps {
-  eto: TEtoWithCompanyAndContract | undefined;
-  widgetError: boolean | undefined;
+  eto?: TBlEtoWithCompanyAndContract;
+  widgetError?: boolean;
 }
 
 interface IRouterParams {

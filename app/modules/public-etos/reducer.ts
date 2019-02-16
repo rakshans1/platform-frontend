@@ -2,9 +2,9 @@ import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 import { actions } from "../actions";
 
-import {IStatePublicEto} from './interfaces/interfaces'
+import {IStatePublicEtos} from './interfaces/PublicEto'
 
-export const etoFlowInitialState: IStatePublicEto = {
+export const etoFlowInitialState: IStatePublicEtos = {
   publicEtos: {},
   companies: {},
   contracts: {},
@@ -14,10 +14,10 @@ export const etoFlowInitialState: IStatePublicEto = {
   tokenData: {},
 };
 
-export const publicEtosReducer: AppReducer<IStatePublicEto> = (
+export const publicEtosReducer: AppReducer<IStatePublicEtos> = (
   state = etoFlowInitialState,
   action,
-): DeepReadonly<IStatePublicEto> => {
+): DeepReadonly<IStatePublicEtos> => {
   switch (action.type) {
     case actions.publicEtos.setPublicEtos.getType():
       return {

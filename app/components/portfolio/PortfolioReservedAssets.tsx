@@ -5,9 +5,9 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { Link } from "react-router-dom";
 import { Col, Row } from "reactstrap";
 
-import { TETOWithInvestorTicket } from "../../modules/investor-portfolio/types";
+import { TBlETOWithInvestorTicket } from "../../modules/investor-portfolio/interfaces/interfaces";
 import { getNeuReward } from "../../modules/investor-portfolio/utils";
-import { EETOStateOnChain } from "../../modules/public-etos/types";
+import { EETOStateOnChain } from "../../modules/public-etos/interfaces/interfaces";
 import { withParams } from "../../utils/withParams";
 import { appRoutes } from "../appRoutes";
 import { EProjectStatusSize, ETOState } from "../shared/ETOState";
@@ -21,7 +21,7 @@ import * as neuIcon from "../../assets/img/neu_icon.svg";
 import * as styles from "./PortfolioLayout.module.scss";
 
 interface IExternalProps {
-  pendingAssets: TETOWithInvestorTicket[];
+  pendingAssets: TBlETOWithInvestorTicket[];
 }
 
 const PortfolioReservedAssets: React.FunctionComponent<IExternalProps> = ({ pendingAssets }) => (

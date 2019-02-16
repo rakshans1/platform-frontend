@@ -2,14 +2,14 @@ import { action } from "@storybook/addon-actions";
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
-import { TCompanyEtoData } from "../../../lib/api/eto/EtoApi.interfaces";
+import { IBlCompanyEtoData} from "../../../modules/eto-flow/interfaces/CompanyEtoData";
 import {
   EEtoDocumentType,
   TEtoDocumentTemplates,
-} from "../../../lib/api/eto/EtoFileApi.interfaces";
+} from "../../../modules/eto-documents/interfaces";
 import { DocumentsWidgetLayout } from "./DocumentsWidget";
 
-const marketingLinks: TCompanyEtoData["marketingLinks"] = [
+const marketingLinks: IBlCompanyEtoData["marketingLinks"] = [
   {
     title: "Pitch Deck",
     url:

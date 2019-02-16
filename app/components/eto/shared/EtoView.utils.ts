@@ -1,4 +1,4 @@
-import { TEtoKeyIndividualType } from "../../../lib/api/eto/EtoApi.interfaces";
+import {IBlKeyIndividual} from "../../../modules/eto-flow/interfaces/KeyIndividual";
 
 export const selectActiveCarouselTab = (elements: any[]): number => {
   for (let element in elements) {
@@ -17,14 +17,14 @@ export const selectActiveCarouselTab = (elements: any[]): number => {
 };
 
 export const areThereIndividuals = (
-  individual: TEtoKeyIndividualType | undefined,
-): individual is TEtoKeyIndividualType => {
+  individuals: {members: IBlKeyIndividual[]} | undefined,
+): individuals is {members: IBlKeyIndividual[]} => {
   return (
-    !!individual &&
-    !!individual.members &&
-    !!individual.members[0] &&
+    !!individuals &&
+    !!individuals.members &&
+    !!individuals.members[0] &&
     // need to check whether name is not empty
     // due to the way key individuals form saved values in past
-    !!individual.members[0].name.length
+    !!individuals.members[0].name.length
   );
 };

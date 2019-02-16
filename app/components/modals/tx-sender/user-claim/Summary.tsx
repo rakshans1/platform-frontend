@@ -7,7 +7,7 @@ import {
   EEtoDocumentType,
   IEtoDocument,
   immutableDocumentName,
-} from "../../../../lib/api/eto/EtoFileApi.interfaces";
+} from "../../../../modules/eto-documents/interfaces";
 import { ImmutableFileId } from "../../../../lib/api/ImmutableStorage.interfaces";
 import { IBlTxData } from "../../../../lib/web3/types";
 import { actions } from "../../../../modules/actions";

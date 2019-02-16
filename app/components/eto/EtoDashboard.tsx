@@ -3,8 +3,8 @@ import { FormattedHTMLMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 import { compose } from "redux";
 
-import { EEtoState } from "../../lib/api/eto/EtoApi.interfaces";
-import { ERequestStatus } from "../../lib/api/KycApi.interfaces";
+import { EEtoState } from "../../modules/eto-flow/interfaces/interfaces";
+import { ERequestStatus } from "../../modules/kyc/interfaces";
 import { actions } from "../../modules/actions";
 import { selectBackupCodesVerified, selectVerifiedUserEmail } from "../../modules/auth/selectors";
 import {

@@ -6,7 +6,7 @@ import { actions } from "../../../../../modules/actions";
 import { selectIsInvestor } from "../../../../../modules/auth/selectors";
 import { selectIsAllowedToInvest } from "../../../../../modules/investment-flow/selectors";
 import { selectEtoOnChainNextStateStartDate } from "../../../../../modules/public-etos/selectors";
-import { TEtoWithCompanyAndContract } from "../../../../../modules/public-etos/types";
+import { TBlEtoWithCompanyAndContract } from "../../../../../modules/public-etos/interfaces/interfaces";
 import { appConnect } from "../../../../../store";
 import { withParams } from "../../../../../utils/withParams";
 import { appRoutes } from "../../../../appRoutes";
@@ -19,7 +19,7 @@ import { InvestmentProgress } from "./InvestmentProgress";
 import * as styles from "./InvestmentWidget.module.scss";
 
 export interface IInvestmentWidgetProps {
-  eto: TEtoWithCompanyAndContract;
+  eto: TBlEtoWithCompanyAndContract;
 }
 
 export interface IInvestmentWidgetStateProps {

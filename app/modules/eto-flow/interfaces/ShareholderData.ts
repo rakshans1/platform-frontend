@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js";
 
 import {NumericString} from "../../../types";
 import {
-  bigNumberToNumber,
+  bigNumberToNumber, bigNumberToNumericString,
   numberToNumericString,
   numericStringToBigNumber,
   numericStringToNumber
@@ -37,6 +37,10 @@ export const blToApiConversionSpec = {
 
 export const stateToApiConversionSpec = {
   shares: numericStringToNumber()
+};
+
+export const blToStateConversionSpec = {
+  shares: bigNumberToNumericString()
 };
 
 

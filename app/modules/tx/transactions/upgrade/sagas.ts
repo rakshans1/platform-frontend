@@ -2,7 +2,7 @@ import { addHexPrefix } from "ethereumjs-util";
 import { put, select } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
-import {IStateTxData} from "../../../../lib/web3/types";
+import {IStateTxData} from "../../../web3/interfaces";
 import {EthereumAddress, NumericString} from "../../../../types";
 import { actions } from "../../../actions";
 import { selectStandardGasPriceWithOverHead } from "../../../gas/selectors";
@@ -42,7 +42,7 @@ export function* generateEuroUpgradeTransaction({
 
   const txDetails: IStateTxData = {
     ...txInitialDetails,
-    gas: estimatedGasWithOverhead,
+    gas: estimatedGasWithOverhead.toString() as NumericString,
   };
   return txDetails;
 }

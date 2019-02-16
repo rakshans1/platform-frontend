@@ -1,7 +1,7 @@
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
-import { EKycRequestType } from "../../lib/api/KycApi.interfaces";
+import { EKycRequestType } from "../../modules/kyc/interfaces";
 import { MultiFileUpload } from "./MultiFileUpload";
 
 const files = [

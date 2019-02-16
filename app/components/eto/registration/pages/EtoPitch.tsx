@@ -4,10 +4,11 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { setDisplayName } from "recompose";
 import { compose } from "redux";
 
-import { EtoPitchType, TPartialCompanyEtoData } from "../../../../lib/api/eto/EtoApi.interfaces";
+import {EtoPitchValidator} from "../../../../modules/eto-flow/validators";
+import {IBlCompanyEtoData} from "../../../../modules/eto-flow/interfaces/CompanyEtoData";
 import { actions } from "../../../../modules/actions";
 import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
-import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
+import { EEtoFormTypes } from "../../../../modules/eto-flow/interfaces/interfaces";
 import { appConnect } from "../../../../store";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import { ArrayOfKeyValueFields, FormTextArea } from "../../../shared/forms";
@@ -27,14 +28,14 @@ import * as styles from "../Shared.module.scss";
 interface IStateProps {
   loadingData: boolean;
   savingData: boolean;
-  stateValues: TPartialCompanyEtoData;
+  stateValues: Partial<IBlCompanyEtoData>;
 }
 
 interface IDispatchProps {
-  saveData: (values: TPartialCompanyEtoData) => void;
+  saveData: (values: Partial<IBlCompanyEtoData>) => void;
 }
 
-type IProps = IStateProps & IDispatchProps & FormikProps<TPartialCompanyEtoData>;
+type IProps = IStateProps & IDispatchProps & FormikProps<Partial<IBlCompanyEtoData>>;
 
 const distributionSuggestions = ["Development", "Other"];
 
@@ -42,7 +43,7 @@ const EtoRegistrationPitchComponent = (props: IProps) => {
   return (
     <EtoFormBase
       title={<FormattedMessage id="eto.form-progress-widget.product-vision" />}
-      validator={EtoPitchType.toYup()}
+      validator={EtoPitchValidator.toYup()}
     >
       <Section>
         <FormTextArea
@@ -168,10 +169,10 @@ const EtoRegistrationPitch = compose<React.FunctionComponent>(
     stateToProps: s => ({
       loadingData: s.etoFlow.loading,
       savingData: s.etoFlow.saving,
-      stateValues: selectIssuerCompany(s) as TPartialCompanyEtoData,
+      stateValues: selectIssuerCompany(s) as Partial<IBlCompanyEtoData>,
     }),
     dispatchToProps: dispatch => ({
-      saveData: (data: TPartialCompanyEtoData) => {
+      saveData: (data: Partial<IBlCompanyEtoData>) => {
         const convertedData = convert(data, fromFormState);
         dispatch(
           actions.etoFlow.saveDataStart({
@@ -182,8 +183,8 @@ const EtoRegistrationPitch = compose<React.FunctionComponent>(
       },
     }),
   }),
-  withFormik<IStateProps & IDispatchProps, TPartialCompanyEtoData>({
-    validationSchema: EtoPitchType.toYup(),
+  withFormik<IStateProps & IDispatchProps, Partial<IBlCompanyEtoData>>({
+    validationSchema: EtoPitchValidator.toYup(),
     mapPropsToValues: props => convert(props.stateValues, toFormState),
     handleSubmit: (values, props) => props.props.saveData(values),
   }),

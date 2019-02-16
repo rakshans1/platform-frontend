@@ -4,8 +4,8 @@ import { Redirect } from "react-router";
 import { branch, renderComponent } from "recompose";
 import { compose } from "redux";
 
-import { EKycRequestType, ERequestStatus } from "../../lib/api/KycApi.interfaces";
-import { EUserType } from "../../lib/api/users/interfaces";
+import { EKycRequestType, ERequestStatus } from "../../modules/kyc/interfaces";
+import { EUserType } from "../../modules/auth/interfaces";
 import { actions } from "../../modules/actions";
 import { selectIsUserEmailVerified, selectUserType } from "../../modules/auth/selectors";
 import {

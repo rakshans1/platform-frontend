@@ -6,7 +6,7 @@ import {
   getCurrentInvestmentProgressPercentage,
   getInvestmentCalculatedPercentage,
 } from "../../../../../lib/api/eto/EtoUtils";
-import { TEtoWithCompanyAndContract } from "../../../../../modules/public-etos/types";
+import { TBlEtoWithCompanyAndContract } from "../../../../../modules/public-etos/interfaces/interfaces";
 import { normalize } from "../../../../../utils/Number.utils";
 import {
   PercentageIndicatorBar,
@@ -15,9 +15,10 @@ import {
 
 import { TTranslatedString } from "../../../../../types";
 import * as styles from "./InvestmentProgress.module.scss";
+import BigNumber from "bignumber.js";
 
 type TProps = {
-  eto: TEtoWithCompanyAndContract;
+  eto: TBlEtoWithCompanyAndContract;
 };
 
 type TLabelExternalProps = {
@@ -42,17 +43,17 @@ const InvestmentProgress: React.FunctionComponent<TProps> = ({ eto }) => {
   const calculatedPercentage = getInvestmentCalculatedPercentage(eto);
   const currentProgressPercentage = getCurrentInvestmentProgressPercentage(eto);
 
-  const getNormalizedValue = normalize({ min: 0, max: calculatedPercentage });
+  const getNormalizedValue = normalize({ min: new BigNumber(0), max: calculatedPercentage });
 
-  const successOfEtoNormalized = getNormalizedValue(100);
+  const successOfEtoNormalized = getNormalizedValue(new BigNumber(100));
   const currentProgressOfEtoNormalized = getNormalizedValue(currentProgressPercentage);
 
   const progress: TProgressBarProps[] = [
-    { progress: Math.ceil(currentProgressOfEtoNormalized * 100), theme: "green" },
+    { progress: Math.ceil(currentProgressOfEtoNormalized.mul(100).toNumber()), theme: "green" },
   ];
 
   if (currentProgressOfEtoNormalized > successOfEtoNormalized) {
-    progress.push({ progress: successOfEtoNormalized * 100, radius: 0 });
+    progress.push({ progress: successOfEtoNormalized.mul(100).toNumber(), radius: 0 });
   }
 
   return (
@@ -63,11 +64,11 @@ const InvestmentProgress: React.FunctionComponent<TProps> = ({ eto }) => {
       svgGroupStyle={{ transform: `translate(0 4)` }}
       svgHeight={40}
     >
-      <rect x={`${successOfEtoNormalized * 100}%`} y={-6} className={cn(styles.successPoint)} />
+      <rect x={`${successOfEtoNormalized.mul(100).toString()}%`} y={-6} className={cn(styles.successPoint)} />
 
       <Label
         label={<FormattedMessage id="shared-component.eto-overview.invest.min-amount" />}
-        width={successOfEtoNormalized * 100}
+        width={successOfEtoNormalized.mul(100).toNumber()}
       />
 
       <Label

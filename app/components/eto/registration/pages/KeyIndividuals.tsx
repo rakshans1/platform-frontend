@@ -5,15 +5,13 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { setDisplayName } from "recompose";
 import { compose } from "redux";
 
-import {
-  EtoKeyIndividualsType,
-  TEtoKeyIndividualType,
-  TPartialCompanyEtoData,
-} from "../../../../lib/api/eto/EtoApi.interfaces";
+import {IBlKeyIndividual} from "../../../../modules/eto-flow/interfaces/KeyIndividual";
+import {EtoKeyIndividualsValidator} from "../../../../modules/eto-flow/validators";
+import {IBlCompanyEtoData} from "../../../../modules/eto-flow/interfaces/CompanyEtoData";
 import { actions } from "../../../../modules/actions";
 import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
 import { appConnect } from "../../../../store";
-import { TFormikConnect, TTranslatedString } from "../../../../types";
+import {DeepPartial, TFormikConnect, TTranslatedString} from "../../../../types";
 import { getFieldSchema, isRequired } from "../../../../utils/yupUtils";
 import { Button, ButtonIcon, EButtonLayout } from "../../../shared/buttons";
 import { FormField, FormTextArea } from "../../../shared/forms";
@@ -23,24 +21,24 @@ import { FormSection } from "../../../shared/forms/FormSection";
 import { SOCIAL_PROFILES_PERSON, SocialProfilesEditor } from "../../../shared/SocialProfilesEditor";
 import { EtoFormBase } from "../EtoFormBase";
 import { Section } from "../Shared";
+import { EEtoFormTypes } from "../../../../modules/eto-flow/interfaces/interfaces";
 
 import * as closeIcon from "../../../../assets/img/inline_icons/round_close.svg";
 import * as plusIcon from "../../../../assets/img/inline_icons/round_plus.svg";
-import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
 import * as styles from "../Shared.module.scss";
 import * as localStyles from "./KeyIndividuals.module.scss";
 
 interface IStateProps {
   loadingData: boolean;
   savingData: boolean;
-  stateValues: TPartialCompanyEtoData;
+  stateValues: DeepPartial<IBlCompanyEtoData>;
 }
 
 interface IDispatchProps {
-  saveData: (values: TPartialCompanyEtoData) => void;
+  saveData: (values: DeepPartial<IBlCompanyEtoData>) => void;
 }
 
-type IProps = IStateProps & IDispatchProps & FormikProps<TPartialCompanyEtoData>;
+type IProps = IStateProps & IDispatchProps & FormikProps<DeepPartial<IBlCompanyEtoData>>;
 
 interface IIndividual {
   onRemoveClick: () => void;
@@ -181,12 +179,12 @@ class KeyIndividualsGroupLayout extends React.Component<IKeyIndividualsGroup & T
   }
 }
 
-const KeyIndividualsGroup = connect<IKeyIndividualsGroup, TEtoKeyIndividualType>(
+const KeyIndividualsGroup = connect<IKeyIndividualsGroup, {members: IBlKeyIndividual[]}>(
   KeyIndividualsGroupLayout,
 );
 
 const EtoRegistrationKeyIndividualsComponent = (props: IProps) => {
-  const validator = EtoKeyIndividualsType.toYup();
+  const validator = EtoKeyIndividualsValidator.toYup();
 
   return (
     <EtoFormBase
@@ -243,16 +241,16 @@ const EtoRegistrationKeyIndividuals = compose<React.FunctionComponent>(
     stateToProps: s => ({
       loadingData: s.etoFlow.loading,
       savingData: s.etoFlow.saving,
-      stateValues: selectIssuerCompany(s) as TPartialCompanyEtoData,
+      stateValues: selectIssuerCompany(s) as DeepPartial<IBlCompanyEtoData>,
     }),
     dispatchToProps: dispatch => ({
-      saveData: (data: TPartialCompanyEtoData) => {
+      saveData: (data: DeepPartial<IBlCompanyEtoData>) => {
         dispatch(actions.etoFlow.saveDataStart({ companyData: data, etoData: {} }));
       },
     }),
   }),
-  withFormik<IStateProps & IDispatchProps, TPartialCompanyEtoData>({
-    validationSchema: EtoKeyIndividualsType.toYup(),
+  withFormik<IStateProps & IDispatchProps, DeepPartial<IBlCompanyEtoData>>({
+    validationSchema: EtoKeyIndividualsValidator.toYup(),
     mapPropsToValues: props => props.stateValues,
     handleSubmit: (values, props) => props.props.saveData(values),
   }),

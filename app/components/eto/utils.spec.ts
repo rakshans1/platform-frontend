@@ -127,10 +127,10 @@ describe("parseStringToFloat", () => {
 
 describe("convertToPrecision", () => {
   it("imitates converting a floating point to a fixed precision number, returns undefined if input is invalid", () => {
-    const float = 2.3456;
-    const badData = parseInt("dateSchema", 2);
+    const float = "2.3456";
+    const badData = "blabla";
     const expectedResult = "2.35";
-    expect((convertToPrecision(2)(float) as number).toString()).equal(expectedResult);
+    expect((convertToPrecision(2)(float))).equal(expectedResult);
     expect(convertToPrecision(2)(badData)).is.undefined;
   });
 });

@@ -8,8 +8,8 @@ import {
   EKycRequestType,
   IKycBeneficialOwner,
   IKycFileInfo,
-  KycBeneficialOwnerSchemaRequired,
-} from "../../../lib/api/KycApi.interfaces";
+} from "../../../modules/kyc/interfaces";
+import {KycBeneficialOwnerValidator} from "../../../modules/kyc/validators";
 import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
 import { injectIntlHelpers } from "../../../utils/injectIntlHelpers";
@@ -125,9 +125,9 @@ const KYCForm = injectIntlHelpers<FormikProps<IKycBeneficialOwner> & IProps>(
 );
 
 const KYCEnhancedForm = withFormik<IProps, IKycBeneficialOwner>({
-  validationSchema: KycBeneficialOwnerSchemaRequired,
+  validationSchema: KycBeneficialOwnerValidator,
   mapPropsToValues: props => unboolify(props.owner),
-  isInitialValid: (props: any) => KycBeneficialOwnerSchemaRequired.isValidSync(props.owner),
+  isInitialValid: (props: any) => KycBeneficialOwnerValidator.isValidSync(props.owner),
   enableReinitialize: true,
   handleSubmit: (values, props) => {
     const ownership: any = values.ownership || "";

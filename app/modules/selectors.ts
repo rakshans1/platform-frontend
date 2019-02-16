@@ -1,4 +1,4 @@
-import { ERequestStatus } from "../lib/api/KycApi.interfaces";
+import { ERequestStatus } from "../modules/kyc/interfaces";
 import { IAppState } from "../store";
 import { selectBackupCodesVerified, selectIsUserEmailVerified } from "./auth/selectors";
 import { selectKycRequestStatus } from "./kyc/selectors";

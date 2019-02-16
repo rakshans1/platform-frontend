@@ -3,7 +3,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { compose } from "redux";
 
-import { IBookBuildingStats } from "../../../../lib/api/eto/EtoPledgeApi.interfaces";
+import { IBlBookBuildingStats } from "../../../../modules/bookbuilding-flow/interfaces/BookbuildingStats";
 import { actions } from "../../../../modules/actions";
 import { selectBookbuildingStats } from "../../../../modules/bookbuilding-flow/selectors";
 import {
@@ -26,6 +26,7 @@ import { ECurrency, ECurrencySymbol, EMoneyFormat, Money } from "../../../shared
 import { Panel } from "../../../shared/Panel";
 
 import * as styles from "../../EtoContentWidget.module.scss";
+import BigNumber from "bignumber.js";
 
 interface IDispatchProps {
   startBookBuilding: (etoId: string) => void;
@@ -35,16 +36,16 @@ interface IDispatchProps {
 
 interface IStateProps {
   bookBuildingEnabled?: boolean;
-  bookBuildingStats: IBookBuildingStats;
-  maxPledges: number | null;
+  bookBuildingStats: IBlBookBuildingStats;
+  maxPledges: BigNumber | null;
   etoId?: string;
   canEnableBookbuilding: boolean;
 }
 
 interface IBookBuilding {
-  bookBuildingStats: IBookBuildingStats;
+  bookBuildingStats: IBlBookBuildingStats;
   downloadCSV: () => void;
-  maxPledges: number | null;
+  maxPledges: BigNumber | null;
 }
 
 interface ILayoutProps {
@@ -78,12 +79,12 @@ const BookBuildingStats = ({ bookBuildingStats, maxPledges, downloadCSV }: IBook
         {maxPledges !== null ? (
           <FormattedMessage
             id="settings.book-building-stats-widget.number-of-pledges"
-            values={{ pledges: bookBuildingStats.investorsCount, maxPledges }}
+            values={{ pledges: bookBuildingStats.investorsCount.toNumber(), maxPledges: maxPledges.toNumber() }}
           />
         ) : null}
       </span>
     </div>
-    {bookBuildingStats.investorsCount > 0 ? (
+    {bookBuildingStats.investorsCount.gt(0) ? (
       <DocumentTemplateButton
         onClick={downloadCSV}
         title={<FormattedMessage id="eto-bookbuilding-widget.download-bookbuilding-stats" />}
@@ -140,7 +141,7 @@ export const BookBuildingWidgetComponent: React.FunctionComponent<IProps> = ({
   if (bookBuildingStats === undefined) {
     //TODO data loading state
     return <LoadingIndicator className={styles.loading} />;
-  } else if (!bookBuildingEnabled && bookBuildingStats.investorsCount === 0) {
+  } else if (!bookBuildingEnabled && bookBuildingStats.investorsCount.isZero()) {
     return (
       <BookBuildingWidgetLayout
         headerText={<FormattedMessage id="settings.book-building-widget.start-book-building" />}

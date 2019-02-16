@@ -4,10 +4,10 @@ import * as queryString from "query-string";
 import * as React from "react";
 import { Redirect, Route } from "react-router-dom";
 
-import { EUserType } from "../../../lib/api/users/interfaces";
+import { EUserType } from "../../../modules/auth/interfaces";
 import { selectIsAuthorized, selectUserType } from "../../../modules/auth/selectors";
 import { selectWalletTypeFromQueryString } from "../../../modules/routing/selectors";
-import { EWalletType } from "../../../modules/web3/types";
+import { EWalletType } from "../../../modules/web3/interfaces";
 import { appConnect } from "../../../store";
 import { appRoutes } from "../../appRoutes";
 import { loginWalletRoutes } from "../../wallet-selector/walletRoutes";

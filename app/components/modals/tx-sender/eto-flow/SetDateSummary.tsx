@@ -7,8 +7,8 @@ import { compose, setDisplayName } from "recompose";
 
 import {
   EEtoDocumentType,
-  immutableDocumentName,
-} from "../../../../lib/api/eto/EtoFileApi.interfaces";
+  immutableDocumentNames,
+} from "../../../../modules/eto-documents/interfaces";
 import { actions } from "../../../../modules/actions";
 import { selectPlatformTermsConstants } from "../../../../modules/contracts/selectors";
 import {
@@ -135,7 +135,7 @@ const SetEtoDateSummaryComponent: React.FunctionComponent<IProps> = ({
             }
           />
           <InfoRow
-            caption={immutableDocumentName[EEtoDocumentType.APPROVED_INVESTOR_OFFERING_DOCUMENT]}
+            caption={immutableDocumentNames[EEtoDocumentType.APPROVED_INVESTOR_OFFERING_DOCUMENT]}
             value={
               <ExternalLink href={offeringAgreementIPFSLink}>
                 {offeringAgreementIPFSLink}
@@ -143,7 +143,7 @@ const SetEtoDateSummaryComponent: React.FunctionComponent<IProps> = ({
             }
           />
           <InfoRow
-            caption={immutableDocumentName[EEtoDocumentType.SIGNED_TERMSHEET]}
+            caption={immutableDocumentNames[EEtoDocumentType.SIGNED_TERMSHEET]}
             value={
               <ExternalLink href={termsAgreementIPFSLink}>{termsAgreementIPFSLink}</ExternalLink>
             }

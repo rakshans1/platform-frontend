@@ -5,7 +5,7 @@ import { Modal } from "reactstrap";
 
 import { actions } from "../../../modules/actions";
 import { selectIsUnlocked, selectWalletType } from "../../../modules/web3/selectors";
-import { EWalletType } from "../../../modules/web3/types";
+import { EWalletType } from "../../../modules/web3/interfaces";
 import { appConnect } from "../../../store";
 import { TTranslatedString } from "../../../types";
 import { HiResImage } from "../../shared/HiResImage";

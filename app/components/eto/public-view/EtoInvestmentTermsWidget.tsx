@@ -2,9 +2,9 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { compose } from "recompose";
 
-import { IEtoDocument } from "../../../lib/api/eto/EtoFileApi.interfaces";
+import { IEtoDocument } from "../../../modules/eto-documents/interfaces";
 import { actions } from "../../../modules/actions";
-import { TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
+import { TBlEtoWithCompanyAndContract } from "../../../modules/public-etos/interfaces/interfaces";
 import { appConnect } from "../../../store";
 import { TDataTestId, TTranslatedString } from "../../../types";
 import { DocumentTemplateButton } from "../../shared/DocumentLink";
@@ -23,7 +23,7 @@ import { InvestmentAmount } from "../shared/InvestmentAmount";
 import * as styles from "./EtoInvestmentTermsWidget.module.scss";
 
 type TExternalProps = {
-  etoData: TEtoWithCompanyAndContract;
+  etoData: TBlEtoWithCompanyAndContract;
 };
 
 type TDispatchProps = {
@@ -52,7 +52,7 @@ const EtoInvestmentTermsWidgetLayout: React.FunctionComponent<TExternalProps & T
   etoData,
   downloadDocument,
 }) => {
-  const computedNewSharePrice = etoData.preMoneyValuationEur / etoData.existingCompanyShares;
+  const computedNewSharePrice = etoData.preMoneyValuationEur.div(etoData.existingCompanyShares);
 
   return (
     <Panel className={styles.tokenTerms}>
@@ -157,7 +157,7 @@ const EtoInvestmentTermsWidgetLayout: React.FunctionComponent<TExternalProps & T
                 label={<FormattedMessage id="eto.public-view.token-terms.token-price" />}
                 value={
                   <Money
-                    value={computedNewSharePrice / etoData.equityTokensPerShare}
+                    value={computedNewSharePrice.div(etoData.equityTokensPerShare)}
                     currency={ECurrency.EUR}
                     format={EMoneyFormat.FLOAT}
                     currencySymbol={ECurrencySymbol.SYMBOL}

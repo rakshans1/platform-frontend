@@ -1,5 +1,4 @@
-import { EEtoFormTypes } from "../../../modules/eto-flow/types";
-import { EEtoState } from "./EtoApi.interfaces";
+import { EEtoFormTypes, EEtoState } from "../../../modules/eto-flow/interfaces/interfaces";
 
 export const etoFormIsReadonly = (formName: EEtoFormTypes, etoState?: EEtoState) => {
   const readOnlyForms = [

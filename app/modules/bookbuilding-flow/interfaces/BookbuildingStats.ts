@@ -8,7 +8,7 @@ export interface IStateBookBuildingStats {
 }
 
 export interface IBlBookBuildingStats {
-  investorsCount: number;
+  investorsCount: BigNumber;
   pledgedAmount: BigNumber;
 }
 

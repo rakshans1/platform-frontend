@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { ERequestStatus } from "../../lib/api/KycApi.interfaces";
+import { ERequestStatus } from "../../modules/kyc/interfaces";
 import { IAppState } from "../../store";
 import { DeepPartial } from "../../types";
 import { selectKycRequestStatus } from "./selectors";

@@ -2,9 +2,9 @@ import * as cn from "classnames";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { EEtoState } from "../../lib/api/eto/EtoApi.interfaces";
+import { EEtoState } from "../../modules/eto-flow/interfaces/interfaces";
 import { selectEtoWithCompanyAndContract } from "../../modules/public-etos/selectors";
-import { EETOStateOnChain, TEtoWithCompanyAndContract } from "../../modules/public-etos/types";
+import { EETOStateOnChain, TBlEtoWithCompanyAndContract } from "../../modules/public-etos/interfaces/interfaces";
 import { appConnect } from "../../store";
 
 import * as styles from "./ETOState.module.scss";
@@ -27,7 +27,7 @@ interface IExternalProps {
 }
 
 interface IStateProps {
-  eto: TEtoWithCompanyAndContract;
+  eto: TBlEtoWithCompanyAndContract;
 }
 
 export const statusToName: Record<

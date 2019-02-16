@@ -1,7 +1,7 @@
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
-import { EEtoDocumentType, IEtoDocument } from "../../lib/api/eto/EtoFileApi.interfaces";
+import { EEtoDocumentType, IEtoDocument } from "../../modules/eto-documents/interfaces";
 import { SingleColDocumentsLayout } from "./SingleColDocumentWidget";
 
 const documents: IEtoDocument[] = [

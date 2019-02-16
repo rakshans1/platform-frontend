@@ -1,10 +1,10 @@
 import { branch, compose, renderComponent } from "recompose";
 
-import { EUserType } from "../../lib/api/users/interfaces";
+import { EUserType } from "../../modules/auth/interfaces";
 import { actions } from "../../modules/actions";
 import { selectUserType } from "../../modules/auth/selectors";
 import { selectEtoWithCompanyAndContract } from "../../modules/public-etos/selectors";
-import { TEtoWithCompanyAndContract } from "../../modules/public-etos/types";
+import { TBlEtoWithCompanyAndContract } from "../../modules/public-etos/interfaces/interfaces";
 import { appConnect } from "../../store";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { withContainer } from "../../utils/withContainer";
@@ -14,7 +14,7 @@ import { LoadingIndicator } from "../shared/loading-indicator";
 import { EtoView } from "./shared/EtoView";
 
 interface IStateProps {
-  eto?: TEtoWithCompanyAndContract;
+  eto?: TBlEtoWithCompanyAndContract;
   userType?: EUserType;
 }
 
@@ -23,7 +23,7 @@ interface IRouterParams {
 }
 
 type TProps = {
-  eto: TEtoWithCompanyAndContract;
+  eto: TBlEtoWithCompanyAndContract;
 };
 
 export const EtoPublicView = compose<TProps, IRouterParams>(

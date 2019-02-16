@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 
-import { TCompanyEtoData } from "../../../lib/api/eto/EtoApi.interfaces";
+import { IBlCompanyEtoData } from "../../../modules/eto-flow/interfaces/CompanyEtoData";
 import { ChartDoughnut } from "../../shared/charts/ChartDoughnut";
 import { ECurrency, ECurrencySymbol, EMoneyFormat, Money } from "../../shared/Money";
 import { NumberFormat } from "../../shared/NumberFormat";
@@ -11,28 +11,30 @@ import { FUNDING_ROUNDS } from "../registration/pages/LegalInformation";
 import { CHART_COLORS } from "../shared/EtoView";
 
 import * as styles from "./LegalInformationWidget.module.scss";
+import BigNumber from "bignumber.js";
+import {IBlShareholderData} from "../../../modules/eto-flow/interfaces/ShareholderData";
 
 interface IProps {
-  companyData: TCompanyEtoData;
+  companyData: IBlCompanyEtoData;
 }
 
 const generateShareholders = (
-  shareholders: TCompanyEtoData["shareholders"],
-  companyShares: number,
+  shareholders: IBlCompanyEtoData["shareholders"],
+  companyShares: BigNumber,
 ) => {
   if (shareholders === undefined) {
     return [];
   } else {
-    const assignedShares = shareholders.reduce((acc, shareholder) => {
-      return shareholder && shareholder.shares ? (acc += shareholder.shares) : acc;
-    }, 0);
+    const assignedShares = shareholders.reduce((acc:BigNumber, shareholder:IBlShareholderData) => {
+      return shareholder && shareholder.shares ? (acc.add(shareholder.shares)) : acc;
+    }, new BigNumber(0));
 
-    if (assignedShares < companyShares) {
+    if (assignedShares.lessThan(companyShares)) {
       return [
         ...shareholders,
         {
           fullName: "Others",
-          shares: companyShares - assignedShares,
+          shares: companyShares.minus(assignedShares),
         },
       ];
     }

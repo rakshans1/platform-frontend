@@ -4,18 +4,18 @@ import {TBlEtoWithCompanyAndContract} from "../../../modules/public-etos/interfa
 import {IBlPublicEtoData} from "../../../modules/eto-flow/interfaces/PublicEtoData";
 
 export const getInvestmentAmount = (eto:
-                                      {
-                                        newSharesToIssueInFixedSlots: BigNumber,
-                                        newSharesToIssueInWhitelist: BigNumber,
-                                        fixedSlotsMaximumDiscountFraction: BigNumber,
-                                        whitelistDiscountFraction: BigNumber,
-                                        publicDiscountFraction: BigNumber,
-                                        preMoneyValuationEur: BigNumber,
-                                        existingCompanyShares: BigNumber,
-                                        equityTokensPerShare: BigNumber,
-                                        minimumNewSharesToIssue: BigNumber,
-                                        newSharesToIssue:BigNumber
-                                      }) => {
+  Partial<{
+    newSharesToIssueInFixedSlots: BigNumber,
+    newSharesToIssueInWhitelist: BigNumber,
+    fixedSlotsMaximumDiscountFraction: BigNumber,
+    whitelistDiscountFraction: BigNumber,
+    publicDiscountFraction: BigNumber,
+    preMoneyValuationEur: BigNumber,
+    existingCompanyShares: BigNumber,
+    equityTokensPerShare: BigNumber,
+    minimumNewSharesToIssue: BigNumber,
+    newSharesToIssue: BigNumber
+  }>) => {
   const {sharePrice} = getShareAndTokenPrice(eto);
 
   return {
@@ -29,14 +29,14 @@ export const getInvestmentAmount = (eto:
 };
 
 export const getShareAndTokenPrice = ({
-                                        preMoneyValuationEur = new BigNumber(0),
-                                        existingCompanyShares = new BigNumber(0),
-                                        equityTokensPerShare = new BigNumber(1),
-                                      }: {
-                                        preMoneyValuationEur: BigNumber,
-                                        existingCompanyShares: BigNumber,
-                                        equityTokensPerShare: BigNumber
-                                      }
+    preMoneyValuationEur = new BigNumber(0),
+    existingCompanyShares = new BigNumber(0),
+    equityTokensPerShare = new BigNumber(1),
+  }: {
+    preMoneyValuationEur?: BigNumber,
+    existingCompanyShares?: BigNumber,
+    equityTokensPerShare?: BigNumber
+  }
 ): { sharePrice: BigNumber, tokenPrice: BigNumber } => {
   if (!existingCompanyShares.isZero() && preMoneyValuationEur && !preMoneyValuationEur.isZero()) {
     const sharePrice = preMoneyValuationEur.div(existingCompanyShares);
@@ -59,15 +59,15 @@ const getMaxInvestmentAmountWithDiscount = (
     fixedSlotsMaximumDiscountFraction = new BigNumber(0),
     whitelistDiscountFraction = new BigNumber(0),
     publicDiscountFraction = new BigNumber(0),
-  }: {
+  }: Partial<{
     newSharesToIssueInFixedSlots: BigNumber,
     newSharesToIssueInWhitelist: BigNumber,
     fixedSlotsMaximumDiscountFraction: BigNumber,
     whitelistDiscountFraction: BigNumber,
     publicDiscountFraction: BigNumber
-  },
+  }>,
   sharePrice: BigNumber = new BigNumber(0),
-  shares: BigNumber = new BigNumber(0),
+  shares: BigNumber = new BigNumber(0)
 ): BigNumber => {
   if (sharePrice.isZero() || shares.isZero()) {
     return new BigNumber(0);
@@ -96,8 +96,8 @@ const getMaxInvestmentAmountWithDiscount = (
   return amount;
 };
 
-export const getInvestmentCalculatedPercentage = (eto: IBlPublicEtoData):BigNumber => {
-  return eto.newSharesToIssue.div(eto.minimumNewSharesToIssue).mul( 100);
+export const getInvestmentCalculatedPercentage = (eto: IBlPublicEtoData): BigNumber => {
+  return eto.newSharesToIssue.div(eto.minimumNewSharesToIssue).mul(100);
 };
 
 export const getCurrentInvestmentProgressPercentage = (eto: TBlEtoWithCompanyAndContract): BigNumber => {

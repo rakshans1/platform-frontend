@@ -8,8 +8,8 @@ import {
   EKycRequestType,
   IKycBusinessData,
   IKycFileInfo,
-  KycBusinessDataSchema,
-} from "../../../lib/api/KycApi.interfaces";
+} from "../../../modules/kyc/interfaces";
+import {KycBusinessDataValidator} from "../../../modules/kyc/validators";
 import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
 import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers";
@@ -118,10 +118,10 @@ const KYCForm = injectIntlHelpers<FormikProps<IKycBusinessData> & IProps>(
 );
 
 const KYCEnhancedForm = withFormik<IProps, IKycBusinessData>({
-  validationSchema: KycBusinessDataSchema,
+  validationSchema: KycBusinessDataValidator,
   mapPropsToValues: props => props.currentValues as IKycBusinessData,
   enableReinitialize: true,
-  isInitialValid: (props: any) => KycBusinessDataSchema.isValidSync(props.currentValues),
+  isInitialValid: (props: any) => KycBusinessDataValidator.isValidSync(props.currentValues),
   handleSubmit: (values, props) => props.props.submitForm(values),
 })(KYCForm);
 
@@ -153,7 +153,7 @@ export const KycBusinessDataComponent = ({
   intl: { formatIntlMessage },
   ...props
 }: IProps & IIntlProps) => {
-  const dataValid = KycBusinessDataSchema.isValidSync(props.currentValues);
+  const dataValid = KycBusinessDataValidator.isValidSync(props.currentValues);
   return (
     <KycPanel
       steps={businessSteps}

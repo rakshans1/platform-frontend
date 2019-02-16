@@ -2,7 +2,7 @@ import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
 import { etoDocuments, etoFilesData, etoTemplates } from "../../../test/fixtures";
-import { EEtoState } from "../../lib/api/eto/EtoApi.interfaces";
+import { EEtoState } from "../../modules/eto-flow/interfaces/interfaces";
 import { DocumentsLayout } from "./Documents";
 import { getDocumentTitles } from "./utils";
 

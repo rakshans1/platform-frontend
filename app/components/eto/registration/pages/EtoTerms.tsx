@@ -5,13 +5,14 @@ import { Col, Row } from "reactstrap";
 import { setDisplayName } from "recompose";
 import { compose } from "redux";
 
-import { EtoTermsType, TPartialEtoSpecData } from "../../../../lib/api/eto/EtoApi.interfaces";
+import { EtoTermsValidator} from "../../../../modules/public-etos/validators";
+import {IBlPublicEtoData} from "../../../../modules/eto-flow/interfaces/PublicEtoData";
 import { etoFormIsReadonly } from "../../../../lib/api/eto/EtoApiUtils";
 import { actions } from "../../../../modules/actions";
 import { selectIssuerEto, selectIssuerEtoState } from "../../../../modules/eto-flow/selectors";
-import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
+import { EEtoFormTypes } from "../../../../modules/eto-flow/interfaces/interfaces";
 import { appConnect } from "../../../../store";
-import { TTranslatedString } from "../../../../types";
+import {DeepPartial, TTranslatedString} from "../../../../types";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import {
   FormField,
@@ -39,14 +40,14 @@ interface IExternalProps {
 interface IStateProps {
   loadingData: boolean;
   savingData: boolean;
-  stateValues: TPartialEtoSpecData;
+  stateValues: DeepPartial<IBlPublicEtoData>;
 }
 
 interface IDispatchProps {
-  saveData: (values: TPartialEtoSpecData) => void;
+  saveData: (values: DeepPartial<IBlPublicEtoData>) => void;
 }
 
-type IProps = IExternalProps & IStateProps & IDispatchProps & FormikProps<TPartialEtoSpecData>;
+type IProps = IExternalProps & IStateProps & IDispatchProps & FormikProps<DeepPartial<IBlPublicEtoData>>;
 
 interface ICurrencies {
   [key: string]: string;
@@ -68,7 +69,7 @@ const EtoRegistrationTermsComponent: React.FunctionComponent<IProps> = ({
   return (
     <EtoFormBase
       title={<FormattedMessage id="eto.form.eto-terms.title" />}
-      validator={EtoTermsType.toYup()}
+      validator={EtoTermsValidator.toYup()}
     >
       <Section>
         <div className="form-group">
@@ -244,11 +245,11 @@ const EtoRegistrationTerms = compose<React.FunctionComponent<IExternalProps>>(
     stateToProps: s => ({
       loadingData: s.etoFlow.loading,
       savingData: s.etoFlow.saving,
-      stateValues: selectIssuerEto(s) as TPartialEtoSpecData,
+      stateValues: selectIssuerEto(s) as DeepPartial<IBlPublicEtoData>,
       readonly: etoFormIsReadonly(EEtoFormTypes.EtoTerms, selectIssuerEtoState(s)),
     }),
     dispatchToProps: dispatch => ({
-      saveData: (data: TPartialEtoSpecData) => {
+      saveData: (data: DeepPartial<IBlPublicEtoData>) => {
         const convertedData = convert(data, fromFormState);
         dispatch(
           actions.etoFlow.saveDataStart({
@@ -259,8 +260,8 @@ const EtoRegistrationTerms = compose<React.FunctionComponent<IExternalProps>>(
       },
     }),
   }),
-  withFormik<IStateProps & IDispatchProps, TPartialEtoSpecData>({
-    validationSchema: EtoTermsType.toYup(),
+  withFormik<IStateProps & IDispatchProps, DeepPartial<IBlPublicEtoData>>({
+    validationSchema: EtoTermsValidator.toYup(),
     mapPropsToValues: props => props.stateValues,
     handleSubmit: (values, props) => props.props.saveData(values),
     validate: values => {

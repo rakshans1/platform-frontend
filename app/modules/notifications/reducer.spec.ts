@@ -5,9 +5,9 @@ import { INewNotification } from "./actions";
 import {
   ENotificationText,
   ENotificationType,
-  notificationsInitState,
-  notificationsReducer,
-} from "./reducer";
+} from "./interfaces";
+import {  notificationsInitState,
+  notificationsReducer} from './reducer'
 
 describe("notifications > reducer", () => {
   it("should act on NOTIFICATIONS_ADD", () => {

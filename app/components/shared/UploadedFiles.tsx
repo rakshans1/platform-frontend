@@ -2,7 +2,7 @@ import * as cn from "classnames";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { IKycFileInfo } from "../../lib/api/KycApi.interfaces";
+import { IKycFileInfo } from "../../modules/kyc/interfaces";
 import * as styles from "./UploadedFiles.module.scss";
 
 import * as confirmIcon from "../../assets/img/notifications/success.svg";

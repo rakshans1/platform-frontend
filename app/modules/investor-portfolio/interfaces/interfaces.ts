@@ -14,3 +14,4 @@ export type TBlETOWithInvestorTicket = TBlEtoWithCompanyAndContract & {
 export type TBlETOWithTokenData = TBlETOWithInvestorTicket & {
   tokenData: IBlEtoTokenData;
 };
+

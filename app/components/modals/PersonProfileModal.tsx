@@ -1,23 +1,23 @@
 import * as React from "react";
-import { Modal } from "reactstrap";
+import {Modal} from "reactstrap";
 
-import { actions } from "../../modules/actions";
+import {actions} from "../../modules/actions";
 import {
-  IPersonProfileModal,
   selectIsOpen,
   selectPersonProfileModalObj,
 } from "../../modules/person-profile-modal/reducer";
-import { appConnect } from "../../store";
-import { DeepReadonly } from "../../types";
-import { ExternalLink } from "../shared/links";
-import { SlidePerson } from "../shared/SlidePerson";
-import { ModalComponentBody } from "./ModalComponentBody";
+import {IBlPersonProfileModalObject} from '../../modules/person-profile-modal/interfaces'
+import {appConnect} from "../../store";
+import {DeepReadonly} from "../../types";
+import {ExternalLink} from "../shared/links";
+import {SlidePerson} from "../shared/SlidePerson";
+import {ModalComponentBody} from "./ModalComponentBody";
 
 import * as styles from "./PersonProfileModal.module.scss";
 
 interface IStateProps {
   isOpen: boolean;
-  personProfileModalObj?: DeepReadonly<IPersonProfileModal>;
+  personProfileModalObj?: DeepReadonly<IBlPersonProfileModalObject>;
 }
 
 interface IDispatchProps {
@@ -37,7 +37,7 @@ const PersonProfileModalComponent: React.FunctionComponent<IStateProps & IDispat
           socialChannels={(personProfileModalObj && personProfileModalObj.socialChannels) || []}
           role={(personProfileModalObj && personProfileModalObj.role) || ""}
           name={(personProfileModalObj && personProfileModalObj.name) || ""}
-          srcSet={{ "1x": (personProfileModalObj && personProfileModalObj.image) || "" }}
+          srcSet={{"1x": (personProfileModalObj && personProfileModalObj.image) || ""}}
           layout="vertical"
         />
         <p className={styles.description}>

@@ -2,14 +2,15 @@ import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
 import { BookBuildingWidgetComponent } from "./BookBuildingWidget";
+import BigNumber from "bignumber.js";
 
 const data = {
   startBookBuilding: () => {},
   stopBookBuilding: () => {},
   downloadCSV: () => {},
   bookBuildingEnabled: false,
-  bookBuildingStats: { investorsCount: 0, pledgedAmount: 0 },
-  maxPledges: 500,
+  bookBuildingStats: { investorsCount: new BigNumber(0), pledgedAmount: new BigNumber(0) },
+  maxPledges: new BigNumber(500),
   canEnableBookbuilding: true,
 };
 
@@ -31,7 +32,7 @@ storiesOf("BookBuildingWidget", module)
     const testData = {
       ...data,
       bookBuildingEnabled: true,
-      bookBuildingStats: { investorsCount: 2, pledgedAmount: 12545874 },
+      bookBuildingStats: { investorsCount: new BigNumber(2), pledgedAmount: new BigNumber(12545874) },
     };
     return <BookBuildingWidgetComponent {...testData} />;
   })
@@ -39,7 +40,7 @@ storiesOf("BookBuildingWidget", module)
     const testData = {
       ...data,
       bookBuildingEnabled: false,
-      bookBuildingStats: { investorsCount: 2, pledgedAmount: 1595848 },
+      bookBuildingStats: { investorsCount: new BigNumber(2), pledgedAmount: new BigNumber(1595848) },
     };
     return <BookBuildingWidgetComponent {...testData} />;
   });

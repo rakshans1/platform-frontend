@@ -1,6 +1,6 @@
 import { cloneDeep, flow, get, set, isFunction } from "lodash";
 
-import { formatFlexiPrecision } from "../../utils/Number.utils";
+import BigNumber from "bignumber.js";
 
 export interface ICompoundField {
   [x: string]: string | number | undefined;
@@ -101,9 +101,12 @@ export const parseStringToInteger = () => (data: string | number | undefined) =>
   }
 };
 
-export const convertToPrecision = (precision: number) => (data: number) => {
-  if (data && !Number.isNaN(data)) {
-    return parseFloat(formatFlexiPrecision(data, precision));
+export const convertToPrecision = (precision: number) => (value: string):string | undefined => {
+  const data = new BigNumber(value)
+  if (!data.isNaN()) {
+    return data.toNumber().toLocaleString(undefined, { //fixme toLocaleString()
+      maximumFractionDigits: precision
+    })
   } else {
     return undefined;
   }

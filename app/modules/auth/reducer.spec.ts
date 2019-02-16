@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { EUserType } from "../../lib/api/users/interfaces";
+import { EUserType } from "../../modules/auth/interfaces";
 import { EWalletSubType, EWalletType } from "../web3/types";
 import { IStateAuth } from "./reducer";
 import { selectIsAuthorized, selectUserEmail } from "./selectors";

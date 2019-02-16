@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { Modal } from "reactstrap";
 
-import { EUserType } from "../../../lib/api/users/interfaces";
+import { EUserType } from "../../../modules/auth/interfaces";
 import { actions } from "../../../modules/actions";
 import {
   selectIsAgreementAccepted,

@@ -1,10 +1,8 @@
 import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 
-import {
-  IWalletMigrationData,
-  TWalletMigrationSteps,
-} from "../../../modules/icbm-wallet-balance-modal/reducer";
+import {TWalletMigrationSteps} from "../../../modules/icbm-wallet-balance-modal/interfaces/intefaces";
+import {IBlWalletMigrationData} from "../../../modules/icbm-wallet-balance-modal/interfaces/WalletMigrationData";
 import { myEtherWalletUrl } from "../../../utils/myEtherWallet";
 import { ConfettiEthereum } from "../../landing/parts/ConfettiEthereum";
 import { SpinningEthereum } from "../../landing/parts/SpinningEthereum";
@@ -18,7 +16,7 @@ import * as iconMyEtherWallet from "../../../assets/img/myEtherWallet.svg";
 import * as styles from "./IcbmWalletBalanceModal.module.scss";
 
 interface IMigrationModal {
-  walletMigrationData: IWalletMigrationData;
+  walletMigrationData: IBlWalletMigrationData;
   migrationStep: TWalletMigrationSteps;
   success: boolean;
   onGotoWallet: () => void;
@@ -119,15 +117,15 @@ const MigrateHeader: React.FunctionComponent<{ step: number }> = ({ step }) => (
 );
 
 const MigrateBody: React.FunctionComponent<{
-  walletMigrationData: IWalletMigrationData;
+  walletMigrationData: IBlWalletMigrationData;
 }> = ({ walletMigrationData }) => {
   return (
     <>
       <ExternalLink
         href={myEtherWalletUrl(
           walletMigrationData.smartContractAddress,
-          walletMigrationData.value,
-          walletMigrationData.gasLimit,
+          walletMigrationData.value.toString(),
+          walletMigrationData.gasLimit.toString(),
           walletMigrationData.migrationInputData,
         )}
       >
@@ -149,7 +147,7 @@ const MigrateBody: React.FunctionComponent<{
         label={
           <FormattedMessage id="settings.modal.icbm-wallet-balance.body.migrate.field.amount-to-sent" />
         }
-        value={walletMigrationData.value}
+        value={walletMigrationData.value.toString()}
         withCopy
         whiteBackground={true}
       />
@@ -157,7 +155,7 @@ const MigrateBody: React.FunctionComponent<{
         label={
           <FormattedMessage id="settings.modal.icbm-wallet-balance.body.migrate.field.gas-limit" />
         }
-        value={walletMigrationData.gasLimit}
+        value={walletMigrationData.gasLimit.toString()}
         withCopy
         dataTestId="modals.icbm-balance-modal.migrate-body.gas-limit"
       />

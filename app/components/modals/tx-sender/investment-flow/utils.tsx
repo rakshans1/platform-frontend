@@ -67,8 +67,8 @@ export function createWallets(state: IAppState): WalletSelectionData[] {
 export function getInputErrorMessage(
   type: EInvestmentErrorState | EValidationState | undefined,
   tokenName: string,
-  maxTicketEur: string,
-  minTicketEur: string,
+  maxTicketEur: BigNumber,
+  minTicketEur: BigNumber,
 ): React.ReactElement<FormattedMessage.Props> | undefined {
   switch (type) {
     case EInvestmentErrorState.ExceedsTokenAmount:
@@ -82,14 +82,14 @@ export function getInputErrorMessage(
       return (
         <FormattedMessage
           id="investment-flow.error-message.above-maximum-ticket-size"
-          values={{ maxAmount: `€${maxTicketEur || 0}` }}
+          values={{ maxAmount: `€${maxTicketEur.toNumber() || 0}` }}
         />
       );
     case EInvestmentErrorState.BelowMinimumTicketSize:
       return (
         <FormattedMessage
           id="investment-flow.error-message.below-minimum-ticket-size"
-          values={{ minAmount: `€${minTicketEur || 0}` }}
+          values={{ minAmount: `€${minTicketEur.toNumber() || 0}` }}
         />
       );
     case EInvestmentErrorState.ExceedsWalletBalance:

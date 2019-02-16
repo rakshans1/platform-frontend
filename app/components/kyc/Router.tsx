@@ -2,7 +2,7 @@ import * as React from "react";
 import { Redirect, Route } from "react-router-dom";
 import { kycRoutes } from "./routes";
 
-import { EUserType } from "../../lib/api/users/interfaces";
+import { EUserType } from "../../modules/auth/interfaces";
 import { selectUserType } from "../../modules/auth/selectors";
 import { appConnect } from "../../store";
 import { SwitchConnected } from "../../utils/connectedRouting";

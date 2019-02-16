@@ -3,8 +3,8 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 import { compose } from "recompose";
 
-import { TCompanyEtoData } from "../../../lib/api/eto/EtoApi.interfaces";
-import { IEtoDocument, TEtoDocumentTemplates } from "../../../lib/api/eto/EtoFileApi.interfaces";
+import { IBlCompanyEtoData } from "../../../modules/eto-flow/interfaces/CompanyEtoData";
+import { IEtoDocument, TEtoDocumentTemplates } from "../../../modules/eto-documents/interfaces";
 import { ignoredDocuments, ignoredTemplates } from "../../../lib/api/eto/EtoFileUtils";
 import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
@@ -18,7 +18,7 @@ import * as icon_link from "../../../assets/img/inline_icons/social_link.svg";
 import * as styles from "./DocumentsWidget.module.scss";
 
 type TExternalProps = {
-  companyMarketingLinks: TCompanyEtoData["marketingLinks"];
+  companyMarketingLinks: IBlCompanyEtoData["marketingLinks"];
   etoTemplates: TEtoDocumentTemplates;
   etoDocuments: TEtoDocumentTemplates;
   isRetailEto: boolean;

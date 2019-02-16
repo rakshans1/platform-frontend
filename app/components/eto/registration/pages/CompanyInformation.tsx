@@ -5,13 +5,11 @@ import { Col, Row } from "reactstrap";
 import { setDisplayName } from "recompose";
 import { compose } from "redux";
 
-import {
-  EtoCompanyInformationType,
-  TPartialCompanyEtoData,
-} from "../../../../lib/api/eto/EtoApi.interfaces";
+import {  IBlCompanyEtoData} from "../../../../modules/eto-flow/interfaces/CompanyEtoData";
+import {EtoCompanyInformationValidator} from "../../../../modules/eto-flow/validators"
 import { actions } from "../../../../modules/actions";
 import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
-import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
+import { EEtoFormTypes } from "../../../../modules/eto-flow/interfaces/interfaces";
 import { appConnect } from "../../../../store";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import { FormField, FormTextArea } from "../../../shared/forms";
@@ -21,15 +19,16 @@ import { EtoFormBase } from "../EtoFormBase";
 import { Section } from "../Shared";
 
 import * as styles from "../Shared.module.scss";
+import {DeepPartial} from "../../../../types";
 
 interface IStateProps {
   loadingData: boolean;
   savingData: boolean;
-  stateValues: TPartialCompanyEtoData;
+  stateValues: DeepPartial<IBlCompanyEtoData>;
 }
 
 interface IDispatchProps {
-  saveData: (values: TPartialCompanyEtoData) => void;
+  saveData: (values: DeepPartial<IBlCompanyEtoData>) => void;
 }
 
 const tagList = ["Science", "Technology", "Blockchain", "Medical", "Research"];
@@ -37,12 +36,12 @@ const tagList = ["Science", "Technology", "Blockchain", "Medical", "Research"];
 type IProps = IStateProps & IDispatchProps;
 
 const EtoRegistrationCompanyInformationComponent = (
-  props: FormikProps<TPartialCompanyEtoData> & IProps,
+  props: FormikProps<DeepPartial<IBlCompanyEtoData>> & IProps,
 ) => (
   <EtoFormBase
     data-test-id="eto.form.company-information"
     title="Company Information"
-    validator={EtoCompanyInformationType.toYup()}
+    validator={EtoCompanyInformationValidator.toYup()}
   >
     <Section>
       <FormField
@@ -125,16 +124,16 @@ const EtoRegistrationCompanyInformation = compose<React.FunctionComponent>(
     stateToProps: s => ({
       loadingData: s.etoFlow.loading,
       savingData: s.etoFlow.saving,
-      stateValues: selectIssuerCompany(s) as TPartialCompanyEtoData,
+      stateValues: selectIssuerCompany(s) as DeepPartial<IBlCompanyEtoData>,
     }),
     dispatchToProps: dispatch => ({
-      saveData: (data: TPartialCompanyEtoData) => {
+      saveData: (data: DeepPartial<IBlCompanyEtoData>) => {
         dispatch(actions.etoFlow.saveDataStart({ companyData: data, etoData: {} }));
       },
     }),
   }),
-  withFormik<IProps, TPartialCompanyEtoData>({
-    validationSchema: EtoCompanyInformationType.toYup(),
+  withFormik<IProps, DeepPartial<IBlCompanyEtoData>>({
+    validationSchema: EtoCompanyInformationValidator.toYup(),
     mapPropsToValues: props => props.stateValues,
     handleSubmit: (values, props) => props.props.saveData(values),
   }),

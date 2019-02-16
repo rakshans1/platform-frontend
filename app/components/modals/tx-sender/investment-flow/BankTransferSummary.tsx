@@ -4,7 +4,7 @@ import { Col, Container, Row } from "reactstrap";
 import { compose, setDisplayName } from "recompose";
 
 import { TEtoSpecsData } from "../../../../lib/api/eto/EtoApi.interfaces";
-import { EEtoDocumentType } from "../../../../lib/api/eto/EtoFileApi.interfaces";
+import { EEtoDocumentType } from "../../../../modules/eto-documents/interfaces";
 import { getShareAndTokenPrice } from "../../../../lib/api/eto/EtoUtils";
 import { actions } from "../../../../modules/actions";
 import {

@@ -26,13 +26,13 @@ import BigNumber from "bignumber.js";
 
 export interface IExternalProps {
   etoId: string;
-  investorsLimit: number;
+  investorsLimit: BigNumber;
   nextStateStartDate?: Date;
 }
 
 export interface IComponentProps {
   etoId: string;
-  investorsLimit: number;
+  investorsLimit: BigNumber;
   minPledge: BigNumber;
   maxPledge?: BigNumber;
   nextState: EETOStateOnChain;
@@ -43,7 +43,7 @@ export interface IComponentProps {
 
 interface IStateProps {
   pledgedAmount: BigNumber | null;
-  investorsCount: number;
+  investorsCount: BigNumber;
   isInvestor: boolean;
   pledge?: IBlPledge;
   isVerifiedInvestor: boolean;
@@ -116,7 +116,7 @@ const CampaigningActivatedWidgetComponent: React.FunctionComponent<IWithProps & 
             </span>
             <span className={styles.value}>
               <span data-test-id="eto-bookbuilding-remaining-slots">
-                {investorsCount !== null ? investorsLimit - investorsCount : investorsLimit}
+                {investorsCount !== null ? investorsLimit.minus(investorsCount).toString() : investorsLimit.toString()}
               </span>{" "}
               out of {investorsLimit} slots remaining
               {/* TODO: Move to translations once the format is stable */}
@@ -165,7 +165,7 @@ const CampaigningActivatedWidgetComponent: React.FunctionComponent<IWithProps & 
                       format={EMoneyFormat.FLOAT}
                     />
                   ),
-                  totalInvestors: investorsCount,
+                  totalInvestors: investorsCount.toNumber(),
                 }}
               />
             }
@@ -183,7 +183,7 @@ const CampaigningActivatedWidgetComponent: React.FunctionComponent<IWithProps & 
   );
 };
 
-const CampaigningActivatedWidget = compose<React.FunctionComponent<IExternalProps>>(
+const CampaigningActivatedWidget = compose<React.FunctionComponent<IExternalProps & IComponentProps>>(
   appConnect<IStateProps, {}, IExternalProps>({
     stateToProps: (state, props) => {
       const stats = selectBookbuildingStats(state, props.etoId);
@@ -192,7 +192,7 @@ const CampaigningActivatedWidget = compose<React.FunctionComponent<IExternalProp
         isInvestor: selectIsInvestor(state),
         isVerifiedInvestor: selectIsVerifiedInvestor(state),
         pledgedAmount: stats ? stats.pledgedAmount : null,
-        investorsCount: stats ? stats.investorsCount : 0,
+        investorsCount: stats ? stats.investorsCount : new BigNumber(0),
         pledge: selectMyPledge(state, props.etoId),
       };
     },
@@ -209,11 +209,11 @@ const CampaigningActivatedWidget = compose<React.FunctionComponent<IExternalProp
   withProps<IWithProps, IStateProps & IExternalProps>(
     ({ pledge, isInvestor, investorsLimit, investorsCount, nextStateStartDate }) => {
       const count =
-        isInvestor && pledge && investorsCount !== 0 ? investorsCount - 1 : investorsCount;
+        isInvestor && pledge && !investorsCount.isZero() ? investorsCount.minus(1) : investorsCount;
 
       return {
-        isInvestorsLimitReached: count >= investorsLimit,
-        isWaitingForNextStateToStart: !!nextStateStartDate && nextStateStartDate > new Date(),
+        isInvestorsLimitReached: count.gte(investorsLimit),
+        isWaitingForNextStateToStart: !!nextStateStartDate && nextStateStartDate > new Date(), //fixme this is not utc
       };
     },
   ),

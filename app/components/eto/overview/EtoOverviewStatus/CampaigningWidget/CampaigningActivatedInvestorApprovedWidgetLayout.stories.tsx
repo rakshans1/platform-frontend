@@ -6,11 +6,12 @@ import {
   CampaigningActivatedInvestorApprovedWidgetLayout,
   CampaigningFormState,
 } from "./CampaigningActivatedInvestorApprovedWidgetLayout";
+import BigNumber from "bignumber.js";
 
 storiesOf("ETO/CampaigningActivatedInvestorApprovedWidgetLayout", module)
   .add("default", () => (
     <CampaigningActivatedInvestorApprovedWidgetLayout
-      pledgedAmount={10}
+      pledgedAmount={new BigNumber(10)}
       consentToRevealEmail={true}
       backNow={action("back now")}
       formState={CampaigningFormState.VIEW}
@@ -23,7 +24,7 @@ storiesOf("ETO/CampaigningActivatedInvestorApprovedWidgetLayout", module)
   ))
   .add("editing", () => (
     <CampaigningActivatedInvestorApprovedWidgetLayout
-      pledgedAmount={10}
+      pledgedAmount={new BigNumber(10)}
       consentToRevealEmail={true}
       backNow={action("back now")}
       formState={CampaigningFormState.EDIT}

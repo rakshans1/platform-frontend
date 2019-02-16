@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 
-import { ERequestStatus } from "../../lib/api/KycApi.interfaces";
+import { ERequestStatus } from "../../modules/kyc/interfaces";
 import { EUserType, IStateUser } from "./interfaces";
 import { IAppState } from "../../store";
 import { selectKycRequestStatus } from "../kyc/selectors";

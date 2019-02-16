@@ -4,14 +4,12 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { setDisplayName } from "recompose";
 import { compose } from "redux";
 
-import {
-  EtoEquityTokenInfoType,
-  TPartialEtoSpecData,
-} from "../../../../lib/api/eto/EtoApi.interfaces";
+import {EtoEquityTokenInfoValidator} from "../../../../modules/eto-flow/validators"
+import * as publicEtoDataInterfaces from "../../../../modules/eto-flow/interfaces/PublicEtoData";
 import { etoFormIsReadonly } from "../../../../lib/api/eto/EtoApiUtils";
 import { actions } from "../../../../modules/actions";
 import { selectIssuerEto, selectIssuerEtoState } from "../../../../modules/eto-flow/selectors";
-import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
+import { EEtoFormTypes } from "../../../../modules/eto-flow/interfaces/interfaces";
 import { appConnect } from "../../../../store";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import { FormField } from "../../../shared/forms";
@@ -20,6 +18,8 @@ import { FormSingleFileUpload } from "../../../shared/forms/fields/FormSingleFil
 import { EtoFormBase } from "../EtoFormBase";
 import { Section } from "../Shared";
 import * as styles from "../Shared.module.scss";
+import {DeepPartial} from "../../../../types";
+import {convert} from "../../utils";
 
 interface IExternalProps {
   readonly: boolean;
@@ -28,19 +28,19 @@ interface IExternalProps {
 interface IStateProps {
   loadingData: boolean;
   savingData: boolean;
-  stateValues: TPartialEtoSpecData;
+  stateValues: DeepPartial<publicEtoDataInterfaces.IBlPublicEtoData>;
 }
 
 interface IDispatchProps {
-  saveData: (values: TPartialEtoSpecData) => void;
+  saveData: (values: DeepPartial<publicEtoDataInterfaces.IBlPublicEtoData>) => void;
 }
 
-type IProps = IExternalProps & IStateProps & IDispatchProps & FormikProps<TPartialEtoSpecData>;
+type IProps = IExternalProps & IStateProps & IDispatchProps & FormikProps<DeepPartial<publicEtoDataInterfaces.IBlPublicEtoData>>;
 
 const EtoEquityTokenInfoComponent: React.FunctionComponent<IProps> = ({ readonly, savingData }) => (
   <EtoFormBase
     title={<FormattedMessage id="eto.form.eto-equity-token-info.title" />}
-    validator={EtoEquityTokenInfoType.toYup()}
+    validator={EtoEquityTokenInfoValidator.toYup()}
   >
     <Section>
       <FormField
@@ -92,24 +92,24 @@ const EtoEquityTokenInfo = compose<React.FunctionComponent<IExternalProps>>(
     stateToProps: s => ({
       loadingData: s.etoFlow.loading,
       savingData: s.etoFlow.saving,
-      stateValues: selectIssuerEto(s) as TPartialEtoSpecData,
+      stateValues: selectIssuerEto(s) as DeepPartial<publicEtoDataInterfaces.IBlPublicEtoData>,
       readonly: etoFormIsReadonly(EEtoFormTypes.EtoEquityTokenInfo, selectIssuerEtoState(s)),
     }),
     dispatchToProps: dispatch => ({
-      saveData: (data: TPartialEtoSpecData) => {
+      saveData: (data: DeepPartial<publicEtoDataInterfaces.IBlPublicEtoData>) => {
         dispatch(
           actions.etoFlow.saveDataStart({
             companyData: {},
             etoData: {
-              ...data,
+              ...convert(data, publicEtoDataInterfaces.blToStateConversionSpec),
             },
           }),
         );
       },
     }),
   }),
-  withFormik<IStateProps & IDispatchProps, TPartialEtoSpecData>({
-    validationSchema: EtoEquityTokenInfoType.toYup(),
+  withFormik<IStateProps & IDispatchProps, DeepPartial<publicEtoDataInterfaces.IBlPublicEtoData>>({
+    validationSchema: EtoEquityTokenInfoValidator.toYup(),
     mapPropsToValues: props => props.stateValues,
     handleSubmit: (values, props) => props.props.saveData(values),
   }),

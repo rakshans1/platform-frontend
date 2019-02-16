@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { compose } from "recompose";
 
 import { CounterWidget, TagsWidget } from ".";
-import { EEtoDocumentType } from "../../../../lib/api/eto/EtoFileApi.interfaces";
+import { EEtoDocumentType } from "../../../../modules/eto-documents/interfaces";
 import { getShareAndTokenPrice } from "../../../../lib/api/eto/EtoUtils";
 import { selectIsAuthorized } from "../../../../modules/auth/selectors";
 import {
@@ -17,8 +17,8 @@ import {
 import { selectEtoOnChainStateById } from "../../../../modules/public-etos/selectors";
 import {
   EETOStateOnChain,
-  TEtoWithCompanyAndContract,
-} from "../../../../modules/public-etos/types";
+  TBlEtoWithCompanyAndContract,
+} from "../../../../modules/public-etos/interfaces/interfaces";
 import { routingActions } from "../../../../modules/routing/actions";
 import { appConnect } from "../../../../store";
 import { CommonHtmlProps } from "../../../../types";
@@ -38,9 +38,10 @@ import { RegisterNowWidget } from "./RegisterNowWidget";
 import { TokenSymbolWidget } from "./TokenSymbolWidget";
 
 import * as styles from "./EtoOverviewStatus.module.scss";
+import BigNumber from "bignumber.js";
 
 interface IExternalProps {
-  eto: TEtoWithCompanyAndContract;
+  eto: TBlEtoWithCompanyAndContract;
   publicView?: boolean;
 }
 
@@ -160,8 +161,8 @@ const EtoStatusManager = ({
   }
 };
 
-function applyDiscountToPrice(price: number, discountFraction: number): number {
-  return price * (1 - discountFraction);
+function applyDiscountToPrice(price: BigNumber, discountFraction: BigNumber): BigNumber {
+  return price.mul(new BigNumber(1).minus(discountFraction));
 }
 
 function onEtoNavigationClick(
@@ -322,7 +323,7 @@ const EtoOverviewStatusLayout: React.FunctionComponent<
                         {" ("}
                         <FormattedMessage
                           id="shared-component.eto-overview-status.included-discount-percentage"
-                          values={{ percentage: eto.whitelistDiscountFraction! * 100 }}
+                          values={{ percentage: eto.whitelistDiscountFraction.mul(100).toNumber() }}
                         />
                         {")"}
                       </>
@@ -332,7 +333,7 @@ const EtoOverviewStatusLayout: React.FunctionComponent<
                         {" ("}
                         <FormattedMessage
                           id="shared-component.eto-overview-status.included-discount-percentage"
-                          values={{ percentage: eto.publicDiscountFraction! * 100 }}
+                          values={{ percentage: eto.publicDiscountFraction.mul(100).toNumber() }}
                         />
                         {")"}
                       </>

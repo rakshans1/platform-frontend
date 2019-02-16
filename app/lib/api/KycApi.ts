@@ -1,7 +1,7 @@
-import { inject, injectable } from "inversify";
+import {inject, injectable} from "inversify";
 
-import { symbols } from "../../di/symbols";
-import { IHttpClient, IHttpResponse } from "./client/IHttpClient";
+import {symbols} from "../../di/symbols";
+import {IHttpClient, IHttpResponse} from "./client/IHttpClient";
 
 import {
   IKycBeneficialOwner,
@@ -10,11 +10,13 @@ import {
   IKycIndividualData,
   IKycLegalRepresentative,
   IKycRequestState,
-  KycFileInfoShape,
-  KycIndividualDataSchema,
-  KycLegalRepresentativeSchema,
-  KycRequestStateSchema,
-} from "./KycApi.interfaces";
+} from "../../modules/kyc/interfaces";
+import {
+  KycFileInfoValidator, //FIXME need special validators for api
+  KycIndividualDataValidator,
+  KycLegalRepresentativeValidator,
+  KycRequestStateValidator,
+} from "../../modules/kyc/validators"
 
 const BASE_PATH = "/api/kyc/";
 const INDIVIDUAL_DATA_PATH = "/individual/data";
@@ -41,7 +43,9 @@ const BENEFICIAL_OWNER_DOCUMENT_PATH = "/beneficial-owner/{boid}/document";
 @injectable()
 export class KycApi {
   // tslint:disable-next-line
-  constructor(@inject(symbols.authorizedJsonHttpClient) private httpClient: IHttpClient) {}
+  constructor(@inject(symbols.authorizedJsonHttpClient) private httpClient: IHttpClient) {
+  }
+
   // tslint:disable-next-line
 
   /**
@@ -52,7 +56,7 @@ export class KycApi {
     return await this.httpClient.get<IKycBusinessData>({
       baseUrl: BASE_PATH,
       url: INDIVIDUAL_DATA_PATH,
-      responseSchema: KycIndividualDataSchema,
+      responseSchema: KycIndividualDataValidator,
     });
   }
 
@@ -63,7 +67,7 @@ export class KycApi {
       baseUrl: BASE_PATH,
       url: INDIVIDUAL_DATA_PATH,
       body: data,
-      responseSchema: KycIndividualDataSchema,
+      responseSchema: KycIndividualDataValidator,
     });
   }
 
@@ -83,7 +87,7 @@ export class KycApi {
       baseUrl: BASE_PATH,
       url: INDIVIDUAL_DOCUMENT_PATH,
       formData: data,
-      responseSchema: KycFileInfoShape,
+      responseSchema: KycFileInfoValidator,
     });
   }
 
@@ -92,7 +96,7 @@ export class KycApi {
     return await this.httpClient.get<IKycRequestState>({
       baseUrl: BASE_PATH,
       url: INDIVIDUAL_REQUEST_PATH,
-      responseSchema: KycRequestStateSchema,
+      responseSchema: KycRequestStateValidator,
     });
   }
 
@@ -100,7 +104,7 @@ export class KycApi {
     return await this.httpClient.put<IKycRequestState>({
       baseUrl: BASE_PATH,
       url: INDIVIDUAL_REQUEST_PATH,
-      responseSchema: KycRequestStateSchema,
+      responseSchema: KycRequestStateValidator,
     });
   }
 
@@ -108,7 +112,7 @@ export class KycApi {
     return await this.httpClient.put<IKycRequestState>({
       baseUrl: BASE_PATH,
       url: INSTANT_ID_REQUEST_PATH,
-      responseSchema: KycRequestStateSchema,
+      responseSchema: KycRequestStateValidator,
     });
   }
 
@@ -128,7 +132,7 @@ export class KycApi {
     return await this.httpClient.get<IKycLegalRepresentative>({
       baseUrl: BASE_PATH,
       url: LEGAL_REPRESENTATIVE_PATH,
-      responseSchema: KycLegalRepresentativeSchema,
+      responseSchema: KycLegalRepresentativeValidator,
     });
   }
 
@@ -139,7 +143,7 @@ export class KycApi {
       baseUrl: BASE_PATH,
       url: LEGAL_REPRESENTATIVE_PATH,
       body: data,
-      responseSchema: KycLegalRepresentativeSchema,
+      responseSchema: KycLegalRepresentativeValidator,
     });
   }
 
@@ -158,7 +162,7 @@ export class KycApi {
       baseUrl: BASE_PATH,
       url: LEGAL_REPRESENTATIVE_DOCUMENT_PATH,
       formData: data,
-      responseSchema: KycFileInfoShape,
+      responseSchema: KycFileInfoValidator,
     });
   }
 
@@ -193,7 +197,7 @@ export class KycApi {
       baseUrl: BASE_PATH,
       url: BUSINESS_DOCUMENT_PATH,
       formData: data,
-      responseSchema: KycFileInfoShape,
+      responseSchema: KycFileInfoValidator,
     });
   }
 
@@ -250,7 +254,7 @@ export class KycApi {
       baseUrl: BASE_PATH,
       url: BENEFICIAL_OWNER_DOCUMENT_PATH.replace("{boid}", boid),
       formData: data,
-      responseSchema: KycFileInfoShape,
+      responseSchema: KycFileInfoValidator,
     });
   }
 
@@ -259,7 +263,7 @@ export class KycApi {
     return await this.httpClient.get<IKycRequestState>({
       baseUrl: BASE_PATH,
       url: BUSINESS_REQUEST_PATH,
-      responseSchema: KycRequestStateSchema,
+      responseSchema: KycRequestStateValidator,
     });
   }
 
@@ -267,7 +271,7 @@ export class KycApi {
     return await this.httpClient.put<IKycRequestState>({
       baseUrl: BASE_PATH,
       url: BUSINESS_REQUEST_PATH,
-      responseSchema: KycRequestStateSchema,
+      responseSchema: KycRequestStateValidator,
     });
   }
 }

@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Col } from "reactstrap";
 
-import { EEtoState } from "../../../lib/api/eto/EtoApi.interfaces";
+import { EEtoState } from "../../../modules/eto-flow/interfaces/interfaces";
 import { etoFormIsReadonly } from "../../../lib/api/eto/EtoApiUtils";
 import {
   selectIsGeneralEtoLoading,
@@ -11,7 +11,7 @@ import {
   selectIssuerEtoState,
   selectShouldEtoDataLoad,
 } from "../../../modules/eto-flow/selectors";
-import { EEtoFormTypes } from "../../../modules/eto-flow/types";
+import { EEtoFormTypes } from "../../../modules/eto-flow/interfaces/interfaces";
 import {
   calculateCompanyInformationProgress,
   calculateEtoEquityTokenInfoProgress,

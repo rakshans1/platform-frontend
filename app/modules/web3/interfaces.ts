@@ -1,4 +1,7 @@
 import {TWalletMetadata} from "../../lib/persistence/WalletMetadataObjectStorage";
+import BigNumber from "bignumber.js";
+import {NumericString} from "../../types";
+import {bigNumberToNumericString, numericStringToBigNumber} from "../../utils/numericStringUtils";
 
 export interface IDisconnectedWeb3State {
   connected: false;
@@ -32,4 +35,54 @@ export enum EWalletSubType {
   METAMASK = "METAMASK",
   PARITY = "PARITY",
   UNKNOWN = "UNKNOWN",
+}
+
+export interface IBlTxData {
+  to: string;
+  value: BigNumber;
+  data?: string;
+  from: string;
+  input?: string;
+  gas: BigNumber;
+  gasPrice: BigNumber;
+}
+
+export interface IStateTxData {
+  to: string;
+  value: NumericString;
+  data?: string;
+  from: string;
+  input?: string;
+  gas: NumericString;
+  gasPrice: NumericString;
+}
+
+export interface IApiTxData {
+  to: string;
+  value: string;
+  data?: string;
+  from: string;
+  input?: string;
+  gas: string;
+  gasPrice: string;
+}
+
+export const stateToBlConversionSpec = {
+  value: numericStringToBigNumber(),
+  gas: numericStringToBigNumber(),
+  gasPrice: numericStringToBigNumber()
+};
+
+export const blToStateConversionSpec = {
+  value: bigNumberToNumericString(),
+  gas: bigNumberToNumericString(),
+  gasPrice: bigNumberToNumericString()
+};
+
+export interface IRawTxData extends IApiTxData {
+  nonce: string;
+}
+
+export interface IEthereumNetworkConfig {
+  rpcUrl: string;
 }

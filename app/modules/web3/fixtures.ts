@@ -4,7 +4,7 @@ import {
   ILedgerWalletMetadata,
   ILightWalletMetadata,
 } from "../../lib/persistence/WalletMetadataObjectStorage";
-import { EWalletSubType, EWalletType } from "./types";
+import { EWalletSubType, EWalletType } from "./interfaces";
 
 export const getDummyLightWalletMetadata = (): ILightWalletMetadata => ({
   walletType: EWalletType.LIGHT,

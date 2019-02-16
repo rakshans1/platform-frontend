@@ -2,7 +2,7 @@ import * as React from "react";
 import { setDisplayName } from "recompose";
 import { compose } from "redux";
 
-import { IEtoDocument, immutableDocumentName } from "../../lib/api/eto/EtoFileApi.interfaces";
+import { IEtoDocument, immutableDocumentName } from "../../modules/eto-documents/interfaces";
 import { ImmutableFileId } from "../../lib/api/ImmutableStorage.interfaces";
 import { actions } from "../../modules/actions";
 import { appConnect } from "../../store";

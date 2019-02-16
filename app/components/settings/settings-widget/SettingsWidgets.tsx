@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Col } from "reactstrap";
 
-import { ERequestStatus } from "../../../lib/api/KycApi.interfaces";
+import { ERequestStatus } from "../../../modules/kyc/interfaces";
 import { BackupSeedWidget } from "../backup-seed/BackupSeedWidget";
 import { KycStatusWidget } from "../kyc-states/KycStatusWidget";
 import { VerifyEmailWidget } from "../verify-email/VerifyEmailWidget";

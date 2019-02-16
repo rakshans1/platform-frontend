@@ -1,7 +1,7 @@
 import { createAction, createActionFactory, createSimpleAction } from "../actionsUtils";
 import { ETokenType } from "../tx/interfaces";
 import {IStateLockedWallet} from "../wallet/interfaces";
-import { IStateWalletMigrationData } from "./interfaces/intefaces";
+import { IStateWalletMigrationData } from "./interfaces/WalletMigrationData";
 
 export const icbmWalletBalanceModalActions = {
   // UX

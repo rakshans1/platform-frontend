@@ -1,31 +1,52 @@
 import { storiesOf } from "@storybook/react";
 import * as moment from "moment";
 import * as React from "react";
+import BigNumber from "bignumber.js";
 
-import { testEto } from "../../../../../test/fixtures";
+import {testEtoBl, testEtoState} from "../../../../../test/fixtures";
 import {
-  EETOStateOnChain,
-  TEtoWithCompanyAndContract,
-} from "../../../../modules/public-etos/types";
+  EETOStateOnChain, TBlEtoWithCompanyAndContract,
+  TStateEtoWithCompanyAndContract,
+} from "../../../../modules/public-etos/interfaces/interfaces";
 import { withStore } from "../../../../utils/storeDecorator";
 import { EtoWidgetContext } from "../../EtoWidgetView";
 import { EtoOverviewStatusLayout } from "./EtoOverviewStatus";
+import {NumericString} from "../../../../types";
 
-const eto: TEtoWithCompanyAndContract = {
-  ...testEto,
-  preMoneyValuationEur: 10000,
-  existingCompanyShares: 10,
-  equityTokensPerShare: 10,
-  publicDiscountFraction: 0.2,
-  whitelistDiscountFraction: 0.3,
-  maxPledges: 100,
-  maxTicketEur: 1000,
-  minTicketEur: 1,
+const etoState: TStateEtoWithCompanyAndContract = {
+  ...testEtoState,
+  preMoneyValuationEur: "10000" as NumericString,
+  existingCompanyShares: "10" as NumericString,
+  equityTokensPerShare: "10" as NumericString,
+  publicDiscountFraction: "0.2" as NumericString,
+  whitelistDiscountFraction: "0.3" as NumericString,
+  maxPledges: "100" as NumericString,
+  maxTicketEur: "1000" as NumericString,
+  minTicketEur: "1" as NumericString,
   equityTokenName: "TokenName",
   equityTokenSymbol: "TKN",
-  company: { ...testEto.company, brandName: "BrandName" },
+  company: { ...testEtoState.company, brandName: "BrandName" },
   contract: {
-    ...testEto.contract!,
+    ...testEtoState.contract!,
+    timedState: EETOStateOnChain.Whitelist,
+  },
+};
+
+const etoBl: TBlEtoWithCompanyAndContract = {
+  ...testEtoBl,
+  preMoneyValuationEur: new BigNumber("10000"),
+  existingCompanyShares: new BigNumber("10"),
+  equityTokensPerShare: new BigNumber("10"),
+  publicDiscountFraction: new BigNumber("0.2"),
+  whitelistDiscountFraction: new BigNumber("0.3"),
+  maxPledges: new BigNumber("100"),
+  maxTicketEur: new BigNumber("1000"),
+  minTicketEur: new BigNumber("1"),
+  equityTokenName: "TokenName",
+  equityTokenSymbol: "TKN",
+  company: { ...testEtoBl.company, brandName: "BrandName" },
+  contract: {
+    ...testEtoBl.contract!,
     timedState: EETOStateOnChain.Whitelist,
   },
 };
@@ -34,16 +55,16 @@ storiesOf("ETO/EtoOverviewStatus", module)
   .addDecorator(
     withStore({
       publicEtos: {
-        publicEtos: { [eto.previewCode]: eto },
-        companies: { [eto.companyId]: eto.company },
-        contracts: { [eto.previewCode]: eto.contract },
+        publicEtos: { [etoState.previewCode]: etoState },
+        companies: { [etoState.companyId]: etoState.company },
+        contracts: { [etoState.previewCode]: etoState.contract },
       },
     }),
   )
   .add("default", () => (
-    <EtoWidgetContext.Provider value={eto.previewCode}>
+    <EtoWidgetContext.Provider value={etoBl.previewCode}>
       <EtoOverviewStatusLayout
-        eto={eto}
+        eto={etoBl}
         isAuthorized={true}
         isEligibleToPreEto={true}
         maxCapExceeded={false}
@@ -55,7 +76,7 @@ storiesOf("ETO/EtoOverviewStatus", module)
   .add("not public", () => (
     <EtoWidgetContext.Provider value={undefined}>
       <EtoOverviewStatusLayout
-        eto={eto}
+        eto={etoBl}
         isAuthorized={true}
         isEligibleToPreEto={true}
         maxCapExceeded={false}
@@ -66,9 +87,9 @@ storiesOf("ETO/EtoOverviewStatus", module)
     </EtoWidgetContext.Provider>
   ))
   .add("with whitelist discount", () => (
-    <EtoWidgetContext.Provider value={eto.previewCode}>
+    <EtoWidgetContext.Provider value={etoBl.previewCode}>
       <EtoOverviewStatusLayout
-        eto={eto}
+        eto={etoBl}
         isAuthorized={true}
         isEligibleToPreEto={true}
         isPreEto={true}
@@ -79,9 +100,9 @@ storiesOf("ETO/EtoOverviewStatus", module)
     </EtoWidgetContext.Provider>
   ))
   .add("without discount", () => (
-    <EtoWidgetContext.Provider value={eto.previewCode}>
+    <EtoWidgetContext.Provider value={etoBl.previewCode}>
       <EtoOverviewStatusLayout
-        eto={{ ...eto, publicDiscountFraction: 0 }}
+        eto={{ ...etoBl, publicDiscountFraction: new BigNumber(0) }}
         isAuthorized={true}
         isEligibleToPreEto={true}
         maxCapExceeded={false}
@@ -91,9 +112,9 @@ storiesOf("ETO/EtoOverviewStatus", module)
     </EtoWidgetContext.Provider>
   ))
   .add("whitelisted not eligible", () => (
-    <EtoWidgetContext.Provider value={eto.previewCode}>
+    <EtoWidgetContext.Provider value={etoBl.previewCode}>
       <EtoOverviewStatusLayout
-        eto={{ ...eto }}
+        eto={{ ...etoBl }}
         isAuthorized={true}
         isEligibleToPreEto={false}
         maxCapExceeded={false}
@@ -103,12 +124,12 @@ storiesOf("ETO/EtoOverviewStatus", module)
     </EtoWidgetContext.Provider>
   ))
   .add("successful", () => (
-    <EtoWidgetContext.Provider value={eto.previewCode}>
+    <EtoWidgetContext.Provider value={etoBl.previewCode}>
       <EtoOverviewStatusLayout
         eto={{
-          ...eto,
+          ...etoBl,
           isBookbuilding: true,
-          contract: { ...eto.contract, timedState: EETOStateOnChain.Claim } as any,
+          contract: { ...etoBl.contract, timedState: EETOStateOnChain.Claim } as any,
         }}
         isAuthorized={true}
         isEligibleToPreEto={false}
@@ -119,14 +140,14 @@ storiesOf("ETO/EtoOverviewStatus", module)
     </EtoWidgetContext.Provider>
   ))
   .add("max cap exceeded whitelisted", () => (
-    <EtoWidgetContext.Provider value={eto.previewCode}>
+    <EtoWidgetContext.Provider value={etoBl.previewCode}>
       <EtoOverviewStatusLayout
         eto={{
-          ...eto,
+          ...etoBl,
           contract: {
-            ...eto.contract,
+            ...etoBl.contract,
             startOfStates: {
-              ...eto.contract!.startOfStates,
+              ...etoBl.contract!.startOfStates,
               [EETOStateOnChain.Public]: moment()
                 .add(7, "days")
                 .toDate(),
@@ -142,13 +163,13 @@ storiesOf("ETO/EtoOverviewStatus", module)
     </EtoWidgetContext.Provider>
   ))
   .add("max cap exceeded public", () => (
-    <EtoWidgetContext.Provider value={eto.previewCode}>
+    <EtoWidgetContext.Provider value={etoBl.previewCode}>
       <EtoOverviewStatusLayout
         eto={
           {
-            ...eto,
+            ...etoBl,
             contract: {
-              ...eto.contract,
+              ...etoBl.contract,
               timedState: EETOStateOnChain.Public,
             },
           } as any

@@ -19,6 +19,15 @@ export interface IBlEtoContractData {
   etoCommitmentAddress: string;
 }
 
+export interface IApiEtoContractData {
+  timedState: EETOStateOnChain;
+  totalInvestment: totalInvestmentInterfaces.IApiEtoTotalInvestment;
+  startOfStates: TEtoStartOfStates;
+  equityTokenAddress: string;
+  etoTermsAddress: string;
+  etoCommitmentAddress: string;
+}
+
 export const stateToBlConversionSpec = {
   totalInvestment: totalInvestmentInterfaces.stateToBlConversionSpec
 }

@@ -12,6 +12,7 @@ import {isValidEtoStartDate} from "./utils";
 import {DeepPartial} from "../../types";
 import {IBlCompanyEtoData} from "./interfaces/CompanyEtoData";
 import {IBlPublicEtoData} from "./interfaces/PublicEtoData";
+import BigNumber from "bignumber.js";
 
 export const selectIssuerEtoPreviewCode = (state: IAppState): string | undefined => state.etoFlow.etoPreviewCode;
 
@@ -45,7 +46,7 @@ export const selectIsBookBuilding = (state: IAppState): boolean => {
   return false;
 };
 
-export const selectMaxPledges = (state: IAppState): number | null => {
+export const selectMaxPledges = (state: IAppState): BigNumber | null => {
   const eto = selectIssuerEto(state);
 
   return eto !== undefined ? eto.maxPledges : null;

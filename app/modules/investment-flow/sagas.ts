@@ -4,7 +4,7 @@ import { put, select, take, takeEvery, takeLatest } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
-import * as txInterfaces from "../../lib/web3/types";
+import * as txInterfaces from "../../modules/web3/interfaces";
 import { IAppState } from "../../store";
 import { compareBigNumbers } from "../../utils/BigNumberUtils";
 import { isLessThanNHours } from "../../utils/Date.utils";

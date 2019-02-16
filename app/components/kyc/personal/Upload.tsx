@@ -6,7 +6,7 @@ import { appConnect } from "../../../store";
 
 import { actions } from "../../../modules/actions";
 
-import { EKycRequestType, IKycFileInfo } from "../../../lib/api/KycApi.interfaces";
+import { EKycRequestType, IKycFileInfo } from "../../../modules/kyc/interfaces";
 import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { Button } from "../../shared/buttons";

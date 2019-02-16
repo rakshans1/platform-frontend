@@ -2,7 +2,7 @@ import * as hex2ascii from "hex2ascii";
 import { injectable } from "inversify";
 import * as Web3 from "web3";
 
-import { EWalletSubType, EWalletType } from "../../modules/web3/types";
+import { EWalletSubType, EWalletType } from "../../modules/web3/interfaces";
 import { EthereumAddress, EthereumNetworkId } from "../../types";
 import { promisify } from "../../utils/promisify";
 import { IBrowserWalletMetadata } from "../persistence/WalletMetadataObjectStorage";

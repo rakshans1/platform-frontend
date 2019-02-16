@@ -10,13 +10,14 @@ import { SectionHeader } from "../../shared/SectionHeader";
 import * as iconEth from "../../../assets/img/eth_icon.svg";
 import * as iconNeu from "../../../assets/img/neu_icon.svg";
 import * as styles from "./IcbmWalletBalanceModal.module.scss";
+import BigNumber from "bignumber.js";
 
 interface IBalanceModal {
   isVerificationFullyDone: boolean;
   startMigration: () => void;
   ethAddress: string;
-  neumarksDue: string;
-  etherBalance: string;
+  neumarksDue: BigNumber;
+  etherBalance: BigNumber;
   downloadICBMAgreement: () => void;
 }
 
@@ -55,9 +56,9 @@ const BalanceFooter: React.FunctionComponent<{
 export const BalanceModal: React.FunctionComponent<IBalanceModal> = ({
   isVerificationFullyDone,
   startMigration,
-  ethAddress = "",
-  neumarksDue = "0",
-  etherBalance = "0",
+  ethAddress = "", //fixme invalid value
+  neumarksDue = new BigNumber("0"),
+  etherBalance = new BigNumber("0"),
   downloadICBMAgreement,
 }) => {
   return (

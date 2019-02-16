@@ -7,13 +7,13 @@ import { compose } from "recompose";
 import {
   EEtoDocumentType,
   IEtoDocument,
-  immutableDocumentName,
-} from "../../../lib/api/eto/EtoFileApi.interfaces";
-import { ImmutableFileId } from "../../../lib/api/ImmutableStorage.interfaces";
+  immutableDocumentNames,
+} from "../../../modules/eto-documents/interfaces";
+import { IImmutableFileId } from "../../../modules/immutable-file/interfaces";
 import { actions } from "../../../modules/actions";
 import { selectIsPendingDownload } from "../../../modules/immutable-file/selectors";
 import { selectEtoWithCompanyAndContractById } from "../../../modules/public-etos/selectors";
-import { TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
+import { TBlEtoWithCompanyAndContract } from "../../../modules/public-etos/interfaces/interfaces";
 import { appConnect } from "../../../store";
 import { getDocumentTitles } from "../../documents/utils";
 import {
@@ -32,14 +32,14 @@ import * as styles from "./DownloadTokenAgreementModal.module.scss";
 
 interface IStateProps {
   isOpen: boolean;
-  eto: TEtoWithCompanyAndContract | undefined;
+  eto: TBlEtoWithCompanyAndContract | undefined;
   isPendingDownload: (ipfsHash: string) => boolean;
 }
 
 interface IDispatchProps {
   onClose?: () => void;
   generateTemplateByEtoId: (immutableFileId: IEtoDocument, etoId: string) => void;
-  downloadDocument: (immutableFileId: ImmutableFileId, fileName: string) => void;
+  downloadDocument: (immutableFileId: IImmutableFileId, fileName: string) => void;
 }
 
 type IComponentProps = IStateProps & IDispatchProps;
@@ -91,7 +91,7 @@ const DownloadTokenAgreementModalComponent: React.FunctionComponent<IComponentPr
                                 mimeType: document.mimeType,
                                 asPdf: true,
                               },
-                              immutableDocumentName[document.documentType],
+                              immutableDocumentNames[document.documentType],
                             )
                           }
                         />
@@ -146,7 +146,7 @@ const DownloadTokenAgreementModal = compose<IComponentProps, {}>(
       };
     },
     dispatchToProps: dispatch => ({
-      downloadDocument: (immutableFileId: ImmutableFileId, fileName: string) => {
+      downloadDocument: (immutableFileId: IImmutableFileId, fileName: string) => {
         dispatch(actions.immutableStorage.downloadImmutableFile(immutableFileId, fileName));
       },
       generateTemplateByEtoId: (immutableFileId: IEtoDocument, etoId: string) => {

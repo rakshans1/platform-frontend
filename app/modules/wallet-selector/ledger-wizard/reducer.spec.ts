@@ -6,10 +6,10 @@ import { actions } from "../../actions";
 import {
   DEFAULT_DERIVATION_PATH_PREFIX,
   DEFAULT_LEDGER_ACCOUNTS_PER_PAGE,
-  ILedgerWizardState,
   ledgerWizardInitialState,
   ledgerWizardReducer,
 } from "./reducer";
+import {  ILedgerWizardState} from './interfaces'
 
 describe("Wallet selector > Ledger wizard > reducer", () => {
   const getCommonInitialState = () => ({
