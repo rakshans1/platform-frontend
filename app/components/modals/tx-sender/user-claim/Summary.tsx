@@ -120,6 +120,7 @@ export const UserClaimSummaryComponent: React.FunctionComponent<TComponentProps>
                         className={styles.icon}
                         svgIcon={iconDownload}
                         disabled={isPendingDownload(document.ipfsHash)}
+                        data-test-id="token-claim-agreements"
                         onClick={() =>
                           downloadDocument(
                             {
@@ -154,6 +155,7 @@ export const UserClaimSummaryComponent: React.FunctionComponent<TComponentProps>
                       <ButtonIcon
                         className={styles.icon}
                         svgIcon={iconDownload}
+                        data-test-id="token-claim-agreements"
                         disabled={isPendingDownload(template.ipfsHash)}
                         onClick={() => generateTemplateByEtoId({ ...template, asPdf: true }, etoId)}
                       />
