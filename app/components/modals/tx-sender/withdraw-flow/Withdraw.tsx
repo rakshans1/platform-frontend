@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { Formik, FormikErrors, yupToFormErrors } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
@@ -5,11 +6,11 @@ import { Col, Container, Row } from "reactstrap";
 import { compose, withHandlers } from "recompose";
 import { NumberSchema } from "yup";
 
-import { IBlTxData } from "../../../../lib/web3/types";
+import * as web3Interfaces from "../../../../modules/web3/interfaces";
 import * as YupTS from "../../../../lib/yup-ts";
 import { actions } from "../../../../modules/actions";
 import { ETxSenderType, IDraftType } from "../../../../modules/tx/interfaces";
-import { EValidationState } from "../../../../modules/tx/sender/reducer";
+import { EValidationState } from "../../../../modules/tx/sender/interfaces";
 import { selectTxValidationState } from "../../../../modules/tx/sender/selectors";
 import { selectMaxAvailableEther } from "../../../../modules/wallet/selectors";
 import { doesUserHaveEnoughEther, validateAddress } from "../../../../modules/web3/utils";
@@ -20,11 +21,12 @@ import { Button } from "../../../shared/buttons";
 import { Form, FormField } from "../../../shared/forms";
 import { ValidationErrorMessage } from "../shared/ValidationErrorMessage";
 
-import { OmitKeys } from "../../../../types";
+import {NumericString, OmitKeys} from "../../../../types";
 import * as styles from "./Withdraw.module.scss";
+import {convert} from "../../../eto/utils";
 
 interface IStateProps {
-  maxEther: string;
+  maxEther: BigNumber;
   validationState?: EValidationState;
 }
 
@@ -40,12 +42,12 @@ interface IHandlersProps {
 
 interface IDispatchProps {
   onValidate: (txDraft: IDraftType) => any;
-  onAccept: (tx: Partial<IBlTxData>) => any;
+  onAccept: (tx: IFormikProps) => any;
 }
 
 type TProps = IStateProps & OmitKeys<IDispatchProps, "onValidate"> & IHandlersProps;
 
-const getWithdrawFormSchema = (maxEther: string) =>
+const getWithdrawFormSchema = (maxEther: BigNumber) =>
   YupTS.object({
     to: YupTS.string().enhance(v =>
       v.test(
@@ -148,7 +150,7 @@ const Withdraw = compose<TProps & IIntlProps, {}>(
       validationState: selectTxValidationState(state),
     }),
     dispatchToProps: d => ({
-      onAccept: (tx: Partial<IBlTxData>) => d(actions.txSender.txSenderAcceptDraft(tx)),
+      onAccept: (tx: IFormikProps) => d(actions.txSender.txSenderAcceptDraft(convert(tx, web3Interfaces.blToStateConversionSpec))),
       onValidate: (txDraft: IDraftType) => d(actions.txValidator.txSenderValidateDraft(txDraft)),
     }),
   }),
@@ -163,8 +165,8 @@ const Withdraw = compose<TProps & IIntlProps, {}>(
       }
 
       onValidate({
-        to: values.to,
-        value: values.value,
+        to: values.to as NumericString,
+        value: new BigNumber(values.value),
         type: ETxSenderType.WITHDRAW,
       });
 

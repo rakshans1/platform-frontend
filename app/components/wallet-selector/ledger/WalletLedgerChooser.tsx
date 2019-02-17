@@ -4,8 +4,8 @@ import { compose } from "redux";
 import { actions } from "../../../modules/actions";
 import {
   ILedgerAccount,
-  selectHasPreviousPage,
-} from "../../../modules/wallet-selector/ledger-wizard/reducer";
+} from "../../../modules/wallet-selector/ledger-wizard/interfaces";
+import {selectHasPreviousPage} from "../../../modules/wallet-selector/ledger-wizard/reducer";
 import { appConnect } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { withActionWatcher } from "../../../utils/withActionWatcher";

@@ -1,24 +1,25 @@
 import { action } from "@storybook/addon-actions";
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
+import BigNumber from "bignumber.js";
 
-import { ITokenDisbursal } from "../../../../modules/investor-portfolio/types";
+import { IBlTokenDisbursal } from "../../../../modules/investor-portfolio/interfaces/TokenDisbursal";
 import { EthereumAddressWithChecksum } from "../../../../types";
 import { withModalBody } from "../../../../utils/storybookHelpers";
 import { ECurrency } from "../../../shared/Money";
 import { InvestorAcceptPayoutSummaryLayout } from "./AcceptSummary";
 
-const ethTokenDisbursal: ITokenDisbursal = {
-  token: ECurrency.ETH,
-  amountToBeClaimed: "6.582870355588135389497e+21",
-  totalDisbursedAmount: "9.7154607e+22",
+const ethTokenDisbursal: IBlTokenDisbursal = {
+  currency: ECurrency.ETH,
+  amountToBeClaimed: new BigNumber("6.582870355588135389497e+21"),
+  totalDisbursedAmount: new BigNumber("9.7154607e+22"),
   timeToFirstDisbursalRecycle: 1675401473000,
 };
 
-const nEurTokenDisbursal: ITokenDisbursal = {
-  token: ECurrency.EUR_TOKEN,
-  amountToBeClaimed: "6.582870355588135389497e+21",
-  totalDisbursedAmount: "9.7154607e+22",
+const nEurTokenDisbursal: IBlTokenDisbursal = {
+  currency: ECurrency.EUR_TOKEN,
+  amountToBeClaimed: new BigNumber("6.582870355588135389497e+21"),
+  totalDisbursedAmount: new BigNumber("9.7154607e+22"),
   timeToFirstDisbursalRecycle: 1675401473000,
 };
 

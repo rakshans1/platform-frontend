@@ -4,7 +4,7 @@ import { Container } from "reactstrap";
 
 import { externalRoutes } from "../../../../config/externalRoutes";
 import { actions } from "../../../../modules/actions";
-import { ITokenDisbursal } from "../../../../modules/investor-portfolio/types";
+import { IBlTokenDisbursal } from "../../../../modules/investor-portfolio/interfaces/TokenDisbursal";
 import { selectTxSummaryAdditionalData } from "../../../../modules/tx/sender/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../../modules/web3/selectors";
 import { appConnect } from "../../../../store";
@@ -18,7 +18,7 @@ import { InfoList } from "../shared/InfoList";
 import { InfoRow } from "../shared/InfoRow";
 
 interface IStateProps {
-  tokenDisbursal: ITokenDisbursal;
+  tokenDisbursal: IBlTokenDisbursal;
   walletAddress: EthereumAddressWithChecksum;
 }
 
@@ -44,11 +44,11 @@ const InvestorRedistributePayoutSummaryLayout: React.FunctionComponent<TComponen
       </p>
       <InfoList className="mb-4">
         <InfoRow
-          key={tokenDisbursal.token}
+          key={tokenDisbursal.currency}
           caption={
             <FormattedMessage id="investor-payout.redistribute.summary.total-redistributed" />
           }
-          value={<Money value={tokenDisbursal.amountToBeClaimed} currency={tokenDisbursal.token} />}
+          value={<Money value={tokenDisbursal.amountToBeClaimed} currency={tokenDisbursal.currency} />}
         />
       </InfoList>
       <section className="text-center">

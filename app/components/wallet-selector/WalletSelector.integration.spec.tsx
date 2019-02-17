@@ -36,7 +36,7 @@ import { Web3ManagerMock } from "../../lib/web3/Web3Manager.mock";
 import { actions } from "../../modules/actions";
 import { neuCall } from "../../modules/sagasUtils";
 import { initWeb3ManagerEvents } from "../../modules/web3/sagas";
-import { EWalletSubType, EWalletType } from "../../modules/web3/types";
+import { EWalletSubType, EWalletType } from "../../modules/web3/interfaces";
 import { appRoutes } from "../appRoutes";
 import { ButtonLink } from "../shared/buttons";
 import { getMessageTranslation, LedgerErrorMessage } from "../translatedMessages/messages";

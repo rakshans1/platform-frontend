@@ -1,5 +1,5 @@
 import {NumericString} from "../../../types";
-import {numericStringToBigNumber} from "../../../utils/numericStringUtils";
+import {bigNumberToNumericString, numericStringToBigNumber} from "../../../utils/numericStringUtils";
 
 export interface IStateIncomingPayoutsData {
   euroTokenIncomingPayoutValue: NumericString;
@@ -28,5 +28,12 @@ export const stateToBlConversionSpec = {
   data: {
     euroTokenIncomingPayoutValue: numericStringToBigNumber(),
     etherTokenIncomingPayoutValue: numericStringToBigNumber()
+  }
+}
+
+export const blToStateConversionSpec = {
+  data: {
+    euroTokenIncomingPayoutValue: bigNumberToNumericString(),
+    etherTokenIncomingPayoutValue: bigNumberToNumericString()
   }
 }

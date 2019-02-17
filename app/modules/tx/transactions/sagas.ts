@@ -6,7 +6,6 @@ import { onInvestmentTxModalHide } from "../../investment-flow/sagas";
 import { neuTakeLatest } from "../../sagasUtils";
 import { ETxSenderType } from "../interfaces";
 import { ITxSendParams, txSendSaga } from "../sender/sagas";
-import { ETxSenderType } from "../interfaces";
 import { startClaimGenerator } from "./claim/saga";
 import { etoSetDateGenerator } from "./eto-flow/saga";
 import { investmentFlowGenerator } from "./investment/sagas";
@@ -101,13 +100,13 @@ export function* investorPayoutRedistributeSaga(
   { logger }: TGlobalDependencies,
   action: TActionFromCreator<typeof actions.txTransactions.startInvestorPayoutRedistribute>,
 ): any {
-  const tokenDisbursals = action.payload.tokenDisbursals;
+  const tokenDisbursal = action.payload.tokenDisbursal;
 
   try {
     yield txSendSaga({
       type: ETxSenderType.INVESTOR_REDISTRIBUTE_PAYOUT,
       transactionFlowGenerator: startInvestorPayoutRedistributionGenerator,
-      extraParam: tokenDisbursals,
+      extraParam: tokenDisbursal,
     });
 
     logger.info("Investor payout redistribution successful");

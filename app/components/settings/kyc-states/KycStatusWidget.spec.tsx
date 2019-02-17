@@ -5,7 +5,7 @@ import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 
 import { externalRoutes } from "../../../config/externalRoutes";
 import { ERequestStatus } from "../../../modules/kyc/interfaces";
-import { EUserType } from "../../../lib/api/users/interfaces";
+import { EUserType } from "../../../modules/auth/interfaces";
 import { LoadingIndicator } from "../../shared/loading-indicator";
 import { KycStatusWidgetComponent } from "./KycStatusWidget";
 

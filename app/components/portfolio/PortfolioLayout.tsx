@@ -1,6 +1,7 @@
 import * as React from "react";
 
-import { ITokenDisbursal, TETOWithInvestorTicket } from "../../modules/investor-portfolio/types";
+import { IBlTokenDisbursal } from "../../modules/investor-portfolio/interfaces/TokenDisbursal";
+import {TBlETOWithInvestorTicket} from "../../modules/investor-portfolio/interfaces/interfaces";
 import { AssetPortfolio } from "./AssetPortfolio";
 import { PortfolioMyAssets } from "./PortfolioMyAssets";
 import { PortfolioReservedAssets } from "./PortfolioReservedAssets";
@@ -8,11 +9,11 @@ import { PortfolioReservedAssets } from "./PortfolioReservedAssets";
 import * as styles from "./PortfolioLayout.module.scss";
 
 export type TPortfolioLayoutProps = {
-  myAssets: TETOWithInvestorTicket[];
+  myAssets: TBlETOWithInvestorTicket[];
   walletAddress: string;
-  pendingAssets: TETOWithInvestorTicket[];
+  pendingAssets: TBlETOWithInvestorTicket[];
   isRetailEto: boolean;
-  tokensDisbursal: ReadonlyArray<ITokenDisbursal> | undefined;
+  tokensDisbursal: ReadonlyArray<IBlTokenDisbursal> | undefined;
   isVerifiedInvestor: boolean;
 };
 

@@ -1,8 +1,9 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Container, Row } from "reactstrap";
+import BigNumber from "bignumber.js";
 
-import { IBlTxData } from "../../../../lib/web3/types";
+import { IBlTxData } from "../../../../modules/web3/interfaces";
 import { actions } from "../../../../modules/actions";
 import {
   selectTxGasCostEthUlps,
@@ -17,7 +18,7 @@ import { InfoRow } from "../shared/InfoRow";
 
 interface IStateProps {
   txData: Partial<IBlTxData>;
-  txCost: string;
+  txCost: BigNumber;
 }
 
 interface IDispatchProps {

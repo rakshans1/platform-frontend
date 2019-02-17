@@ -15,7 +15,7 @@ import {
 import { Web3Manager } from "../../../lib/web3/Web3Manager";
 import { IAppState } from "../../../store";
 import { actions } from "../../actions";
-import { EWalletSubType, EWalletType } from "../../web3/types";
+import { EWalletSubType, EWalletType } from "../../web3/interfaces";
 import { tryConnectingWithBrowserWallet } from "./sagas";
 
 // tslint:disable: no-object-literal-type-assertion

@@ -34,6 +34,7 @@ import { IcbmWallet, IIcbmWalletValues } from "../../wallet-balance/IcbmWallet";
 import { LockedWallet } from "../../wallet-balance/LockedWallet";
 import { UnlockedWallet } from "../../wallet-balance/UnlockedWallet";
 import { IWalletValues } from "../../wallet-balance/WalletBalance";
+import BigNumber from "bignumber.js";
 
 const transactions: any[] = [];
 
@@ -108,7 +109,7 @@ export const WalletStartComponent: React.FunctionComponent<TProps> = ({
       {process.env.NF_WALLET_MY_PROCEEDS_VISIBLE === "1" && (
         <Row>
           <Col className="my-4">
-            <ClaimedDividends className="h-100" totalEurValue="0" recentPayouts={transactions} />
+            <ClaimedDividends className="h-100" totalEurValue={new BigNumber("0")} recentPayouts={transactions} />
           </Col>
         </Row>
       )}

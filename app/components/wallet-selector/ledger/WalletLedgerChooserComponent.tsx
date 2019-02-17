@@ -2,7 +2,7 @@ import * as cn from "classnames";
 import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 
-import { ILedgerAccount } from "../../../modules/wallet-selector/ledger-wizard/reducer";
+import { ILedgerAccount } from "../../../modules/wallet-selector/ledger-wizard/interfaces";
 import { LoadingIndicator } from "../../shared/loading-indicator";
 import { WalletLedgerChooserTableAdvanced } from "./WalletLedgerChooserTableAdvanced";
 import { WalletLedgerChooserTableSimple } from "./WalletLedgerChooserTableSimple";

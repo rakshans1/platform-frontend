@@ -1,11 +1,12 @@
 import * as React from "react";
 import * as styles from "./TotalEuro.module.scss";
+import BigNumber from "bignumber.js";
 
 import { FormattedMessage } from "react-intl-phraseapp";
 import { ECurrency, Money } from "../shared/Money";
 
 interface ITotalEuroProps {
-  totalEurValue: string;
+  totalEurValue: BigNumber;
 }
 
 export const TotalEuro: React.FunctionComponent<ITotalEuroProps> = ({ totalEurValue }) => (

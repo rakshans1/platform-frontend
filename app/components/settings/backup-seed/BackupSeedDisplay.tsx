@@ -3,7 +3,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 
-import { IWalletPrivateData } from "../../../modules/web3/reducer";
+import { IWalletPrivateData } from "../../../modules/web3/interfaces";
 import { Button, EButtonLayout } from "../../shared/buttons";
 import { SectionHeader } from "../../shared/SectionHeader";
 import { PrivateKeyDisplay } from "./PrivateKeyDisplay";

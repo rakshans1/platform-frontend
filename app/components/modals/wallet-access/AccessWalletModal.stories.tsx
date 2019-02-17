@@ -1,7 +1,7 @@
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
-import { EWalletType } from "../../../modules/web3/types";
+import { EWalletType } from "../../../modules/web3/interfaces";
 import { withModalBody } from "../../../utils/storybookHelpers";
 import {
   BrowserWalletErrorMessage,

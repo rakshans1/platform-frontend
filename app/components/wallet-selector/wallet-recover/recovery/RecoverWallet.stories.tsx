@@ -2,7 +2,7 @@ import { action } from "@storybook/addon-actions";
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
-import { EWalletType } from "../../../../modules/web3/types";
+import { EWalletType } from "../../../../modules/web3/interfaces";
 import { withStore } from "../../../../utils/storeDecorator";
 import { RecoverWallet, RecoveryProcessesComponent } from "./RecoverWallet";
 

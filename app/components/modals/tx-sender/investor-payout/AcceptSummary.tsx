@@ -4,7 +4,7 @@ import { Container } from "reactstrap";
 
 import { externalRoutes } from "../../../../config/externalRoutes";
 import { actions } from "../../../../modules/actions";
-import { ITokenDisbursal } from "../../../../modules/investor-portfolio/types";
+import { IBlTokenDisbursal } from "../../../../modules/investor-portfolio/interfaces/TokenDisbursal";
 import { selectTxSummaryAdditionalData } from "../../../../modules/tx/sender/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../../modules/web3/selectors";
 import { appConnect } from "../../../../store";
@@ -18,7 +18,7 @@ import { InfoList } from "../shared/InfoList";
 import { InfoRow } from "../shared/InfoRow";
 
 interface IStateProps {
-  tokensDisbursal: ITokenDisbursal[];
+  tokensDisbursal: IBlTokenDisbursal[];
   walletAddress: EthereumAddressWithChecksum;
 }
 
@@ -43,7 +43,7 @@ const InvestorAcceptPayoutSummaryLayout: React.FunctionComponent<TComponentProps
         {tokensDisbursal.length === 1 ? (
           <FormattedMessage
             id="investor-payout.accept.summary.single.description"
-            values={{ token: selectCurrencyCode(tokensDisbursal[0].token) }}
+            values={{ token: selectCurrencyCode(tokensDisbursal[0].currency) }}
           />
         ) : (
           <FormattedMessage id="investor-payout.accept.summary.combined.description" />
@@ -52,15 +52,15 @@ const InvestorAcceptPayoutSummaryLayout: React.FunctionComponent<TComponentProps
       <InfoList className="mb-4">
         {tokensDisbursal.map(disbursal => (
           <InfoRow
-            data-test-id={`investor-payout.accept-summary.${disbursal.token}-total-payout`}
-            key={disbursal.token}
+            data-test-id={`investor-payout.accept-summary.${disbursal.currency}-total-payout`}
+            key={disbursal.currency}
             caption={
               <FormattedMessage
                 id="investor-payout.accept.summary.total-payout"
-                values={{ token: selectCurrencyCode(disbursal.token) }}
+                values={{ token: selectCurrencyCode(disbursal.currency) }}
               />
             }
-            value={<Money value={disbursal.amountToBeClaimed} currency={disbursal.token} />}
+            value={<Money value={disbursal.amountToBeClaimed} currency={disbursal.currency} />}
           />
         ))}
       </InfoList>

@@ -4,10 +4,8 @@ import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 import { compose } from "redux";
 
-import {
-  IKycIndividualData,
-  KycIndividualDataSchemaRequired,
-} from "../../../modules/kyc/interfaces";
+import {IKycIndividualData} from "../../../modules/kyc/interfaces";
+import {  KycIndividualDataValidator} from "../../../modules/kyc/validators";
 import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
 import { injectIntlHelpers } from "../../../utils/injectIntlHelpers";
@@ -196,8 +194,8 @@ const KYCForm = injectIntlHelpers<IProps & IKycIndividualData>(
 );
 
 const KYCEnhancedForm = withFormik<IStateProps & IDispatchProps, IKycIndividualData>({
-  validationSchema: KycIndividualDataSchemaRequired,
-  isInitialValid: (props: any) => KycIndividualDataSchemaRequired.isValidSync(props.currentValues),
+  validationSchema: KycIndividualDataValidator,
+  isInitialValid: (props: any) => KycIndividualDataValidator.isValidSync(props.currentValues),
   mapPropsToValues: props => unboolify(props.currentValues as IKycIndividualData),
   enableReinitialize: true,
   handleSubmit: (values, props) => {

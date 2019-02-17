@@ -1,19 +1,25 @@
-import * as Yup from "yup";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import * as YupTS from "../../lib/yup-ts";
 import {
   MIN_COMPANY_SHARES,
-  MIN_EXISTING_COMPANY_SHARES, MIN_NEW_SHARES_TO_ISSUE,
+  MIN_EXISTING_COMPANY_SHARES,
+  MIN_NEW_SHARES_TO_ISSUE,
   MIN_PRE_MONEY_VALUATION_EUR,
-  MIN_SHARE_NOMINAL_VALUE_EUR, NEW_SHARES_TO_ISSUE_IN_FIXED_SLOTS, NEW_SHARES_TO_ISSUE_IN_WHITELIST
+  MIN_SHARE_NOMINAL_VALUE_EUR,
+  NEW_SHARES_TO_ISSUE_IN_FIXED_SLOTS,
+  NEW_SHARES_TO_ISSUE_IN_WHITELIST,
+  PlatformTerms, PUBLIC_DURATION_DAYS,
+  Q18, SIGNING_DURATION_DAYS,
+  WHITELIST_DURATION_DAYS
 } from "../../config/constants";
 import {dateSchema, percentage} from "../../lib/api/util/schemaHelpers";
 import {StringSchema} from "yup";
+import {NumberSchema} from "yup";
 
 
-const tagsType = YupTS.string();
+const tagsValidator = YupTS.string();
 
 export const EtoCompanyInformationValidator = YupTS.object({
   brandName: YupTS.string(),
@@ -22,7 +28,7 @@ export const EtoCompanyInformationValidator = YupTS.object({
   companyDescription: YupTS.string(),
   keyQuoteFounder: YupTS.string(),
   keyQuoteInvestor: YupTS.string().optional(),
-  categories: YupTS.array(tagsType).optional(),
+  categories: YupTS.array(tagsValidator).optional(),
   companyLogo: YupTS.string().optional(),
   companyBanner: YupTS.string().optional(),
 });
@@ -186,3 +192,59 @@ export const EtoKeyIndividualsValidator = YupTS.object({
   keyAlliances: EtoKeyIndividualValidator.optional(),
 });
 
+export const EtoTermsValidator = YupTS.object({
+  currencies: YupTS.array(YupTS.string()),
+  prospectusLanguage: YupTS.string(),
+  minTicketEur: YupTS.number().enhance((v: NumberSchema) => {
+    const minTicketEur = PlatformTerms.MIN_TICKET_EUR_ULPS.div(Q18).toNumber();
+
+    return v.min(minTicketEur, (
+      <FormattedMessage
+        id="eto.form.section.eto-terms.minimum-ticket-size.error.less-than-accepted"
+        values={{ value: minTicketEur }}
+      />
+    ) as any);
+  }),
+  maxTicketEur: YupTS.number()
+    .optional()
+    .enhance(validator =>
+      validator.when("minTicketEur", (value: number) =>
+        validator.moreThan(value, (
+          <FormattedMessage id="eto.form.section.eto-terms.maximum-ticket-size.error.less-than-minimum" />
+        ) as any),
+      ),
+    ),
+  enableTransferOnSuccess: YupTS.boolean(),
+  notUnderCrowdfundingRegulations: YupTS.onlyTrue(
+    <FormattedMessage id="eto.form.section.eto-terms.is-not-crowdfunding.error" />,
+  ),
+  allowRetailInvestors: YupTS.boolean(),
+  whitelistDurationDays: YupTS.number().enhance(v =>
+    v.min(WHITELIST_DURATION_DAYS.min).max(WHITELIST_DURATION_DAYS.max),
+  ),
+  publicDurationDays: YupTS.number().enhance(v =>
+    v.min(PUBLIC_DURATION_DAYS.min).max(PUBLIC_DURATION_DAYS.max),
+  ),
+  signingDurationDays: YupTS.number().enhance(v =>
+    v.min(SIGNING_DURATION_DAYS.min).max(SIGNING_DURATION_DAYS.max),
+  ),
+  additionalTerms: YupTS.string().optional(),
+});
+
+// const EtoFounderValidator = YupTS.object({
+//   fullName: YupTS.string(),
+//   role: YupTS.string(),
+//   bio: YupTS.string(),
+// });
+
+export const GeneralEtoDataValidator = YupTS.object({
+  ...EtoTermsValidator.shape,
+  ...EtoEquityTokenInfoValidator.shape,
+  ...EtoVotingRightsValidator.shape,
+  ...EtoMediaValidator.shape,
+  ...EtoLegalInformationValidator.shape,
+  ...EtoKeyIndividualsValidator.shape,
+  ...EtoPitchValidator.shape,
+  ...EtoCompanyInformationValidator.shape,
+  ...EtoRiskAssessmentValidator.shape,
+});

@@ -11,6 +11,7 @@ import { appConnect } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { withParams } from "../../../utils/withParams";
 import { appRoutes } from "../../appRoutes";
+import {IStatePublicEtos} from "../../../modules/public-etos/interfaces/PublicEto";
 
 interface IStateProps {
   eto?: TBlEtoWithCompanyAndContract;
@@ -49,7 +50,7 @@ const TestEmbededWidget = compose<IStateProps, IRouterParams>(
   appConnect<IStateProps, {}, IRouterParams & IRouterParams>({
     stateToProps: (state, props) => ({
       eto: selectEtoWithCompanyAndContractById(state, props.etoId),
-      widgetError: selectEtoWidgetError(state.publicEtos),
+      widgetError: selectEtoWidgetError(state.publicEtos as IStatePublicEtos),
     }),
   }),
   onEnterAction({

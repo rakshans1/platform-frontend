@@ -14,7 +14,7 @@ import { promiseTimeout } from "../../utils/promiseTimeout";
 import { ILogger } from "../dependencies/logger";
 import { LightWallet } from "./LightWallet";
 import { IPersonalWallet } from "./PersonalWeb3";
-import { IEthereumNetworkConfig } from "./types";
+import { IEthereumNetworkConfig } from "../../modules/web3/interfaces";
 import { Web3Adapter } from "./Web3Adapter";
 import { Web3FactoryType } from "./Web3Batch";
 

@@ -1,9 +1,10 @@
+import BigNumber from "bignumber.js";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Container, Row } from "reactstrap";
 import { compose, setDisplayName } from "recompose";
 
-import { TEtoSpecsData } from "../../../../lib/api/eto/EtoApi.interfaces";
+import { IBlPublicEtoData } from "../../../../modules/eto-flow/interfaces/PublicEtoData";
 import { EEtoDocumentType } from "../../../../modules/eto-documents/interfaces";
 import { getShareAndTokenPrice } from "../../../../lib/api/eto/EtoUtils";
 import { actions } from "../../../../modules/actions";
@@ -36,11 +37,11 @@ interface IDispatchProps {
 }
 
 interface IStateProps {
-  eto: TEtoSpecsData;
+  eto: IBlPublicEtoData;
   companyName: string;
-  investmentEur: string;
-  equityTokens: string;
-  estimatedReward: string;
+  investmentEur: BigNumber;
+  equityTokens: BigNumber;
+  estimatedReward: BigNumber;
 }
 
 type IProps = IStateProps & IDispatchProps;
@@ -70,7 +71,7 @@ const BankTransferSummaryComponent: React.FunctionComponent<IProps> = ({
   const actualTokenPrice = getActualTokenPriceEur(investmentEur, equityTokens);
   const { tokenPrice: fullTokenPrice } = getShareAndTokenPrice(eto);
   const formattedTokenPrice = `€ ${formatSummaryTokenPrice(
-    fullTokenPrice.toString(),
+    fullTokenPrice,
     actualTokenPrice,
   )}`;
 
@@ -158,16 +159,21 @@ const BankTransferSummary = compose<IProps, {}>(
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: state => {
       const etoId = selectInvestmentEtoId(state);
-      // eto and computed values are guaranteed to be present at investment summary state
-      const eto = selectEtoWithCompanyAndContractById(state, etoId)!;
-      return {
-        eto,
-        companyName: eto.company.name,
-        investmentEur: selectInvestmentEurValueUlps(state),
-        // tslint:disable: no-useless-cast
-        equityTokens: selectEquityTokenCountByEtoId(state, etoId)!,
-        estimatedReward: selectNeuRewardUlpsByEtoId(state, etoId)!,
-      };
+      if(etoId){
+        // eto and computed values are guaranteed to be present at investment summary state
+        const eto = selectEtoWithCompanyAndContractById(state, etoId)!;
+        return {
+          eto,
+          companyName: eto.company.name,
+          investmentEur: selectInvestmentEurValueUlps(state)!, //fixme
+          // tslint:disable: no-useless-cast
+          equityTokens: selectEquityTokenCountByEtoId(state, etoId)!,
+          estimatedReward: selectNeuRewardUlpsByEtoId(state, etoId)!,
+        };
+      } else {
+        throw new Error("incomplete data") //fixme
+      }
+
     },
     dispatchToProps: d => ({
       onAccept: () => d(actions.investmentFlow.showBankTransferDetails()),

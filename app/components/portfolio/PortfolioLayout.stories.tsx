@@ -1,5 +1,6 @@
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
+import BigNumber from "bignumber.js";
 
 import { withStore } from "../../utils/storeDecorator";
 import { ECurrency } from "../shared/Money";
@@ -13,16 +14,16 @@ const data: TPortfolioLayoutProps = {
   isVerifiedInvestor: true,
   tokensDisbursal: [
     {
-      token: ECurrency.EUR_TOKEN,
-      amountToBeClaimed: "11200657227385184",
+      currency: ECurrency.EUR_TOKEN,
+      amountToBeClaimed: new BigNumber("11200657227385184"),
       timeToFirstDisbursalRecycle: 1675062154000,
-      totalDisbursedAmount: "364458900000000000",
+      totalDisbursedAmount: new BigNumber("364458900000000000"),
     },
     {
-      token: ECurrency.ETH,
-      amountToBeClaimed: "01200657227385184",
+      currency: ECurrency.ETH,
+      amountToBeClaimed: new BigNumber("01200657227385184"),
       timeToFirstDisbursalRecycle: 1675062154000,
-      totalDisbursedAmount: "064458900000000000",
+      totalDisbursedAmount: new BigNumber("064458900000000000"),
     },
   ],
 };

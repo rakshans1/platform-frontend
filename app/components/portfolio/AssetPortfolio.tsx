@@ -5,7 +5,7 @@ import { Col, Row } from "reactstrap";
 import { branch, compose, renderComponent } from "recompose";
 
 import { actions } from "../../modules/actions";
-import { ITokenDisbursal } from "../../modules/investor-portfolio/types";
+import * as tokenDisbursalInterfaces  from "../../modules/investor-portfolio/interfaces/TokenDisbursal";
 import { appConnect } from "../../store";
 import { CommonHtmlProps } from "../../types";
 import { Button, ButtonSize, EButtonLayout } from "../shared/buttons";
@@ -18,21 +18,22 @@ import { SectionHeader } from "../shared/SectionHeader";
 import * as ethIcon from "../../assets/img/eth_icon.svg";
 import * as neuIcon from "../../assets/img/neu_icon.svg";
 import * as nEurIcon from "../../assets/img/nEUR_icon.svg";
+import {convert, convertInArray} from "../eto/utils";
 
 interface IExternalProps {
-  tokensDisbursal: ReadonlyArray<ITokenDisbursal> | undefined;
+  tokensDisbursal: ReadonlyArray<tokenDisbursalInterfaces.IBlTokenDisbursal> | undefined;
   isVerifiedInvestor: boolean;
 }
 
 interface ILayoutProps {
-  tokensDisbursal: ReadonlyArray<ITokenDisbursal>;
+  tokensDisbursal: ReadonlyArray<tokenDisbursalInterfaces.IBlTokenDisbursal>;
   isVerifiedInvestor: boolean;
 }
 
 interface IDispatchToProps {
-  redistributePayout: (tokenDisbursal: ITokenDisbursal) => void;
-  acceptPayout: (tokenDisbursal: ITokenDisbursal) => void;
-  acceptCombinedPayout: (tokensDisbursal: ReadonlyArray<ITokenDisbursal>) => void;
+  redistributePayout: (tokenDisbursal: tokenDisbursalInterfaces.IBlTokenDisbursal) => void;
+  acceptPayout: (tokenDisbursal: tokenDisbursalInterfaces.IBlTokenDisbursal) => void;
+  acceptCombinedPayout: (tokensDisbursal: ReadonlyArray<tokenDisbursalInterfaces.IBlTokenDisbursal>) => void;
 }
 
 // TODO: move as a reusable component
@@ -88,9 +89,9 @@ const AssetPortfolioLayout: React.FunctionComponent<ILayoutProps & IDispatchToPr
                   {tokensDisbursal
                     .map(t => (
                       <Money
-                        key={t.token}
+                        key={t.currency}
                         value={t.amountToBeClaimed}
-                        currency={t.token}
+                        currency={t.currency}
                         theme={ETheme.GREEN_BIG}
                       />
                     ))
@@ -126,20 +127,20 @@ const AssetPortfolioLayout: React.FunctionComponent<ILayoutProps & IDispatchToPr
       >
         {tokensDisbursal.map(tokenDisbursal => (
           <NewTableRow
-            key={tokenDisbursal.token}
-            data-test-id={`asset-portfolio.payout-${tokenDisbursal.token}`}
+            key={tokenDisbursal.currency}
+            data-test-id={`asset-portfolio.payout-${tokenDisbursal.currency}`}
           >
             <>
-              <CurrencyIcon currency={tokenDisbursal.token} className="mr-2" />
-              {selectCurrencyCode(tokenDisbursal.token)}
+              <CurrencyIcon currency={tokenDisbursal.currency} className="mr-2" />
+              {selectCurrencyCode(tokenDisbursal.currency)}
             </>
             <Money
               data-test-id={`asset-portfolio.payout.amount-to-be-claimed`}
               value={tokenDisbursal.amountToBeClaimed}
-              currency={tokenDisbursal.token}
+              currency={tokenDisbursal.currency}
               theme={ETheme.GREEN}
             />
-            <Money value={tokenDisbursal.totalDisbursedAmount} currency={tokenDisbursal.token} />
+            <Money value={tokenDisbursal.totalDisbursedAmount} currency={tokenDisbursal.currency} />
             <FormattedDate value={tokenDisbursal.timeToFirstDisbursalRecycle} />
             <Button
               disabled={!isVerifiedInvestor}
@@ -187,12 +188,12 @@ const AssetPortfolioLayout: React.FunctionComponent<ILayoutProps & IDispatchToPr
 const AssetPortfolio = compose<ILayoutProps & IDispatchToProps, IExternalProps>(
   appConnect<{}, IDispatchToProps>({
     dispatchToProps: dispatch => ({
-      redistributePayout: (tokenDisbursal: ITokenDisbursal) =>
-        dispatch(actions.txTransactions.startInvestorPayoutRedistribute(tokenDisbursal)),
-      acceptPayout: (tokenDisbursal: ITokenDisbursal) =>
-        dispatch(actions.txTransactions.startInvestorPayoutAccept([tokenDisbursal])),
-      acceptCombinedPayout: (tokensDisbursal: ReadonlyArray<ITokenDisbursal>) =>
-        dispatch(actions.txTransactions.startInvestorPayoutAccept(tokensDisbursal)),
+      redistributePayout: (tokenDisbursal: tokenDisbursalInterfaces.IBlTokenDisbursal) =>
+        dispatch(actions.txTransactions.startInvestorPayoutRedistribute(convert(tokenDisbursal, tokenDisbursalInterfaces.blToStateConversionSpec))),
+      acceptPayout: (tokenDisbursal: tokenDisbursalInterfaces.IBlTokenDisbursal) =>
+        dispatch(actions.txTransactions.startInvestorPayoutAccept([convert(tokenDisbursal, tokenDisbursalInterfaces.blToStateConversionSpec)])),
+      acceptCombinedPayout: (tokensDisbursal: ReadonlyArray<tokenDisbursalInterfaces.IBlTokenDisbursal>) =>
+        dispatch(actions.txTransactions.startInvestorPayoutAccept(convertInArray(tokenDisbursalInterfaces.blToStateConversionSpec)(tokensDisbursal))),
     }),
   }),
   // Loading

@@ -8,7 +8,7 @@ import { IAppState } from "../../../store";
 import { hasValidPermissions } from "../../../utils/JWTUtils";
 import { accessWalletAndRunEffect } from "../../access-wallet/sagas";
 import { actions } from "../../actions";
-import { EInitType } from "../../init/reducer";
+import { EInitType } from "../../init/interfaces";
 import { neuCall } from "../../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../../web3/selectors";
 import { MessageSignCancelledError } from "../errors";

@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { generateCampaigningValidation } from "../../../../../lib/api/eto/EtoPledgeApi.interfaces";
+import { generateCampaigningValidator } from "../../../../../modules/bookbuilding-flow/validators";
 import { Button, ButtonSize, ButtonWidth } from "../../../../shared/buttons";
 import { CheckboxLayout, Form, FormInput, InputSize } from "../../../../shared/forms";
 import { ECurrency, ECurrencySymbol, EMoneyFormat, Money } from "../../../../shared/Money";
@@ -89,7 +89,7 @@ const CampaigningActivatedInvestorApprovedWidgetLayout: React.FunctionComponent<
         <Formik<{ amount: string }>
           initialValues={{ amount: pledgedAmount ? pledgedAmount.toString() : ""}}
           onSubmit={({ amount }) => backNow(new BigNumber(amount))}
-          validationSchema={generateCampaigningValidation(minPledge, maxPledge)}
+          validationSchema={generateCampaigningValidator(minPledge, maxPledge)}
         >
           <Form className={styles.group}>
             <div className={cn(styles.label)}>

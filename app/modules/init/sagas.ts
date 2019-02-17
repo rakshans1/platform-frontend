@@ -12,7 +12,7 @@ import { initializeContracts, populatePlatformTermsConstants } from "../contract
 import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { detectUserAgent } from "../user-agent/sagas";
 import { initWeb3ManagerEvents } from "../web3/sagas";
-import { EInitType } from "./reducer";
+import { EInitType } from "./interfaces";
 
 function* initSmartcontracts({ web3Manager, logger }: TGlobalDependencies): any {
   try {

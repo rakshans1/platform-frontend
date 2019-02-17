@@ -3,6 +3,7 @@ import * as React from "react";
 
 import { withModalBody } from "../../../utils/storybookHelpers";
 import { IcbmWalletBalanceComponentInner } from "./IcbmWalletBalanceModal";
+import BigNumber from "bignumber.js";
 
 export const dummyEthereumAddress = "0xfb6916095ca1df60bb79ce92ce3ea74c37c5d359";
 
@@ -10,14 +11,14 @@ const walletMigrationMockData = [
   {
     smartContractAddress: "0xab6916095cd1df60bb79ce92ce3ea74c37c5d359",
     migrationInputData: "0x0000",
-    gasLimit: "40000",
-    value: "0",
+    gasLimit: new BigNumber("40000"),
+    value: new BigNumber("0"),
   },
   {
     smartContractAddress: "0xab6916066661df60bb79ce92ce3ea74c37c5d359",
     migrationInputData: "0x1234",
-    gasLimit: "40000",
-    value: "0",
+    gasLimit: new BigNumber("40000"),
+    value: new BigNumber("0"),
   },
 ];
 
@@ -32,8 +33,8 @@ storiesOf("ICBMWalletModalComponant", module)
       onGotoWallet={() => {}}
       ethAddress={dummyEthereumAddress}
       isLoading={false}
-      neumarksDue="0.0"
-      etherBalance="1.1"
+      neumarksDue={new BigNumber("0.0")}
+      etherBalance={new BigNumber("1.1")}
       isEtherMigrationTargetSet={true}
       isWalletMigrating={false}
       isFirstTxDone={false}
@@ -54,8 +55,8 @@ storiesOf("ICBMWalletModalComponant", module)
       onGotoWallet={() => {}}
       ethAddress={dummyEthereumAddress}
       isLoading={false}
-      neumarksDue="0.0"
-      etherBalance="1.1"
+      neumarksDue={new BigNumber("0.0")}
+      etherBalance={new BigNumber("1.1")}
       isEtherMigrationTargetSet={false}
       isWalletMigrating={false}
       isFirstTxDone={false}
@@ -76,8 +77,8 @@ storiesOf("ICBMWalletModalComponant", module)
       onGotoWallet={() => {}}
       ethAddress={dummyEthereumAddress}
       isLoading={false}
-      neumarksDue="0.0"
-      etherBalance="1.1"
+      neumarksDue={new BigNumber("0.0")}
+      etherBalance={new BigNumber("1.1")}
       isEtherMigrationTargetSet={true}
       isWalletMigrating={false}
       isFirstTxDone={false}
@@ -98,8 +99,8 @@ storiesOf("ICBMWalletModalComponant", module)
       onGotoWallet={() => {}}
       ethAddress={dummyEthereumAddress}
       isLoading={false}
-      neumarksDue="0.0"
-      etherBalance="1.1"
+      neumarksDue={new BigNumber("0.0")}
+      etherBalance={new BigNumber("1.1")}
       walletMigrationData={{ ...walletMigrationMockData }}
       currentMigrationStep={1}
       isMigrating={true}
@@ -121,8 +122,8 @@ storiesOf("ICBMWalletModalComponant", module)
       onGotoWallet={() => {}}
       ethAddress={dummyEthereumAddress}
       isLoading={false}
-      neumarksDue="0.0"
-      etherBalance="1.1"
+      neumarksDue={new BigNumber("0.0")}
+      etherBalance={new BigNumber("1.1")}
       walletMigrationData={{ ...walletMigrationMockData }}
       currentMigrationStep={1}
       isMigrating={true}
@@ -145,8 +146,8 @@ storiesOf("ICBMWalletModalComponant", module)
       onGotoWallet={() => {}}
       ethAddress={dummyEthereumAddress}
       isLoading={false}
-      neumarksDue="0.0"
-      etherBalance="1.1"
+      neumarksDue={new BigNumber("0.0")}
+      etherBalance={new BigNumber("1.1")}
       walletMigrationData={{ ...walletMigrationMockData }}
       currentMigrationStep={2}
       isMigrating={true}
@@ -168,8 +169,8 @@ storiesOf("ICBMWalletModalComponant", module)
       onGotoWallet={() => {}}
       ethAddress={dummyEthereumAddress}
       isLoading={false}
-      neumarksDue="0.0"
-      etherBalance="1.1"
+      neumarksDue={new BigNumber("0.0")}
+      etherBalance={new BigNumber("1.1")}
       walletMigrationData={{ ...walletMigrationMockData }}
       currentMigrationStep={2}
       isMigrating={true}
@@ -192,8 +193,8 @@ storiesOf("ICBMWalletModalComponant", module)
       onGotoWallet={() => {}}
       ethAddress={dummyEthereumAddress}
       isLoading={true}
-      neumarksDue="0.0"
-      etherBalance="1.1"
+      neumarksDue={new BigNumber("0.0")}
+      etherBalance={new BigNumber("1.1")}
       isMigrating={true}
       isEtherMigrationTargetSet={true}
       isWalletMigrating={true}

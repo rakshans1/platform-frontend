@@ -1,7 +1,8 @@
 import { expect } from "chai";
 
 import { actions } from "../actions";
-import { EInitType, initInitialState, initReducer } from "./reducer";
+import { initInitialState, initReducer } from "./reducer";
+import { EInitType} from "./interfaces";
 
 describe("init > reducer", () => {
   it("should act on INIT_DONE", () => {

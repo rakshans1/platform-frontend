@@ -31,7 +31,7 @@ import { BrowserWalletConnector } from "../lib/web3/BrowserWallet";
 import { ContractsService } from "../lib/web3/ContractsService";
 import { LedgerWalletConnector } from "../lib/web3/LedgerWallet";
 import { LightWalletConnector, LightWalletUtil } from "../lib/web3/LightWallet";
-import { IEthereumNetworkConfig } from "../lib/web3/types";
+import { IEthereumNetworkConfig } from "../modules/web3/interfaces";
 import {
   web3BatchFactory,
   Web3BatchFactoryType,

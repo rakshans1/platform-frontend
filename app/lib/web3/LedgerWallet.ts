@@ -12,7 +12,7 @@ import { EWalletSubType, EWalletType } from "../../modules/web3/interfaces";
 import { EthereumAddress, EthereumNetworkId } from "../../types";
 import { ILedgerWalletMetadata } from "../persistence/WalletMetadataObjectStorage";
 import { IPersonalWallet, SignerType } from "./PersonalWeb3";
-import { IEthereumNetworkConfig } from "./types";
+import { IEthereumNetworkConfig } from "../../modules/web3/interfaces";
 import { Web3Adapter } from "./Web3Adapter";
 import { SignerRejectConfirmationError, SignerTimeoutError } from "./Web3Manager";
 

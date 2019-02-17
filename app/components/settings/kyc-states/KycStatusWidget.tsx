@@ -6,7 +6,7 @@ import { compose } from "redux";
 
 import { externalRoutes } from "../../../config/externalRoutes";
 import { ERequestOutsourcedStatus, ERequestStatus } from "../../../modules/kyc/interfaces";
-import { EUserType } from "../../../lib/api/users/interfaces";
+import { EUserType } from "../../../modules/auth/interfaces";
 import { actions } from "../../../modules/actions";
 import {
   selectBackupCodesVerified,

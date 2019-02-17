@@ -12,7 +12,7 @@ describe("EtoUtils", () => {
           existingCompanyShares: new BigNumber(100),
           equityTokensPerShare: new BigNumber(100),
         }),
-      ).to.deep.equal({ sharePrice: 10, tokenPrice: 0.1 });
+      ).to.deep.equal({ sharePrice: new BigNumber(10), tokenPrice: new BigNumber(0.1) });
     });
 
     it("should return sharePrice as 0 when one of argument is undefined or 0", () => {
@@ -28,7 +28,7 @@ describe("EtoUtils", () => {
           existingCompanyShares: new BigNumber(100),
           equityTokensPerShare: new BigNumber(100),
         }),
-      ).to.deep.equal({ sharePrice: 0, tokenPrice: 0 });
+      ).to.deep.equal({ sharePrice: new BigNumber(0), tokenPrice: new BigNumber(0) });
     });
   });
 
@@ -46,7 +46,7 @@ describe("EtoUtils", () => {
         publicDiscountFraction: new BigNumber(0),
       });
 
-      expect(minInvestmentAmount).to.equal(8950);
+      expect(minInvestmentAmount.toString()).to.equal("8950");
     });
 
     it("should return minInvestmentAmount as 0 when minimumNewSharesToIssue is 0", () => {
@@ -62,7 +62,7 @@ describe("EtoUtils", () => {
         publicDiscountFraction: new BigNumber(0),
       });
 
-      expect(minInvestmentAmount).to.equal(0);
+      expect(minInvestmentAmount.toString()).to.equal("0");
     });
 
     it("should calculate correctly investment amount", () => {
@@ -78,8 +78,8 @@ describe("EtoUtils", () => {
         publicDiscountFraction: new BigNumber(0),
       });
 
-      expect(maxInvestmentAmount).to.equal(98950);
-      expect(minInvestmentAmount).to.equal(0);
+      expect(maxInvestmentAmount.toString()).to.equal('98950');
+      expect(minInvestmentAmount.toString()).to.equal('0');
 
       // general test case
       ({ minInvestmentAmount, maxInvestmentAmount } = getInvestmentAmount({
@@ -94,8 +94,8 @@ describe("EtoUtils", () => {
         publicDiscountFraction: new BigNumber(0),
       }));
 
-      expect(Math.round(maxInvestmentAmount)).to.equal(6182236);
-      expect(Math.round(minInvestmentAmount)).to.equal(1223721);
+      expect(Math.round(maxInvestmentAmount.toNumber())).to.equal(6182236);
+      expect(Math.round(minInvestmentAmount.toNumber())).to.equal(1223721);
 
       // same terms but without whitelist
       ({ minInvestmentAmount, maxInvestmentAmount } = getInvestmentAmount({
@@ -110,8 +110,8 @@ describe("EtoUtils", () => {
         publicDiscountFraction: new BigNumber(0),
       }));
 
-      expect(Math.round(maxInvestmentAmount)).to.equal(4897330);
-      expect(Math.round(minInvestmentAmount)).to.equal(1223721);
+      expect(Math.round(maxInvestmentAmount.toNumber())).to.equal(4897330);
+      expect(Math.round(minInvestmentAmount.toNumber())).to.equal(1223721);
 
       // no discounts
       ({ minInvestmentAmount, maxInvestmentAmount } = getInvestmentAmount({
@@ -126,8 +126,8 @@ describe("EtoUtils", () => {
         publicDiscountFraction: new BigNumber(0),
       }));
 
-      expect(Math.round(maxInvestmentAmount)).to.equal(Math.round(3652 * (125000000 / 40859)));
-      expect(Math.round(minInvestmentAmount)).to.equal(0);
+      expect(Math.round(maxInvestmentAmount.toNumber())).to.equal(Math.round(3652 * (125000000 / 40859)));
+      expect(Math.round(minInvestmentAmount.toNumber())).to.equal(0);
 
       // with public discount fraction
       ({ minInvestmentAmount, maxInvestmentAmount } = getInvestmentAmount({
@@ -142,10 +142,10 @@ describe("EtoUtils", () => {
         publicDiscountFraction: new BigNumber(0.2),
       }));
 
-      expect(Math.round(maxInvestmentAmount)).to.equal(
+      expect(Math.round(maxInvestmentAmount.toNumber())).to.equal(
         Math.round(2755818.79 + 1284906.63 + 1713208.84),
       );
-      expect(Math.round(minInvestmentAmount)).to.equal(1223721);
+      expect(Math.round(minInvestmentAmount.toNumber())).to.equal(1223721);
     });
 
     it("should return maxInvestmentAmount as 0 when newSharesToIssue is 0", () => {
@@ -161,7 +161,7 @@ describe("EtoUtils", () => {
         publicDiscountFraction: new BigNumber(0),
       });
 
-      expect(minInvestmentAmount).to.equal(0);
+      expect(minInvestmentAmount.toString()).to.equal("0");
     });
   });
 });

@@ -2,8 +2,8 @@ import * as React from "react";
 import { setDisplayName } from "recompose";
 import { compose } from "redux";
 
-import { IEtoDocument, immutableDocumentName } from "../../modules/eto-documents/interfaces";
-import { ImmutableFileId } from "../../lib/api/ImmutableStorage.interfaces";
+import { IEtoDocument, immutableDocumentNames } from "../../modules/eto-documents/interfaces";
+import { IImmutableFileId } from "../../modules/immutable-file/interfaces";
 import { actions } from "../../modules/actions";
 import { appConnect } from "../../store";
 import { TTranslatedString } from "../../types";
@@ -21,7 +21,7 @@ interface IOwnProps {
   className?: string;
 }
 interface IDispatchProps {
-  downloadImmutableFile: (fileId: ImmutableFileId, fileName: string) => void;
+  downloadImmutableFile: (fileId: IImmutableFileId, fileName: string) => void;
 }
 
 type IProps = IOwnProps & IDispatchProps;
@@ -48,7 +48,7 @@ const SingleColDocumentsLayout: React.FunctionComponent<IProps> = ({
                       ...{ ipfsHash, mimeType },
                       asPdf: false,
                     },
-                    immutableDocumentName[documentType],
+                    immutableDocumentNames[documentType],
                   )
                 }
                 title={documentTemplateTitles[documentType]}

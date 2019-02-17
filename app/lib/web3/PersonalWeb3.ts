@@ -1,6 +1,6 @@
 import { TxData } from "web3";
 
-import { EWalletSubType, EWalletType } from "../../modules/web3/types";
+import { EWalletSubType, EWalletType } from "../../modules/web3/interfaces";
 import { EthereumAddress, EthereumNetworkId } from "../../types";
 import { TWalletMetadata } from "../persistence/WalletMetadataObjectStorage";
 import { Web3Adapter } from "./Web3Adapter";

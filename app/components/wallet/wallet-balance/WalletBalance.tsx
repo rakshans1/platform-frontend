@@ -1,5 +1,6 @@
 import * as cn from "classnames";
 import * as React from "react";
+import BigNumber from "bignumber.js";
 
 import { CommonHtmlProps } from "../../../types";
 import { LoadingIndicator } from "../../shared/loading-indicator";
@@ -9,11 +10,11 @@ import { TotalEuro } from "../TotalEuro";
 import * as styles from "./WalletBalance.module.scss";
 
 export interface IWalletValues {
-  ethAmount: string;
-  ethEuroAmount: string;
-  neuroAmount: string;
-  neuroEuroAmount: string;
-  totalEuroAmount: string;
+  ethAmount: BigNumber;
+  ethEuroAmount: BigNumber;
+  neuroAmount: BigNumber;
+  neuroEuroAmount: BigNumber;
+  totalEuroAmount: BigNumber;
 }
 
 export const LoadingWallet: React.FunctionComponent<IPanelProps> = props => {

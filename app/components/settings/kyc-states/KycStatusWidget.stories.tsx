@@ -2,7 +2,7 @@ import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
 import { ERequestOutsourcedStatus, ERequestStatus } from "../../../modules/kyc/interfaces";
-import { EUserType } from "../../../lib/api/users/interfaces";
+import { EUserType } from "../../../modules/auth/interfaces";
 import { KycStatusWidgetComponent } from "./KycStatusWidget";
 
 const commonProps = {

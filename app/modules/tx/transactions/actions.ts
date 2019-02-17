@@ -1,5 +1,5 @@
 import { createAction, createActionFactory, createSimpleAction } from "../../actionsUtils";
-import { ITokenDisbursal } from "../../investor-portfolio/types";
+import { IStateTokenDisbursal } from "../../investor-portfolio/interfaces/TokenDisbursal";
 import { ETokenType } from "../interfaces";
 
 export const txTransactionsActions = {
@@ -11,14 +11,14 @@ export const txTransactionsActions = {
   startUserClaim: (etoId: string) => createAction("TRANSACTIONS_START_CLAIM", etoId),
   startInvestorPayoutAccept: createActionFactory(
     "TRANSACTIONS_START_PAYOUT_ACCEPT",
-    (tokensDisbursals: ReadonlyArray<ITokenDisbursal>) => ({
+    (tokensDisbursals: ReadonlyArray<IStateTokenDisbursal>) => ({
       tokensDisbursals,
     }),
   ),
   startInvestorPayoutRedistribute: createActionFactory(
     "TRANSACTIONS_START_PAYOUT_REDISTRIBUTE",
-    (tokenDisbursals: ITokenDisbursal) => ({
-      tokenDisbursals,
+    (tokenDisbursal: IStateTokenDisbursal) => ({
+      tokenDisbursal,
     }),
   ),
   // Add here new custom sagas that represent flows

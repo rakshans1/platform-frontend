@@ -45,7 +45,7 @@ const convertField = (input: any, f: any) => {
   }
 };
 
-export const convertInArray = (conversionSpec: any) => (data: any[]) => {
+export const convertInArray = (conversionSpec: any) => (data: Array<any> | ReadonlyArray<any>) => {
   if (Array.isArray(data)) {
     return data.map(element => {
       return convert(element, conversionSpec);

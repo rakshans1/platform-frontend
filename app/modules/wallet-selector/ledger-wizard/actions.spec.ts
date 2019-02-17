@@ -21,7 +21,7 @@ import { Web3Manager } from "../../../lib/web3/Web3Manager";
 import { IAppState } from "../../../store";
 import { Dictionary } from "../../../types";
 import { actions } from "../../actions";
-import { EWalletSubType, EWalletType } from "../../web3/types";
+import { EWalletSubType, EWalletType } from "../../web3/interfaces";
 import { DEFAULT_DERIVATION_PATH_PREFIX } from "./reducer";
 import {
   finishSettingUpLedgerConnector,

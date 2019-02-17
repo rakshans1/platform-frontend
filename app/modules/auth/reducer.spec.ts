@@ -1,14 +1,13 @@
 import { expect } from "chai";
 
-import { EUserType } from "../../modules/auth/interfaces";
-import { EWalletSubType, EWalletType } from "../web3/types";
-import { IStateAuth } from "./reducer";
+import { EUserType, IStateAuth } from "./interfaces";
+import { EWalletSubType, EWalletType } from "../web3/interfaces";
 import { selectIsAuthorized, selectUserEmail } from "./selectors";
 
 describe("auth > selectors", () => {
   describe("selectIsAuthorized", () => {
     it("should return true for authorized users", () => {
-      const state: IAuthState = {
+      const state: IStateAuth = {
         jwt: "eyjwt",
         user: {
           userId: "user-id",
@@ -25,7 +24,7 @@ describe("auth > selectors", () => {
 
     it("should return false for not authorized users", () => {
       // this should only happen in the middle of auth process
-      const state: IAuthState = {
+      const state: IStateAuth = {
         jwt: "eyjwt",
         user: undefined,
       };
@@ -38,7 +37,7 @@ describe("auth > selectors", () => {
 
   describe("selectUserEmail", () => {
     it("should prefer unverified user email", () => {
-      const state: IAuthState = {
+      const state: IStateAuth = {
         jwt: "eyjwt",
         user: {
           userId: "user-id",
@@ -56,7 +55,7 @@ describe("auth > selectors", () => {
     });
 
     it("should return undefined when user is missing", () => {
-      const state: IAuthState = {
+      const state: IStateAuth = {
         jwt: "eyjwt",
       };
 

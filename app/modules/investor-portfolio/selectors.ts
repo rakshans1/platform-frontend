@@ -14,6 +14,7 @@ import {IBlCalculatedContribution} from "./interfaces/CalculatedContribution";
 import * as investorTicketsInterfaces from "./interfaces/InvestorTickets";
 import {convert} from "../../components/eto/utils";
 import {IBlTokenDisbursal} from "./interfaces/TokenDisbursal";
+import {IStatePublicEtos} from "../public-etos/interfaces/PublicEto";
 
 const selectInvestorTicketsState = (state: IAppState):investorTicketsInterfaces.IBlInvestorTickets =>
   convert(state.investorTickets, investorTicketsInterfaces.stateToBlConversionSpec);
@@ -180,7 +181,7 @@ export const selectMyAssetsWithTokenData = (state: IAppState): TBlETOWithTokenDa
   if (myAsssets) {
     return myAsssets.map((asset: TBlETOWithInvestorTicket) => ({
       ...asset,
-      tokenData: selectTokenData(state.publicEtos, asset.previewCode)!,
+      tokenData: selectTokenData(state.publicEtos as IStatePublicEtos, asset.previewCode)!,
     }));
   }
 

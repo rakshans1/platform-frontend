@@ -30,8 +30,8 @@ import {
   IKycFileInfo,
   IKycIndividualData,
   IKycLegalRepresentative,
-  KycLegalRepresentativeSchemaRequired,
 } from "../../../modules/kyc/interfaces";
+import {KycLegalRepresentativeValidator} from "../../../modules/kyc/validators";
 import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { Button } from "../../shared/buttons";
@@ -170,10 +170,10 @@ const KYCForm = injectIntlHelpers<FormikProps<IKycLegalRepresentative> & IProps>
 );
 
 const KYCEnhancedForm = withFormik<IProps, IKycIndividualData>({
-  validationSchema: KycLegalRepresentativeSchemaRequired,
+  validationSchema: KycLegalRepresentativeValidator,
   mapPropsToValues: props => unboolify(props.legalRepresentative as IKycIndividualData),
   isInitialValid: (props: any) =>
-    KycLegalRepresentativeSchemaRequired.isValidSync(props.legalRepresentative),
+    KycLegalRepresentativeValidator.isValidSync(props.legalRepresentative),
   enableReinitialize: true,
   handleSubmit: (values, props) => props.props.submitForm(boolify(values)),
 })(KYCForm);
@@ -204,7 +204,7 @@ export const KycLegalRepresentativeComponent = ({
   intl: { formatIntlMessage },
   ...props
 }: IProps & IIntlProps) => {
-  const lrDataValid = KycLegalRepresentativeSchemaRequired.isValidSync(props.legalRepresentative);
+  const lrDataValid = !!props.legalRepresentative && KycLegalRepresentativeValidator.isValidSync(props.legalRepresentative);
   return (
     <KycPanel
       title={<FormattedMessage id="kyc.panel.business-verification" />}

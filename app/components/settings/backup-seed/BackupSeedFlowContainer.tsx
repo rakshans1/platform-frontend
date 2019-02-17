@@ -3,7 +3,7 @@ import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { RouteComponentProps, withRouter } from "react-router";
 import { Col, Row } from "reactstrap";
 
-import { IWalletPrivateData } from "../../../modules/web3/reducer";
+import { IWalletPrivateData } from "../../../modules/web3/interfaces";
 import { TTranslatedString } from "../../../types";
 import { LayoutAuthorized } from "../../layouts/LayoutAuthorized";
 import { HeaderProgressStepper } from "../../shared/HeaderProgressStepper";

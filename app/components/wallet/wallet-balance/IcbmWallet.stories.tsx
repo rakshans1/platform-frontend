@@ -1,5 +1,7 @@
+import BigNumber from "bignumber.js";
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
+
 import { IcbmWallet } from "./IcbmWallet";
 
 storiesOf("ICBM Wallet", module)
@@ -11,11 +13,11 @@ storiesOf("ICBM Wallet", module)
         hasFunds: true,
         isEtherUpgradeTargetSet: true,
         isEuroUpgradeTargetSet: true,
-        ethAmount: "0",
-        ethEuroAmount: "0",
-        neuroAmount: "0",
-        neuroEuroAmount: "0",
-        totalEuroAmount: "0",
+        ethAmount: new BigNumber("0"),
+        ethEuroAmount: new BigNumber("0"),
+        neuroAmount: new BigNumber("0"),
+        neuroEuroAmount: new BigNumber("0"),
+        totalEuroAmount: new BigNumber("0"),
       }}
     />
   ))
@@ -27,11 +29,11 @@ storiesOf("ICBM Wallet", module)
         hasFunds: true,
         isEtherUpgradeTargetSet: true,
         isEuroUpgradeTargetSet: true,
-        ethAmount: "1",
-        ethEuroAmount: "1",
-        neuroAmount: "0",
-        neuroEuroAmount: "0",
-        totalEuroAmount: "0",
+        ethAmount: new BigNumber("1"),
+        ethEuroAmount: new BigNumber("1"),
+        neuroAmount: new BigNumber("0"),
+        neuroEuroAmount: new BigNumber("0"),
+        totalEuroAmount: new BigNumber("0"),
       }}
     />
   ))
@@ -43,11 +45,11 @@ storiesOf("ICBM Wallet", module)
         hasFunds: true,
         isEtherUpgradeTargetSet: true,
         isEuroUpgradeTargetSet: true,
-        ethAmount: "0",
-        ethEuroAmount: "0",
-        neuroAmount: "1",
-        neuroEuroAmount: "1",
-        totalEuroAmount: "0",
+        ethAmount: new BigNumber("0"),
+        ethEuroAmount: new BigNumber("0"),
+        neuroAmount: new BigNumber("1"),
+        neuroEuroAmount: new BigNumber("1"),
+        totalEuroAmount: new BigNumber("0"),
       }}
     />
   ))
@@ -59,11 +61,11 @@ storiesOf("ICBM Wallet", module)
         hasFunds: true,
         isEtherUpgradeTargetSet: true,
         isEuroUpgradeTargetSet: true,
-        ethAmount: "1",
-        ethEuroAmount: "1",
-        neuroAmount: "1",
-        neuroEuroAmount: "1",
-        totalEuroAmount: "0",
+        ethAmount: new BigNumber("1"),
+        ethEuroAmount: new BigNumber("1"),
+        neuroAmount: new BigNumber("1"),
+        neuroEuroAmount: new BigNumber("1"),
+        totalEuroAmount: new BigNumber("0"),
       }}
     />
   ))
@@ -73,11 +75,11 @@ storiesOf("ICBM Wallet", module)
         hasFunds: true,
         isEtherUpgradeTargetSet: true,
         isEuroUpgradeTargetSet: true,
-        ethAmount: "1",
-        ethEuroAmount: "1",
-        neuroAmount: "1",
-        neuroEuroAmount: "1",
-        totalEuroAmount: "0",
+        ethAmount: new BigNumber("1"),
+        ethEuroAmount: new BigNumber("1"),
+        neuroAmount: new BigNumber("1"),
+        neuroEuroAmount: new BigNumber("1"),
+        totalEuroAmount: new BigNumber("0"),
       }}
     />
   ))
@@ -89,11 +91,11 @@ storiesOf("ICBM Wallet", module)
         hasFunds: true,
         isEtherUpgradeTargetSet: false,
         isEuroUpgradeTargetSet: false,
-        ethAmount: "1",
-        ethEuroAmount: "1",
-        neuroAmount: "1",
-        neuroEuroAmount: "1",
-        totalEuroAmount: "0",
+        ethAmount: new BigNumber("1"),
+        ethEuroAmount: new BigNumber("1"),
+        neuroAmount: new BigNumber("1"),
+        neuroEuroAmount: new BigNumber("1"),
+        totalEuroAmount: new BigNumber("0"),
       }}
     />
   ));

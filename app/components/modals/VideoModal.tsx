@@ -3,16 +3,16 @@ import { Modal } from "reactstrap";
 
 import { actions } from "../../modules/actions";
 import {
-  IVideoModal,
   selectVideoModalIsOpen,
   selectVideoModalObj,
 } from "../../modules/video-modal/reducer";
+import {IBlVideoModalData} from "../../modules/video-modal/interfaces";
 import { appConnect } from "../../store";
 import { Proportion } from "../shared/Proportion";
 
 interface IStateProps {
   isOpen: boolean;
-  videoModalObj?: IVideoModal;
+  videoModalObj?: IBlVideoModalData;
 }
 
 interface IDispatchProps {

@@ -2,7 +2,7 @@ import * as cn from "classnames";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { ENotificationText, ENotificationType } from "../../../modules/notifications/reducer";
+import { ENotificationText, ENotificationType } from "../../../modules/notifications/interfaces";
 import { Button, ButtonClose, ButtonTextPosition, ButtonWidth, EButtonLayout } from "../buttons";
 
 import * as infoIcon from "../../../assets/img/notifications/info.svg";

@@ -5,7 +5,7 @@ import { setupFakeClock } from "../../../../test/integrationTestUtils";
 import { IAppState } from "../../../store";
 import { DeepPartial } from "../../../types";
 import * as publicEtoSelectors from "../../public-etos/selectors";
-import { EETOStateOnChain } from "../../public-etos/types";
+import { EETOStateOnChain } from "../../public-etos/interfaces/interfaces";
 import { selectBankTransferReferenceCode } from "../selectors";
 
 function createStateWithAddress(address: string, reference: string): IAppState {

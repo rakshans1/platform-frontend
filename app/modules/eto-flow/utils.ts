@@ -1,19 +1,18 @@
 import BigNumber from "bignumber.js";
 import * as Yup from "yup";
 
-import {
-  EtoCompanyInformationType,
-  EtoEquityTokenInfoType,
-  EtoInvestmentTermsType,
-  EtoKeyIndividualsType,
-  EtoLegalInformationType,
-  EtoMediaType,
-  EtoPitchType,
-  EtoRiskAssessmentType,
-  EtoTermsType,
-  EtoVotingRightsType,
-  GeneralEtoDataType,
-} from "../../lib/api/eto/EtoApi.interfaces";
+import {  EtoEquityTokenInfoValidator,
+  EtoInvestmentTermsValidator,
+  EtoKeyIndividualsValidator,
+  EtoLegalInformationValidator,
+  EtoMediaValidator,
+  EtoPitchValidator,
+  EtoRiskAssessmentValidator,
+  EtoTermsValidator,
+  EtoCompanyInformationValidator,
+  EtoVotingRightsValidator,
+  GeneralEtoDataValidator
+} from './validators'
 import {IApiDetailedBookbuildingStats} from "../bookbuilding-flow/interfaces/DetailedBookbuildingStats";
 
 function getErrorsNumber(validator: Yup.Schema<any>, data?: any): number {
@@ -87,35 +86,35 @@ export const etoInvestmentTermsProgressOptions: IProgressOptions = {
 };
 
 export const calculateCompanyInformationProgress = getFormFractionDoneCalculator(
-  EtoCompanyInformationType.toYup(),
+  EtoCompanyInformationValidator.toYup(),
 );
-export const calculateEtoTermsProgress = getFormFractionDoneCalculator(EtoTermsType.toYup());
+export const calculateEtoTermsProgress = getFormFractionDoneCalculator(EtoTermsValidator.toYup());
 export const calculateEtoKeyIndividualsProgress = getFormFractionDoneCalculator(
-  EtoKeyIndividualsType.toYup(),
+  EtoKeyIndividualsValidator.toYup(),
 );
 export const calculateLegalInformationProgress = getFormFractionDoneCalculator(
-  EtoLegalInformationType.toYup(),
+  EtoLegalInformationValidator.toYup(),
 );
-export const calculateProductVisionProgress = getFormFractionDoneCalculator(EtoPitchType.toYup());
+export const calculateProductVisionProgress = getFormFractionDoneCalculator(EtoPitchValidator.toYup());
 export const calculateEtoMediaProgress = getFormFractionDoneCalculator(
-  EtoMediaType.toYup(),
+  EtoMediaValidator.toYup(),
   etoMediaProgressOptions,
 );
 export const calculateEtoRiskAssessmentProgress = getFormFractionDoneCalculator(
-  EtoRiskAssessmentType.toYup(),
+  EtoRiskAssessmentValidator.toYup(),
 );
 export const calculateEtoVotingRightsProgress = getFormFractionDoneCalculator(
-  EtoVotingRightsType.toYup(),
+  EtoVotingRightsValidator.toYup(),
 );
 export const calculateEtoEquityTokenInfoProgress = getFormFractionDoneCalculator(
-  EtoEquityTokenInfoType.toYup(),
+  EtoEquityTokenInfoValidator.toYup(),
 );
 export const calculateInvestmentTermsProgress = getFormFractionDoneCalculator(
-  EtoInvestmentTermsType.toYup(),
+  EtoInvestmentTermsValidator.toYup(),
   etoInvestmentTermsProgressOptions,
 );
 
-export const calculateGeneralEtoData = getFormFractionDoneCalculator(GeneralEtoDataType.toYup(), {
+export const calculateGeneralEtoData = getFormFractionDoneCalculator(GeneralEtoDataValidator.toYup(), {
   ignore: true,
 });
 

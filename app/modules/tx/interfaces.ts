@@ -1,10 +1,10 @@
 import {TPendingTxs} from "../../lib/api/users/interfaces";
-import {NumericString} from "../../types";
+import BigNumber from "bignumber.js";
 
 export interface IStateWithdrawDraftType {
   type: ETxSenderType.WITHDRAW;
   to: string;
-  value: NumericString;
+  value: BigNumber;
 }
 
 export interface IInvestmentDraftType {

@@ -3,7 +3,7 @@ import { shallow } from "enzyme";
 import * as React from "react";
 import { spy } from "sinon";
 
-import { ENotificationText, ENotificationType } from "../../../modules/notifications/reducer";
+import { ENotificationText, ENotificationType } from "../../../modules/notifications/interfaces";
 import { Notification } from "./Notification";
 
 import { tid } from "../../../../test/testUtils";

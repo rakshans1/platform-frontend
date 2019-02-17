@@ -2,7 +2,7 @@ import { compact, isEmpty } from "lodash";
 import * as React from "react";
 import { branch, compose, renderNothing } from "recompose";
 
-import { INotification } from "../../../modules/notifications/reducer";
+import { INotification } from "../../../modules/notifications/interfaces";
 import {
   selectNotifications,
   selectSettingsNotification,

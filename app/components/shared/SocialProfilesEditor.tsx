@@ -2,7 +2,7 @@ import * as cn from "classnames";
 import { connect, FieldArray, getIn } from "formik";
 import * as React from "react";
 
-import { TSocialChannelsType } from "../../lib/api/eto/EtoApi.interfaces";
+import {IBlSocialChannel} from "../../modules/eto-flow/interfaces/SocialChannel";
 import { CommonHtmlProps, TFormikConnect } from "../../types";
 import { FormField } from "./forms";
 import { InlineIcon } from "./InlineIcon";
@@ -180,7 +180,7 @@ class SocialProfilesEditorLayout extends React.Component<IProps & TFormikConnect
     const { name, profiles, formik } = this.props;
     const { values, setFieldValue } = formik;
 
-    const socialMediaValues: TSocialChannelsType = getIn(values, name) || [];
+    const socialMediaValues: IBlSocialChannel[] = getIn(values, name) || [];
     const selectedFields: boolean[] = [];
 
     profiles.forEach((profile, index) => {

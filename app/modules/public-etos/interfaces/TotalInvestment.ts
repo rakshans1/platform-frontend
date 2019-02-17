@@ -19,6 +19,14 @@ export interface IBlEtoTotalInvestment {
   etherTokenBalance: BigNumber;
 }
 
+export interface IApiEtoTotalInvestment {
+  totalEquivEurUlps: BigNumber;
+  totalTokensInt: BigNumber;
+  totalInvestors: BigNumber;
+  euroTokenBalance: BigNumber;
+  etherTokenBalance: BigNumber;
+}
+
 export const stateToBlConversionSpec = {
   totalEquivEurUlps: numericStringToBigNumber(),
   totalTokensInt: numericStringToBigNumber(),

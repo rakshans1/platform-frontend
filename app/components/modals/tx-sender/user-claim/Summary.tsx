@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { map } from "lodash/fp";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
@@ -6,14 +7,14 @@ import { Col, Container, Row } from "reactstrap";
 import {
   EEtoDocumentType,
   IEtoDocument,
-  immutableDocumentName,
+  immutableDocumentNames,
 } from "../../../../modules/eto-documents/interfaces";
-import { ImmutableFileId } from "../../../../lib/api/ImmutableStorage.interfaces";
-import { IBlTxData } from "../../../../lib/web3/types";
+import { IImmutableFileId } from '../../../../modules/immutable-file/interfaces';
+import { IBlTxData } from "../../../../modules/web3/interfaces";
 import { actions } from "../../../../modules/actions";
 import { selectIsPendingDownload } from "../../../../modules/immutable-file/selectors";
 import { selectMyInvestorTicketByEtoId } from "../../../../modules/investor-portfolio/selectors";
-import { TETOWithInvestorTicket } from "../../../../modules/investor-portfolio/types";
+import { TBlETOWithInvestorTicket } from "../../../../modules/investor-portfolio/interfaces/interfaces";
 import {
   selectTxGasCostEthUlps,
   selectTxSummaryAdditionalData,
@@ -34,15 +35,15 @@ import * as styles from "./Summary.module.scss";
 
 interface IStateProps {
   txData: Partial<IBlTxData>;
-  txCost: string;
-  etoData: TETOWithInvestorTicket;
+  txCost: BigNumber;
+  etoData: TBlETOWithInvestorTicket;
   etoId: string;
   isPendingDownload: (ipfsHash: string) => boolean;
 }
 
 interface IDispatchProps {
   onAccept: () => any;
-  downloadDocument: (immutableFileId: ImmutableFileId, fileName: string) => void;
+  downloadDocument: (immutableFileId: IImmutableFileId, fileName: string) => void;
   generateTemplateByEtoId: (immutableFileId: IEtoDocument, etoId: string) => void;
 }
 
@@ -126,7 +127,7 @@ export const UserClaimSummaryComponent: React.FunctionComponent<TComponentProps>
                               mimeType: document.mimeType,
                               asPdf: true,
                             },
-                            immutableDocumentName[document.documentType],
+                            immutableDocumentNames[document.documentType],
                           )
                         }
                       />
@@ -182,7 +183,7 @@ export const UserClaimSummary = appConnect<IStateProps, IDispatchProps, {}>({
   },
   dispatchToProps: d => ({
     onAccept: () => d(actions.txSender.txSenderAccept()),
-    downloadDocument: (immutableFileId: ImmutableFileId, fileName: string) => {
+    downloadDocument: (immutableFileId: IImmutableFileId, fileName: string) => {
       d(actions.immutableStorage.downloadImmutableFile(immutableFileId, fileName));
     },
     generateTemplateByEtoId: (immutableFileId: IEtoDocument, etoId: string) => {

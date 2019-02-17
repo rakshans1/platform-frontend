@@ -4,6 +4,7 @@ import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import * as ReactToPrint from "react-to-print";
 import { Col, Container, Row } from "reactstrap";
 import { compose, withHandlers } from "recompose";
+import BigNumber from "bignumber.js";
 
 import { actions } from "../../../../modules/actions";
 import {
@@ -32,8 +33,19 @@ interface IStateProps {
   recipient: string;
   iban: string;
   bic: string;
+  referenceCode: string | null;
+  amount: BigNumber | null;
+  gasStipend?: boolean;
+}
+
+interface IComponentProps {
+  accountName?: string;
+  country?: string;
+  recipient: string;
+  iban: string;
+  bic: string;
   referenceCode: string;
-  amount: string;
+  amount: BigNumber;
   gasStipend?: boolean;
 }
 
@@ -45,7 +57,7 @@ interface IHandlerProps {
   handleCheckbox: (e: any) => void;
 }
 
-type IProps = IStateProps & IDispatchProps & IHandlerProps;
+type IProps = IComponentProps & IDispatchProps & IHandlerProps;
 
 const CopyToClipboardLabel: React.FunctionComponent<{ label: string }> = ({ label }) => (
   <>
@@ -190,16 +202,22 @@ const BankTransferDetailsComponent = injectIntlHelpers(
 const BankTransferDetails = compose<IProps, {}>(
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: state => {
-      return {
-        accountName: selectClientName(state.kyc),
-        country: selectClientCountry(state.kyc),
-        recipient: process.env.NF_BANK_TRANSFER_RECIPIENT!,
-        iban: process.env.NF_BANK_TRANSFER_IBAN!,
-        bic: process.env.NF_BANK_TRANSFER_BIC!,
-        referenceCode: selectBankTransferReferenceCode(state),
-        amount: selectBankTransferAmount(state),
-        gasStipend: selectIsBankTransferGasStipend(state),
-      };
+      const amount = selectBankTransferAmount(state)
+      const referenceCode = selectBankTransferReferenceCode(state)
+      if (amount && referenceCode) {
+        return {
+          accountName: selectClientName(state.kyc),
+          country: selectClientCountry(state.kyc),
+          recipient: process.env.NF_BANK_TRANSFER_RECIPIENT!,
+          iban: process.env.NF_BANK_TRANSFER_IBAN!,
+          bic: process.env.NF_BANK_TRANSFER_BIC!,
+          referenceCode: selectBankTransferReferenceCode(state),
+          amount: selectBankTransferAmount(state),
+          gasStipend: selectIsBankTransferGasStipend(state),
+        };
+      } else {
+        throw new Error("incomplete data")
+      }
     },
     dispatchToProps: d => ({
       onGasStipendChange: () => d(actions.investmentFlow.toggleBankTransferGasStipend()),

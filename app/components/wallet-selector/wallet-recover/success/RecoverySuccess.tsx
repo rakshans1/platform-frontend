@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Col, Row } from "reactstrap";
 import { compose } from "redux";
 
-import { EUserType } from "../../../../lib/api/users/interfaces";
+import { EUserType } from "../../../../modules/auth/interfaces";
 import { actions } from "../../../../modules/actions";
 import { selectUrlUserType } from "../../../../modules/wallet-selector/selectors";
 import { appConnect } from "../../../../store";

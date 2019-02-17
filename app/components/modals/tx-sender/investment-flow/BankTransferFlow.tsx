@@ -2,7 +2,7 @@ import * as React from "react";
 import { Modal } from "reactstrap";
 
 import { actions } from "../../../../modules/actions";
-import { EBankTransferFlowState } from "../../../../modules/investment-flow/reducer";
+import { EBankTransferFlowState } from "../../../../modules/investment-flow/interfaces";
 import { selectIsBankTransferModalOpened } from "../../../../modules/investment-flow/selectors";
 import { appConnect } from "../../../../store";
 import { ModalComponentBody } from "../../ModalComponentBody";

@@ -28,6 +28,7 @@ import {EEtoState} from "../eto-flow/interfaces/interfaces";
 import {IStatePublicEtoData} from "../eto-flow/interfaces/PublicEtoData";
 import {IStateCompanyEtoData} from "../eto-flow/interfaces/CompanyEtoData";
 import {TContribution} from "../contracts/interfaces";
+import {bigNumberToNumericString} from "../../utils/numericStringUtils";
 
 export function* loadInvestorTickets({ logger }: TGlobalDependencies, action: TAction): any {
   if (action.type !== "INVESTOR_TICKET_ETOS_LOAD") return;
@@ -160,18 +161,25 @@ export function* getIncomingPayouts({
       ),
     });
 
-    const euroTokenIncomingPayoutValue = addBigNumbers(
-      euroTokenIncomingPayout.map((v: BigNumber[]) => v[1]),
-    );
-    const etherTokenIncomingPayoutValue = addBigNumbers(
-      etherTokenIncomingPayout.map((v: BigNumber[]) => v[1]),
-    );
+    const euroTokenIncomingPayoutValue:BigNumber = euroTokenIncomingPayout.reduce(
+      (acc: BigNumber, x: BigNumber[]) => { //fixme write unit test
+        acc.add(x[1])
+        return acc
+      }, new BigNumber(0)
+    )
+
+    const etherTokenIncomingPayoutValue:BigNumber = etherTokenIncomingPayout.reduce(
+      (acc: BigNumber, x: BigNumber[]) => { //fixme write unit test
+        acc.add(x[1])
+        return acc
+      }, new BigNumber(0)
+    )
 
     yield put(
-      actions.investorEtoTicket.setIncomingPayouts({
-        euroTokenIncomingPayoutValue,
-        etherTokenIncomingPayoutValue,
-      }),
+      actions.investorEtoTicket.setIncomingPayouts({ //fixme write a converter fn
+        euroTokenIncomingPayoutValue : bigNumberToNumericString()(euroTokenIncomingPayoutValue),
+        etherTokenIncomingPayoutValue : bigNumberToNumericString()(etherTokenIncomingPayoutValue)
+      })
     );
   } catch (error) {
     logger.error("Failed to load incoming payouts", error);

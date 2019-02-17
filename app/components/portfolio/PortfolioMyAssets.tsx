@@ -3,12 +3,13 @@ import { isEqual } from "lodash/fp";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
+import BigNumber from "bignumber.js";
 import { compose, lifecycle, withState } from "recompose";
 
 import { externalRoutes } from "../../config/externalRoutes";
 import { actions } from "../../modules/actions";
 import { selectMyAssetsWithTokenData } from "../../modules/investor-portfolio/selectors";
-import { TETOWithTokenData } from "../../modules/investor-portfolio/types";
+import { TBlETOWithTokenData } from "../../modules/investor-portfolio/interfaces/interfaces";
 import { selectNeuPriceEur } from "../../modules/shared/tokenPrice/selectors";
 import { selectNeuBalance } from "../../modules/wallet/selectors";
 import { appConnect } from "../../store";
@@ -30,10 +31,10 @@ interface IExternalProps {
 }
 
 interface IStateProps {
-  myNeuBalance: string;
-  neuPrice: string;
-  neuValue: string;
-  myAssets: TETOWithTokenData[];
+  myNeuBalance: BigNumber;
+  neuPrice: BigNumber;
+  neuValue: BigNumber;
+  myAssets: TBlETOWithTokenData[];
 }
 
 interface IDispatchProps {
@@ -78,7 +79,7 @@ const PortfolioMyAssetsComponent: React.FunctionComponent<TComponentProps> = ({
             "",
           ]}
         >
-          {myNeuBalance !== "0" ? (
+          {!myNeuBalance.isZero() ? (
             <NewTableRow cellLayout={ENewTableCellLayout.MIDDLE}>
               <>
                 <img src={neuIcon} alt="" className={cn("mr-2", styles.token)} />
@@ -116,7 +117,7 @@ const PortfolioMyAssetsComponent: React.FunctionComponent<TComponentProps> = ({
           {myAssets &&
             myAssets
               .filter(v => v.tokenData)
-              .filter(v => v.tokenData.balance !== "0")
+              .filter(v => !v.tokenData.balance.isZero())
               .map(({ equityTokenImage, equityTokenName, etoId, tokenData, equityTokenSymbol }) => {
                 return (
                   <NewTableRow key={etoId} cellLayout={ENewTableCellLayout.MIDDLE}>
@@ -165,7 +166,7 @@ const PortfolioMyAssets = compose<TComponentProps, IExternalProps>(
       return {
         myNeuBalance,
         neuPrice,
-        neuValue: multiplyBigNumbers([myNeuBalance, neuPrice]),
+        neuValue: myNeuBalance.mul(neuPrice),
         myAssets: selectMyAssetsWithTokenData(state)!,
       };
     },

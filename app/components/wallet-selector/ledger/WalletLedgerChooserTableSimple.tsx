@@ -2,7 +2,7 @@ import * as cn from "classnames";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { ILedgerAccount } from "../../../modules/wallet-selector/ledger-wizard/reducer";
+import { ILedgerAccount } from "../../../modules/wallet-selector/ledger-wizard/interfaces";
 import { Button, EButtonLayout } from "../../shared/buttons";
 import { ECurrency, Money } from "../../shared/Money";
 import * as styles from "./WalletLedgerChooserTableSimple.module.scss";

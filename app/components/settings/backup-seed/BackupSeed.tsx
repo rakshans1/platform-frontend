@@ -3,7 +3,7 @@ import { compose } from "redux";
 
 import { actions } from "../../../modules/actions";
 import { selectBackupCodesVerified } from "../../../modules/auth/selectors";
-import { IWalletPrivateData } from "../../../modules/web3/reducer";
+import { IWalletPrivateData } from "../../../modules/web3/interfaces";
 import { selectIsUnlocked, selectWalletPrivateData } from "../../../modules/web3/selectors";
 import { appConnect } from "../../../store";
 import { createErrorBoundary } from "../../shared/errorBoundary/ErrorBoundary";

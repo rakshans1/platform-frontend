@@ -1,7 +1,7 @@
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
-import { EUserType } from "../../../lib/api/users/interfaces";
+import { EUserType } from "../../../modules/auth/interfaces";
 import { withStore } from "../../../utils/storeDecorator";
 import { ErrorBoundaryLayoutAuthorized } from "./ErrorBoundaryLayoutAuthorized";
 import { ErrorBoundaryLayoutBase } from "./ErrorBoundaryLayoutBase";

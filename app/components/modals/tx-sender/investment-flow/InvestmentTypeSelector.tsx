@@ -1,6 +1,7 @@
 import * as cn from "classnames";
 import * as React from "react";
 import { Col, FormGroup } from "reactstrap";
+import BigNumber from "bignumber.js";
 
 import { EInvestmentType } from "../../../../modules/investment-flow/interfaces";
 import { ECurrency, Money } from "../../../shared/Money";
@@ -9,16 +10,16 @@ import * as styles from "./InvestmentTypeSelector.module.scss";
 
 interface IEthWallet {
   type: EInvestmentType.ICBMEth | EInvestmentType.InvestmentWallet;
-  balanceEth: string;
-  balanceEur: string;
+  balanceEth: BigNumber;
+  balanceEur: BigNumber;
   name: string;
   icon: string;
 }
 
 interface InEuroWallet {
   type: EInvestmentType.ICBMnEuro;
-  balanceNEuro: string;
-  balanceEur: string;
+  balanceNEuro: BigNumber;
+  balanceEur: BigNumber;
   name: string;
   icon: string;
 }

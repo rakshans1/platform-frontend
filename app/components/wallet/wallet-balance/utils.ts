@@ -1,1 +1,3 @@
-export const isWalletNotEmpty = (amount: string): boolean => !!(amount && amount !== "0");
+import BigNumber from "bignumber.js";
+
+export const isWalletNotEmpty = (amount: BigNumber): boolean => !!(amount && !amount.isZero());

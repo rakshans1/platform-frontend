@@ -1,7 +1,8 @@
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
+import BigNumber from "bignumber.js";
 
-import { TEtoSpecsData } from "../../../../lib/api/eto/EtoApi.interfaces";
+import { IBlPublicEtoData } from "../../../../modules/eto-flow/interfaces/PublicEtoData";
 import { withModalBody } from "../../../../utils/storybookHelpers";
 import { BankTransferDetailsComponent } from "./BankTransferDetails";
 import { BankTransferSummaryComponent } from "./BankTransferSummary";
@@ -9,10 +10,10 @@ import { BankTransferSummaryComponent } from "./BankTransferSummary";
 // tslint:disable-next-line:no-object-literal-type-assertion
 const eto = {
   etoId: "0xfufu",
-  preMoneyValuationEur: 10000,
-  existingCompanyShares: 10,
-  equityTokensPerShare: 10,
-} as TEtoSpecsData;
+  preMoneyValuationEur: new BigNumber(10000),
+  existingCompanyShares: new BigNumber(10),
+  equityTokensPerShare: new BigNumber(10),
+} as IBlPublicEtoData;
 
 const detailsData = {
   accountName: "Fifth Force GmbH",
@@ -21,7 +22,7 @@ const detailsData = {
   iban: "DE1250094039446384529400565",
   bic: "TLXXXXXXXXX",
   referenceCode: "NF AGHGCmR3u2SuxdyNPIksxTyAhKM REF 123456789011 G WL",
-  amount: "123456781234567812345678",
+  amount: new BigNumber("123456781234567812345678"),
   onGasStipendChange: () => {},
   handleCheckbox: () => {},
 };
@@ -29,9 +30,9 @@ const detailsData = {
 const summaryData = {
   eto,
   companyName: "fufu company",
-  investmentEur: "10000000000000000000000",
-  equityTokens: "1234",
-  estimatedReward: "3456123412341231234123412344",
+  investmentEur: new BigNumber("10000000000000000000000"),
+  equityTokens: new BigNumber("1234"),
+  estimatedReward: new BigNumber("3456123412341231234123412344"),
   onAccept: () => {},
   downloadAgreement: () => {},
   onChange: () => {},
