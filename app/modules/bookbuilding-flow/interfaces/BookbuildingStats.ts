@@ -1,6 +1,6 @@
 import {NumericString} from "../../../types";
 import BigNumber from "bignumber.js";
-import {numericStringToBigNumber} from "../../../utils/numericStringUtils";
+import {numberToNumericString, numericStringToBigNumber} from "../../../utils/numericStringUtils";
 
 export interface IStateBookBuildingStats {
   investorsCount: number;
@@ -18,5 +18,12 @@ export interface IApiBookBuildingStats {
 }
 
 export const stateToBlConversionSpec = {
+  investorsCount: numericStringToBigNumber(),
   pledgedAmount: numericStringToBigNumber()
+};
+
+
+export const apiToStateConversionSpec = {
+  investorsCount: numberToNumericString(),
+  pledgedAmount: numberToNumericString()
 };

@@ -20,6 +20,7 @@ import {
 } from "./actions";
 import * as pledgeInterfaces from "./interfaces/Pledge";
 import {convert} from "../../components/eto/utils";
+import * as bookbuildingStatInterfaces from "./interfaces/BookbuildingStats";
 
 export function* saveMyPledge(
   { apiEtoPledgeService, notificationCenter, logger }: TGlobalDependencies,
@@ -101,9 +102,11 @@ export function* loadBookBuildingStats(
 
   try {
     const etoId = action.payload.etoId;
-    const statsResponse: IHttpResponse<any> = yield apiEtoService.getBookBuildingStats(etoId);
+    const statsResponse: IHttpResponse<bookbuildingStatInterfaces.IApiBookBuildingStats> = yield apiEtoService.getBookBuildingStats(etoId);
 
-    yield put(actions.bookBuilding.setBookBuildingStats(etoId, statsResponse.body)); //fixme statsResponse:any
+    yield put(actions.bookBuilding.setBookBuildingStats(etoId,
+      convert(statsResponse.body, bookbuildingStatInterfaces.apiToStateConversionSpec))
+    );
   } catch (e) {
     notificationCenter.error(
       createMessage(BookbuildingFlowMessage.PLEDGE_FLOW_FAILED_TO_GET_BOOKBUILDING_STATS),
