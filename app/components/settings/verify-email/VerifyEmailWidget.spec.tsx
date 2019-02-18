@@ -8,6 +8,7 @@ import {
   setupFakeClock,
   waitUntilDoesntThrow,
   wrapWithIntl,
+  wrapWithProviders,
 } from "../../../../test/integrationTestUtils";
 import { tid } from "../../../../test/testUtils";
 import { dummyIntl } from "../../../utils/injectIntlHelpers.fixtures";
@@ -92,7 +93,7 @@ describe("<VerifyEmailWidgetComponent />", () => {
   describe("email form", () => {
     it("initially submit button should be disabled", () => {
       const verifyEmailWidget = createMount(
-        wrapWithIntl(
+        wrapWithProviders(() => (
           <VerifyEmailWidgetComponent
             step={1}
             isThereUnverifiedEmail={false}
@@ -103,8 +104,8 @@ describe("<VerifyEmailWidgetComponent />", () => {
             revertCancelEmail={() => {}}
             addNewEmail={() => {}}
             intl={dummyIntl}
-          />,
-        ),
+          />
+        )),
       );
 
       expect(
@@ -118,7 +119,7 @@ describe("<VerifyEmailWidgetComponent />", () => {
     it("should be possible to submit with valid email", async () => {
       const addNewEmailSpy = spy();
       const verifyEmailWidget = createMount(
-        wrapWithIntl(
+        wrapWithProviders(() => (
           <VerifyEmailWidgetComponent
             step={1}
             isThereUnverifiedEmail={false}
@@ -129,8 +130,8 @@ describe("<VerifyEmailWidgetComponent />", () => {
             resendEmail={() => {}}
             addNewEmail={addNewEmailSpy}
             intl={dummyIntl}
-          />,
-        ),
+          />
+        )),
       );
 
       verifyEmailWidget
@@ -163,7 +164,7 @@ describe("<VerifyEmailWidgetComponent />", () => {
 
     it("should not be possible to submit with invalid email", async () => {
       const verifyEmailWidget = createMount(
-        wrapWithIntl(
+        wrapWithProviders(() => (
           <VerifyEmailWidgetComponent
             step={1}
             isThereUnverifiedEmail={false}
@@ -174,8 +175,8 @@ describe("<VerifyEmailWidgetComponent />", () => {
             resendEmail={() => {}}
             addNewEmail={() => {}}
             intl={dummyIntl}
-          />,
-        ),
+          />
+        )),
       );
 
       verifyEmailWidget

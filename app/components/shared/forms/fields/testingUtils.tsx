@@ -1,6 +1,7 @@
 import { Formik } from "formik";
 import * as React from "react";
 
+import { wrapWithProviders } from "../../../../../test/integrationTestUtils";
 import { Form } from "../Form";
 
 /**
@@ -8,25 +9,26 @@ import { Form } from "../Form";
  */
 export const formWrapper = (formState: any, onSubmit?: (values: any) => any) => (
   Component: React.FunctionComponent,
-) => () => (
-  <Formik initialValues={formState} onSubmit={onSubmit || (() => {})}>
-    {({ submitForm, values, submitCount }) => {
-      if (process.env.STORYBOOK_GIT_BRANCH) {
-        // tslint:disable-next-line
-        console.log(JSON.stringify(values));
-      }
+) => () =>
+  wrapWithProviders(() => (
+    <Formik initialValues={formState} onSubmit={onSubmit || (() => {})}>
+      {({ submitForm, values, submitCount }) => {
+        if (process.env.STORYBOOK_GIT_BRANCH) {
+          // tslint:disable-next-line
+          console.log(JSON.stringify(values));
+        }
 
-      return (
-        <Form>
-          <Component />
-          {onSubmit && (
-            <button data-test-id="test-form-submit" onClick={submitForm}>
-              Submit
-            </button>
-          )}
-          <span data-test-id="test-form-submit-count">Submit count: {submitCount}</span>
-        </Form>
-      );
-    }}
-  </Formik>
-);
+        return (
+          <Form>
+            <Component />
+            {onSubmit && (
+              <button data-test-id="test-form-submit" onClick={submitForm}>
+                Submit
+              </button>
+            )}
+            <span data-test-id="test-form-submit-count">Submit count: {submitCount}</span>
+          </Form>
+        );
+      }}
+    </Formik>
+  ));
