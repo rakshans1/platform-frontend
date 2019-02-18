@@ -12,9 +12,8 @@ import { appConnect } from "../../store";
 import { DeepReadonly } from "../../types";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { Button, ButtonSize, ButtonTextPosition, EButtonLayout } from "../shared/buttons";
-import { InlineIcon } from "../shared/InlineIcon";
+import { BankAccount } from "./BankAccount";
 
-import * as bankIcon from "../../assets/img/inline_icons/plus.svg";
 import * as styles from "./VerifiedBankAccount.module.scss";
 
 interface IStateProps {
@@ -23,19 +22,7 @@ interface IStateProps {
   isVerified: boolean;
 }
 
-interface IBankNumber {
-  last4: string;
-  bank: string;
-}
-
 type IComponentProps = IStateProps;
-
-const BankNumber: React.FunctionComponent<IBankNumber> = ({ last4, bank }) => (
-  <>
-    {bank} ({"*".repeat(16)}
-    {last4})
-  </>
-);
 
 const VerifiedBankAccountComponent: React.FunctionComponent<IComponentProps> = ({
   isVerified,
@@ -61,28 +48,11 @@ const VerifiedBankAccountComponent: React.FunctionComponent<IComponentProps> = (
     </div>
 
     {isVerified && bankAccount && bankAccount.hasBankAccount ? (
-      <div className={styles.bankDetails}>
-        <div className={styles.icon}>
-          <InlineIcon svgIcon={bankIcon} />
-        </div>
-        {personalData &&
-          personalData.firstName &&
-          personalData.lastName && (
-            <div>
-              <p className={"m-0"}>
-                <span className={styles.kycData}>
-                  {personalData.firstName} {personalData.lastName}
-                </span>{" "}
-                <span className={styles.bankVerified}>
-                  <FormattedMessage id="shared-component.wallet-verified-bank-account.bank-account.verified" />
-                </span>
-              </p>
-              <p className={"m-0"}>
-                <BankNumber last4={bankAccount.details.bankAccountNumberLast4} bank={""} />
-              </p>
-            </div>
-          )}
-      </div>
+      personalData &&
+      personalData.firstName &&
+      personalData.lastName && (
+        <BankAccount personalData={personalData} bankAccount={bankAccount.details} />
+      )
     ) : (
       <>
         <p className={cn("m-0", styles.bankNotVerified)}>
