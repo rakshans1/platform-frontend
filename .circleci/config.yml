@@ -19,7 +19,7 @@ jobs:
           ~/.cache/Cypress
 
       # Installation
-      - run: yarn --frozen-lockfile
+      - run: yarn --frozen-lockfile --ignore-engines
       # Linting
       - run: yarn lint
 
