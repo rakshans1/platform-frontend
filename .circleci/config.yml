@@ -183,6 +183,9 @@ workflows:
       - build-frontend:
           requires:
             - install-lint
+      - deploy-heroku:
+          requires:
+            - install-lint
       - test:
          requires:
            - install-lint
