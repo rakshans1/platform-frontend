@@ -30,8 +30,8 @@ jobs:
             - node_modules
             - /home/circleci/.cache/Cypress
           key: v14-deps-{{ checksum "package.json" }}
+
   deploy-heroku:
-    deploy:
       docker:
         - image: buildpack-deps:trusty
       steps:
