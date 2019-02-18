@@ -220,6 +220,7 @@ const IssuerMenu: React.FunctionComponent<{
         svgString={iconDashboard}
         to={appRoutes.dashboard}
         menuName={<FormattedMessage id="menu.dashboard" />}
+        data-test-id="authorized-layout-eto-dashboard-button"
       />
       <MenuEntryLink
         svgString={iconEto}

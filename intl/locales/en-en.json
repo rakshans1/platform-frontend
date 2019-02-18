@@ -933,6 +933,7 @@
   "shared-component.wallet-icbm.upgrade-message": "Please click the link below to enable your ICBM wallet. Once you enable your wallet, you’ll be able to use these funds to invest in opportunities on the platform.",
   "shared-components.account-address.transaction-history": "Check your ETH transaction history in",
   "shared-components.table.default-placeholder": "There is nothing to show here right now",
+  "shared.form.prompt-on-leave.message": "You have unsaved changes, are you sure that you want to cancel? All of your changes will be lost.",
   "signing.browser-wallet.header": "Confirm your wallet ownership",
   "signing.browser-wallet.message": "Please provide your signature on MetaMask to connect to Neufund.",
   "signing.ledger-wallet.header": "Confirm your Ledger Nano ownership",
