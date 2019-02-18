@@ -51,7 +51,6 @@ describe("Verify Email Widget", () => {
     const password = "strongpassword";
 
     registerWithLightWallet(firstEmail, password);
-    clearEmailServer();
     assertUserInDashboard();
 
     cy.get(tid("authorized-layout-profile-button")).awaitedClick();
